@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="relative z-10 border-t border-white/10 px-5 py-10 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-4">
         <div>
-          <Logo className="h-14 w-auto md:h-20" href="/" />
+          <Logo className="h-16 w-auto md:h-24" href="/" />
           <p className="mt-4 text-sm text-slate-500">AI-powered route optimizer for Aerodrome on Base.</p>
         </div>
         {footerGroups.map((group) => (

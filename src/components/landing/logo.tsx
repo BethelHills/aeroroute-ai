@@ -10,7 +10,7 @@ type LogoProps = {
 };
 
 export function Logo({
-  className = "h-14 w-auto sm:h-16",
+  className = "h-16 w-auto sm:h-20",
   priority = false,
   href = "/",
 }: LogoProps) {
