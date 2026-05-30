@@ -9,6 +9,8 @@ type LogoProps = {
   linkClassName?: string;
   priority?: boolean;
   href?: string;
+  width?: number;
+  height?: number;
 };
 
 export function Logo({
@@ -16,13 +18,15 @@ export function Logo({
   linkClassName,
   priority = false,
   href = "/",
+  width = 1536,
+  height = 1024,
 }: LogoProps) {
   const image = (
     <Image
       src={LOGO_SRC}
       alt="AeroRoute AI — Smarter routes. Better swaps."
-      width={1536}
-      height={1024}
+      width={width}
+      height={height}
       className={cn("block h-auto max-w-full object-contain object-left", className)}
       priority={priority}
     />
