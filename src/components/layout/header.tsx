@@ -19,8 +19,8 @@ export function Header({ onMenuClick }: HeaderProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between gap-4 border-b border-white/10 bg-[#03070b]/90 px-4 backdrop-blur-xl md:h-16 md:px-6",
-        appShell && "md:hidden",
+        "sticky top-0 z-20 flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-[#03070b]/90 px-3 backdrop-blur-xl sm:px-4",
+        appShell ? "h-[4.25rem] md:hidden" : "h-14 md:h-16 md:px-6",
       )}
     >
       <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -37,7 +37,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             priority
             href="/dashboard"
             linkClassName="flex-1"
-            className="h-10 w-auto max-w-[min(13rem,calc(100vw-5.25rem))] sm:h-11 sm:max-w-[14rem]"
+            className="h-12 w-auto max-w-[min(17rem,calc(100vw-4.5rem))] sm:h-14 sm:max-w-[19rem]"
           />
         ) : (
           <p className="min-w-0 truncate text-sm font-black text-white md:text-base">
