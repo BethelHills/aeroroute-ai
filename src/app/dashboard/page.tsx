@@ -348,7 +348,7 @@ export default function AeroRouteDashboardPreview() {
       <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
         <header className="mb-8 flex flex-col gap-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Logo priority className="h-20 w-auto md:h-24 lg:h-28 xl:h-32" />
+            <Logo priority className="h-auto w-64 md:w-80 lg:w-96" />
             <div className="flex flex-wrap gap-3">
               <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
                 <Wallet size={17} />
