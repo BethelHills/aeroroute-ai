@@ -186,7 +186,7 @@ function BestRoute() {
         </div>
       </div>
 
-      <div className="relative mt-6 grid gap-4 md:grid-cols-4">
+      <div className="relative mt-6 grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {[
           ["Expected Output", best.output, "+0.92% vs avg"],
           ["Slippage", best.slippage, "Protected"],
@@ -227,8 +227,8 @@ function RouteComparison() {
       <div className="space-y-4">
         {routes.map((route, index) => (
           <motion.div key={route.name} whileHover={{ y: -2 }} className="rounded-2xl border border-white/10 bg-black/20 p-4 transition hover:border-emerald-400/30">
-            <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr_0.7fr_0.7fr_0.5fr_0.5fr] xl:items-center">
-              <div>
+            <div className="grid w-full grid-cols-1 gap-4">
+              <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-black">{index + 1}</span>
                   <h3 className="font-black text-white">{route.name}</h3>
@@ -236,11 +236,13 @@ function RouteComparison() {
                 </div>
                 <div className="mt-3"><RoutePath path={route.path} /></div>
               </div>
-              <Stat label="Output" value={route.output} />
-              <Stat label="Gas" value={route.gas} />
-              <Stat label="Impact" value={route.impact} accent />
-              <Stat label="Risk" value={route.risk} />
-              <Stat label="Score" value={`${route.score}`} large />
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <Stat label="Output" value={route.output} />
+                <Stat label="Gas" value={route.gas} />
+                <Stat label="Impact" value={route.impact} accent />
+                <Stat label="Risk" value={route.risk} />
+                <Stat label="Score" value={`${route.score}`} large />
+              </div>
             </div>
           </motion.div>
         ))}
@@ -325,7 +327,7 @@ export default function AeroRouteOptimizerPreview() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
       <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
+      <section className="relative z-10 w-full max-w-7xl overflow-hidden px-5 py-8 lg:px-8">
         <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
@@ -348,12 +350,20 @@ export default function AeroRouteOptimizerPreview() {
           </div>
         </header>
 
-        <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
-          <div className="space-y-6"><SwapForm /><AiSummary /><TransactionPreview /></div>
-          <div className="space-y-6"><BestRoute /><RouteComparison /><MiniChart /></div>
+        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-[minmax(0,420px)_1fr]">
+          <div className="space-y-6 min-w-0">
+            <SwapForm />
+            <AiSummary />
+            <TransactionPreview />
+          </div>
+          <div className="space-y-6 min-w-0">
+            <BestRoute />
+            <RouteComparison />
+            <MiniChart />
+          </div>
         </div>
 
-        <div className="mt-6 grid gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-4">
+        <div className="mt-6 grid w-full grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-2 xl:grid-cols-3">
           {[
             [ShieldCheck, "Protected", "Simulation-first route planning."],
             [Clock3, "Fast", "Route analysis in seconds."],
