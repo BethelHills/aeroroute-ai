@@ -52,15 +52,25 @@ type PageTitleBlockProps = {
   badge: ReactNode;
   title: ReactNode;
   description: string;
+  /** Renders beside the title row (e.g. wallet controls on mobile dashboard). */
+  titleActions?: ReactNode;
 };
 
-export function PageTitleBlock({ badge, title, description }: PageTitleBlockProps) {
+export function PageTitleBlock({
+  badge,
+  title,
+  description,
+  titleActions,
+}: PageTitleBlockProps) {
   return (
     <div className="min-w-0">
       {badge}
-      <h1 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl md:text-5xl lg:text-6xl">
-        {title}
-      </h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="min-w-0 flex-1 text-3xl font-black leading-tight tracking-[-0.05em] sm:text-4xl md:text-5xl lg:text-6xl">
+          {title}
+        </h1>
+        {titleActions ? <div className="shrink-0">{titleActions}</div> : null}
+      </div>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400 sm:mt-4 sm:text-base">
         {description}
       </p>

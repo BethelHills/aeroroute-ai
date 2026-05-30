@@ -8,6 +8,7 @@ import {
   AppPageSection,
   PageTitleBlock,
 } from "@/components/layout/page-shell";
+import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -368,6 +369,7 @@ export default function AeroRouteDashboardPreview() {
                 </span>
               </>
             }
+            titleActions={<WalletStatusButtons className="md:hidden" />}
             description="Compare routes, estimate output, detect slippage, and prepare smarter Aerodrome swaps on Base with AI assistance."
           />
         </AppPageHeader>
