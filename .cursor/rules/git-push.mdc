@@ -1,0 +1,18 @@
+---
+description: Always commit and push aeroroute-ai changes to GitHub
+alwaysApply: true
+---
+
+# Git remote and push policy
+
+This project lives at `https://github.com/BethelHills/aeroroute-ai.git`.
+
+After completing meaningful work in this repo:
+
+1. Stage all relevant changes (`git add -A` from the project root).
+2. Commit with a clear message describing why the change was made.
+3. Push to `origin main` (`git push -u origin main` if upstream is not set).
+
+Do not push unrelated files from outside this project directory. Keep commits scoped to `/Users/hb/aeroroute-ai`.
+
+If the user asks to push or says work is done, commit and push without waiting for a separate commit request.
