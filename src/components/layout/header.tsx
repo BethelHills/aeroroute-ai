@@ -1,5 +1,6 @@
 "use client";
 
+import { Logo } from "@/components/landing/logo";
 import { Menu } from "lucide-react";
 import { getNavTitle, isAppShellRoute } from "./app-nav";
 import { usePathname } from "next/navigation";
@@ -22,17 +23,24 @@ export function Header({ onMenuClick }: HeaderProps) {
         appShell && "md:hidden",
       )}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={onMenuClick}
-          className="rounded-xl border border-white/10 bg-white/[0.04] p-2 text-slate-300 hover:text-white"
+          className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] p-2 text-slate-300 hover:text-white"
           aria-label="Open navigation menu"
         >
           <Menu size={20} />
         </button>
-        {!appShell && (
-          <p className="truncate text-sm font-black text-white md:text-base">
+        {appShell ? (
+          <Logo
+            priority
+            href="/dashboard"
+            linkClassName="flex-1"
+            className="h-8 w-auto max-w-[min(11rem,calc(100vw-5.25rem))] sm:h-9 sm:max-w-[12rem]"
+          />
+        ) : (
+          <p className="min-w-0 truncate text-sm font-black text-white md:text-base">
             {title}
           </p>
         )}
