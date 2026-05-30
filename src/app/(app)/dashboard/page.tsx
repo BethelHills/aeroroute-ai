@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Logo } from "@/components/landing/logo";
 import {
   AppPageHeader,
   AppPageRoot,
@@ -347,6 +348,11 @@ export default function AeroRouteDashboardPreview() {
     <AppPageRoot>
       <AppPageSection>
         <AppPageHeader>
+          <Logo
+            priority
+            href="/dashboard"
+            className="mb-2 h-auto w-52 sm:w-64 md:hidden"
+          />
           <PageTitleBlock
             badge={
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">

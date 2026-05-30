@@ -58,34 +58,38 @@ function SidebarPanel({
   onCollapsedChange,
   onNavigate,
   showCollapseToggle,
+  showLogo = true,
 }: {
   collapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   onNavigate?: () => void;
   showCollapseToggle: boolean;
+  showLogo?: boolean;
 }) {
   return (
     <div className="flex h-full flex-col">
-      <div
-        className={cn(
-          "flex items-center border-b border-white/10 px-4 py-5",
-          collapsed ? "justify-center" : "justify-between gap-3",
-        )}
-      >
-        {!collapsed && (
-          <Logo priority href="/dashboard" className="h-auto w-36 sm:w-40 lg:w-44" />
-        )}
-        {showCollapseToggle && (
-          <button
-            type="button"
-            onClick={() => onCollapsedChange(!collapsed)}
-            className="rounded-lg border border-white/10 p-2 text-slate-400 hover:text-white"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-          </button>
-        )}
-      </div>
+      {(showLogo || showCollapseToggle) && (
+        <div
+          className={cn(
+            "flex items-center border-b border-white/10 px-4 py-5",
+            collapsed ? "justify-center" : "justify-between gap-3",
+          )}
+        >
+          {!collapsed && showLogo && (
+            <Logo priority href="/dashboard" className="h-auto w-36 sm:w-40 lg:w-44" />
+          )}
+          {showCollapseToggle && (
+            <button
+              type="button"
+              onClick={() => onCollapsedChange(!collapsed)}
+              className="rounded-lg border border-white/10 p-2 text-slate-400 hover:text-white"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+            </button>
+          )}
+        </div>
+      )}
       <NavLinks collapsed={collapsed} onNavigate={onNavigate} />
     </div>
   );
@@ -128,8 +132,7 @@ export function Sidebar({
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
-          <Logo priority href="/dashboard" className="h-auto w-40 max-w-full" />
+        <div className="flex items-center justify-end border-b border-white/10 px-4 py-3">
           <button
             type="button"
             onClick={onMobileClose}
@@ -144,6 +147,7 @@ export function Sidebar({
           onCollapsedChange={onCollapsedChange}
           onNavigate={onMobileClose}
           showCollapseToggle={false}
+          showLogo={false}
         />
       </aside>
     </>
