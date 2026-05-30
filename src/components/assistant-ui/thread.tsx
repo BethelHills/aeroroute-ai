@@ -107,7 +107,15 @@ export const Thread: FC = () => {
 
 const ThreadScrollToBottom: FC = () => {
   return (
-    <ThreadPrimitive.ScrollToBottom render={<TooltipIconButton tooltip="Scroll to bottom" variant="outline" className="aui-thread-scroll-to-bottom dark:bg-background dark:hover:bg-accent absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible" />}><ArrowDownIcon /></ThreadPrimitive.ScrollToBottom>
+    <ThreadPrimitive.ScrollToBottom asChild>
+      <TooltipIconButton
+        tooltip="Scroll to bottom"
+        variant="outline"
+        className="aui-thread-scroll-to-bottom dark:bg-background dark:hover:bg-accent absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible"
+      >
+        <ArrowDownIcon />
+      </TooltipIconButton>
+    </ThreadPrimitive.ScrollToBottom>
   );
 };
 
@@ -181,14 +189,21 @@ const ThreadSuggestions: FC = () => {
           key={`suggested-action-${suggestedAction.title}-${index}`}
           className="aui-thread-welcome-suggestion-display @md:[&:nth-child(n+3)]:block [&:nth-child(n+3)]:hidden"
         >
-          <ThreadPrimitive.Suggestion prompt={suggestedAction.action} send render={<Button variant="ghost" className="aui-thread-welcome-suggestion group/suggestion @md:flex-col dark:hover:bg-accent/60 h-auto w-full min-w-0 flex-col items-start justify-start gap-0.5 overflow-hidden whitespace-normal rounded-2xl border px-4 py-3 text-left text-sm font-normal transition-colors" aria-label={suggestedAction.action} />}><span className="aui-thread-welcome-suggestion-text-1 text-foreground flex min-w-0 items-start gap-2 break-words leading-tight">
-                              <suggestedAction.icon className="text-muted-foreground/40 group-hover/suggestion:text-primary size-3.5 shrink-0 transition-colors" />
-                              <span className="min-w-0 break-words">
-                                {suggestedAction.title}
-                              </span>
-                            </span><span className="aui-thread-welcome-suggestion-text-2 text-muted-foreground/60 ml-[22px] min-w-0 break-words text-xs leading-tight">
-                              {suggestedAction.label}
-                            </span></ThreadPrimitive.Suggestion>
+          <ThreadPrimitive.Suggestion prompt={suggestedAction.action} send asChild>
+            <Button
+              variant="ghost"
+              className="aui-thread-welcome-suggestion group/suggestion @md:flex-col dark:hover:bg-accent/60 h-auto w-full min-w-0 flex-col items-start justify-start gap-0.5 overflow-hidden whitespace-normal rounded-2xl border px-4 py-3 text-left text-sm font-normal transition-colors"
+              aria-label={suggestedAction.action}
+            >
+              <span className="aui-thread-welcome-suggestion-text-1 text-foreground flex min-w-0 items-start gap-2 break-words leading-tight">
+                <suggestedAction.icon className="text-muted-foreground/40 group-hover/suggestion:text-primary size-3.5 shrink-0 transition-colors" />
+                <span className="min-w-0 break-words">{suggestedAction.title}</span>
+              </span>
+              <span className="aui-thread-welcome-suggestion-text-2 text-muted-foreground/60 ml-[22px] min-w-0 break-words text-xs leading-tight">
+                {suggestedAction.label}
+              </span>
+            </Button>
+          </ThreadPrimitive.Suggestion>
         </m.div>
       ))}
     </div>
@@ -240,11 +255,31 @@ const ComposerAction: FC = () => {
 
       <div className="shrink-0">
         <ThreadPrimitive.If running={false}>
-          <ComposerPrimitive.Send render={<Button type="submit" variant="default" size="icon" className="aui-composer-send mr-2 size-[38px] shrink-0 rounded-full p-1 md:mr-3 md:size-[34px]" aria-label="Send message" />}><ArrowUpIcon className="aui-composer-send-icon size-5" /></ComposerPrimitive.Send>
+          <ComposerPrimitive.Send asChild>
+            <Button
+              type="submit"
+              variant="default"
+              size="icon"
+              className="aui-composer-send mr-2 size-[38px] shrink-0 rounded-full p-1 md:mr-3 md:size-[34px]"
+              aria-label="Send message"
+            >
+              <ArrowUpIcon className="aui-composer-send-icon size-5" />
+            </Button>
+          </ComposerPrimitive.Send>
         </ThreadPrimitive.If>
 
         <ThreadPrimitive.If running>
-          <ComposerPrimitive.Cancel render={<Button type="button" variant="default" size="icon" className="aui-composer-cancel border-muted-foreground/60 hover:bg-primary/75 dark:border-muted-foreground/90 mr-2 size-[38px] shrink-0 rounded-full border md:mr-3 md:size-[34px]" aria-label="Stop generating" />}><Square className="aui-composer-cancel-icon size-3.5 fill-white dark:fill-black" /></ComposerPrimitive.Cancel>
+          <ComposerPrimitive.Cancel asChild>
+            <Button
+              type="button"
+              variant="default"
+              size="icon"
+              className="aui-composer-cancel border-muted-foreground/60 hover:bg-primary/75 dark:border-muted-foreground/90 mr-2 size-[38px] shrink-0 rounded-full border md:mr-3 md:size-[34px]"
+              aria-label="Stop generating"
+            >
+              <Square className="aui-composer-cancel-icon size-3.5 fill-white dark:fill-black" />
+            </Button>
+          </ComposerPrimitive.Cancel>
         </ThreadPrimitive.If>
       </div>
     </div>
@@ -329,10 +364,15 @@ const AssistantMessage: FC = () => {
   const showFinishedEmptyMessage = isEmpty && !showLoadingDot;
 
   return (
-    <MessagePrimitive.Root render={<div className={cn(
-                "aui-assistant-message-root animate-in fade-in slide-in-from-bottom-1 relative mx-auto w-full max-w-[var(--thread-max-width)] duration-150 ease-out",
-                showFinishedEmptyMessage ? "-mt-3 py-0" : "py-4",
-              )} data-role="assistant" />}>{!showFinishedEmptyMessage && isPaymentRequiredNotice && (
+    <MessagePrimitive.Root asChild>
+      <div
+        className={cn(
+          "aui-assistant-message-root animate-in fade-in slide-in-from-bottom-1 relative mx-auto w-full max-w-[var(--thread-max-width)] duration-150 ease-out",
+          showFinishedEmptyMessage ? "-mt-3 py-0" : "py-4",
+        )}
+        data-role="assistant"
+      >
+        {!showFinishedEmptyMessage && isPaymentRequiredNotice && (
                 <div className="aui-assistant-payment-required bg-sidebar text-sidebar-foreground border-border/70 dark:border-border mx-3 rounded-2xl border px-4 py-3 text-sm shadow-sm">
                   <div className="aui-assistant-payment-required-title mb-1 font-medium">
                     {notice?.aomiNoticeTitle ?? "Credits needed"}
@@ -370,7 +410,9 @@ const AssistantMessage: FC = () => {
                   <BranchPicker />
                   <AssistantActionBar />
                 </div>
-              )}</MessagePrimitive.Root>
+              )}
+      </div>
+    </MessagePrimitive.Root>
   );
 };
 
@@ -382,12 +424,31 @@ const AssistantActionBar: FC = () => {
       autohideFloat="single-branch"
       className="aui-assistant-action-bar-root text-muted-foreground data-floating:absolute data-floating:rounded-xl data-floating:border data-floating:bg-background data-floating:p-1 data-floating:shadow-sm col-start-3 row-start-2 -ml-1 flex gap-1"
     >
-      <ActionBarPrimitive.Copy render={<Button variant="ghost" size="icon" className="aui-button-icon size-6 rounded-xl p-1" aria-label="Copy" />}><MessagePrimitive.If copied>
-                      <CheckIcon />
-                    </MessagePrimitive.If><MessagePrimitive.If copied={false}>
-                      <CopyIcon />
-                    </MessagePrimitive.If></ActionBarPrimitive.Copy>
-      <ActionBarPrimitive.Reload render={<Button variant="ghost" size="icon" className="aui-button-icon size-6 rounded-xl p-1" aria-label="Refresh" />}><RefreshCwIcon /></ActionBarPrimitive.Reload>
+      <ActionBarPrimitive.Copy asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="aui-button-icon size-6 rounded-xl p-1"
+          aria-label="Copy"
+        >
+          <MessagePrimitive.If copied>
+            <CheckIcon />
+          </MessagePrimitive.If>
+          <MessagePrimitive.If copied={false}>
+            <CopyIcon />
+          </MessagePrimitive.If>
+        </Button>
+      </ActionBarPrimitive.Copy>
+      <ActionBarPrimitive.Reload asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="aui-button-icon size-6 rounded-xl p-1"
+          aria-label="Refresh"
+        >
+          <RefreshCwIcon />
+        </Button>
+      </ActionBarPrimitive.Reload>
     </ActionBarPrimitive.Root>
   );
 };
@@ -396,7 +457,12 @@ const UserMessage: FC = () => {
   const isEmpty = useMessage((state) => state.content.length === 0);
 
   return (
-    <MessagePrimitive.Root render={<div className="aui-user-message-root animate-in fade-in slide-in-from-bottom-1 mx-auto grid w-full max-w-[var(--thread-max-width)] auto-rows-auto grid-cols-[minmax(72px,1fr)_auto] gap-y-2 px-2 py-4 duration-150 ease-out first:mt-3 last:mb-5 [&:where(>*)]:col-start-2" data-role="user" />}><div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
+    <MessagePrimitive.Root asChild>
+      <div
+        className="aui-user-message-root animate-in fade-in slide-in-from-bottom-1 mx-auto grid w-full max-w-[var(--thread-max-width)] auto-rows-auto grid-cols-[minmax(72px,1fr)_auto] gap-y-2 px-2 py-4 duration-150 ease-out first:mt-3 last:mb-5 [&:where(>*)]:col-start-2"
+        data-role="user"
+      >
+        <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
                 <div className="aui-user-message-content bg-muted text-foreground break-words rounded-3xl px-5 py-2.5 text-sm">
                   {isEmpty ? (
                     <Skeleton className="aui-user-message-content-skeleton h-4 w-28 rounded-full" />
@@ -409,7 +475,10 @@ const UserMessage: FC = () => {
                     <UserActionBar />
                   </div>
                 )}
-              </div><BranchPicker className="aui-user-branch-picker col-span-full col-start-1 row-start-3 -mr-1 justify-end" /></MessagePrimitive.Root>
+              </div>
+        <BranchPicker className="aui-user-branch-picker col-span-full col-start-1 row-start-3 -mr-1 justify-end" />
+      </div>
+    </MessagePrimitive.Root>
   );
 };
 
@@ -420,7 +489,16 @@ const UserActionBar: FC = () => {
       autohide="not-last"
       className="aui-user-action-bar-root flex flex-col items-end"
     >
-      <ActionBarPrimitive.Edit render={<Button variant="ghost" size="icon" className="aui-button-icon aui-user-action-edit size-6 rounded-xl p-4" aria-label="Edit" />}><PencilIcon /></ActionBarPrimitive.Edit>
+      <ActionBarPrimitive.Edit asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="aui-button-icon aui-user-action-edit size-6 rounded-xl p-4"
+          aria-label="Edit"
+        >
+          <PencilIcon />
+        </Button>
+      </ActionBarPrimitive.Edit>
     </ActionBarPrimitive.Root>
   );
 };
@@ -435,10 +513,16 @@ const EditComposer: FC = () => {
         />
 
         <div className="aui-edit-composer-footer mx-3 mb-3 flex items-center justify-center gap-2 self-end">
-          <ComposerPrimitive.Cancel render={<Button variant="ghost" size="sm" aria-label="Cancel edit" />}>Cancel
-                              </ComposerPrimitive.Cancel>
-          <ComposerPrimitive.Send render={<Button size="sm" aria-label="Update message" />}>Update
-                              </ComposerPrimitive.Send>
+          <ComposerPrimitive.Cancel asChild>
+            <Button variant="ghost" size="sm" aria-label="Cancel edit">
+              Cancel
+            </Button>
+          </ComposerPrimitive.Cancel>
+          <ComposerPrimitive.Send asChild>
+            <Button size="sm" aria-label="Update message">
+              Update
+            </Button>
+          </ComposerPrimitive.Send>
         </div>
       </ComposerPrimitive.Root>
     </div>
@@ -458,11 +542,19 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
       )}
       {...rest}
     >
-      <BranchPickerPrimitive.Previous render={<TooltipIconButton tooltip="Previous" />}><ChevronLeftIcon /></BranchPickerPrimitive.Previous>
+      <BranchPickerPrimitive.Previous asChild>
+        <TooltipIconButton tooltip="Previous">
+          <ChevronLeftIcon />
+        </TooltipIconButton>
+      </BranchPickerPrimitive.Previous>
       <span className="aui-branch-picker-state font-medium">
         <BranchPickerPrimitive.Number /> / <BranchPickerPrimitive.Count />
       </span>
-      <BranchPickerPrimitive.Next render={<TooltipIconButton tooltip="Next" />}><ChevronRightIcon /></BranchPickerPrimitive.Next>
+      <BranchPickerPrimitive.Next asChild>
+        <TooltipIconButton tooltip="Next">
+          <ChevronRightIcon />
+        </TooltipIconButton>
+      </BranchPickerPrimitive.Next>
     </BranchPickerPrimitive.Root>
   );
 };

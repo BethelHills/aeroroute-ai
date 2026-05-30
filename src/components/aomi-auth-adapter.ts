@@ -1,1 +1,1 @@
-export * from "./aomi-auth-adapter/index";
+export * from "@/lib/aomi-auth-adapter";

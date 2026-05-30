@@ -32,8 +32,15 @@ export const ThreadList: FC = () => {
 
 const ThreadListNew: FC = () => {
   return (
-    <ThreadListPrimitive.New render={<Button className="aui-thread-list-new hover:bg-accent data-active:bg-accent flex items-center justify-start gap-2 rounded-2xl px-4 py-2 text-start text-sm" variant="ghost" />}><PlusIcon className="size-4" />New Chat
-            </ThreadListPrimitive.New>
+    <ThreadListPrimitive.New asChild>
+      <Button
+        className="aui-thread-list-new hover:bg-accent data-active:bg-accent flex items-center justify-start gap-2 rounded-2xl px-4 py-2 text-start text-sm"
+        variant="ghost"
+      >
+        <PlusIcon className="size-4" />
+        New Chat
+      </Button>
+    </ThreadListPrimitive.New>
   );
 };
 
@@ -139,11 +146,17 @@ const ThreadListItemDelete: FC = () => {
         </DialogHeader>
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-          <ThreadListItemPrimitive.Delete render={<Button variant="default" onClick={(event) => {
-                                  event.stopPropagation();
-                                  setOpen(false);
-                                }} />}>Delete
-                              </ThreadListItemPrimitive.Delete>
+          <ThreadListItemPrimitive.Delete asChild>
+            <Button
+              variant="default"
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpen(false);
+              }}
+            >
+              Delete
+            </Button>
+          </ThreadListItemPrimitive.Delete>
         </DialogFooter>
       </DialogContent>
     </Dialog>

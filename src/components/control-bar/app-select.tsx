@@ -87,11 +87,6 @@ export const AppSelect: FC<AppSelectProps> = ({
         align="start"
         sideOffset={4}
         className="w-[260px] overflow-hidden rounded-xl p-0"
-        onOpenAutoFocus={(e) => {
-          if (window.matchMedia("(max-width: 767px)").matches) {
-            e.preventDefault();
-          }
-        }}
       >
         <Command className="rounded-xl">
           <CommandInput placeholder="Search apps..." />

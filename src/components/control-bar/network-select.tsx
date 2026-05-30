@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getChainIcon } from "@/components/icons";
-import { useAomiAuthAdapter } from "../../lib/aomi-auth-adapter";
+import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
 export type NetworkSelectProps = {
   className?: string;
@@ -51,11 +51,6 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
         align="start"
         sideOffset={4}
         className="max-h-[min(70vh,520px)] w-[200px] overflow-y-auto rounded-xl p-1"
-        onOpenAutoFocus={(e) => {
-          if (window.matchMedia("(max-width: 767px)").matches) {
-            e.preventDefault();
-          }
-        }}
       >
         <div className="flex flex-col gap-0.5">
           {selectableChains.map((chain) => {

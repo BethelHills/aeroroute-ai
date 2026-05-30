@@ -2,8 +2,10 @@
 
 import { useEffect, type FC } from "react";
 import { cn, formatAddress, getChainInfo } from "@aomi-labs/react";
-import { useAomiAuthAdapter } from "../../lib/aomi-auth-adapter";
-import { formatWalletProvider } from "../../lib/aomi-auth-adapter";
+import {
+  formatWalletProvider,
+  useAomiAuthAdapter,
+} from "@/lib/aomi-auth-adapter";
 
 export type ConnectButtonProps = {
   className?: string;
