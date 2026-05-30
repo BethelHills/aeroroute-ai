@@ -123,7 +123,7 @@ export function Hero() {
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden rounded-xl border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-100 sm:inline-flex">Built on Base</span>
-          <a href="/route-optimizer" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-bold text-[#041014] shadow-[0_0_30px_rgba(0,245,160,0.25)]">
+          <a href="/dashboard" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-bold text-[#041014] shadow-[0_0_30px_rgba(0,245,160,0.25)]">
             Launch App
             <ArrowRight size={17} />
           </a>
@@ -145,7 +145,7 @@ export function Hero() {
             AeroRoute AI analyzes liquidity, compares routes, estimates slippage, simulates transactions, and helps you execute with confidence.
           </p>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-            <a href="/route-optimizer" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-7 py-4 font-black text-[#041014] shadow-[0_0_40px_rgba(0,245,160,0.3)]">
+            <a href="/dashboard" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-7 py-4 font-black text-[#041014] shadow-[0_0_40px_rgba(0,245,160,0.3)]">
               Optimize Route
               <Zap size={18} />
             </a>
