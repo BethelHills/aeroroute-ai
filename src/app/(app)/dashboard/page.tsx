@@ -369,7 +369,7 @@ export default function AeroRouteDashboardPreview() {
                 </span>
               </>
             }
-            titleActions={<WalletStatusButtons className="md:hidden" />}
+            titleActions={<WalletStatusButtons />}
             description="Compare routes, estimate output, detect slippage, and prepare smarter Aerodrome swaps on Base with AI assistance."
           />
         </AppPageHeader>

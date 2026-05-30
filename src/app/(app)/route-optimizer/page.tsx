@@ -7,6 +7,7 @@ import {
   AppPageSection,
   PageTitleBlock,
 } from "@/components/layout/page-shell";
+import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -345,6 +346,7 @@ export default function AeroRouteOptimizerPreview() {
               </>
             }
             description="Enter your swap intent and let AeroRoute AI compare liquidity, slippage, gas, and execution risk before you trade."
+            titleActions={<WalletStatusButtons />}
           />
         </AppPageHeader>
 

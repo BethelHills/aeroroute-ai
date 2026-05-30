@@ -7,6 +7,7 @@ import {
   AppPageSection,
   PageTitleBlock,
 } from "@/components/layout/page-shell";
+import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -313,6 +314,7 @@ export default function AeroRouteAgentChatPreview() {
               </>
             }
             description="Ask AeroRoute AI to quote swaps, compare routes, simulate transactions, and prepare Aerodrome actions on Base."
+            titleActions={<WalletStatusButtons />}
           />
         </AppPageHeader>
 

@@ -5,9 +5,9 @@ import {
   AppPageHeader,
   AppPageRoot,
   AppPageSection,
-  PageActions,
   PageTitleBlock,
 } from "@/components/layout/page-shell";
+import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
@@ -175,7 +175,7 @@ export default function AeroRouteSettingsPreview() {
   return (
     <AppPageRoot>
       <AppPageSection>
-        <AppPageHeader className="lg:flex-row lg:items-end lg:justify-between">
+        <AppPageHeader>
           <PageTitleBlock
             badge={
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
@@ -191,15 +191,18 @@ export default function AeroRouteSettingsPreview() {
               </>
             }
             description="Configure wallet behavior, route safety, Aomi backend settings, notifications, and agent execution preferences."
+            titleActions={
+              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                <WalletStatusButtons />
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
+                >
+                  <Save size={17} /> Save Settings
+                </button>
+              </div>
+            }
           />
-          <PageActions>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
-            >
-              <Save size={17} /> Save Settings
-            </button>
-          </PageActions>
         </AppPageHeader>
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,390px)]">

@@ -7,6 +7,7 @@ import {
   AppPageSection,
   PageTitleBlock,
 } from "@/components/layout/page-shell";
+import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -312,6 +313,7 @@ export default function AeroRouteHistoryPreview() {
               </>
             }
             description="Review simulated, staged, completed, and failed Aerodrome route actions with AI performance insights."
+            titleActions={<WalletStatusButtons />}
           />
         </AppPageHeader>
 

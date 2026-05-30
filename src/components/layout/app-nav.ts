@@ -28,3 +28,8 @@ export function getNavTitle(pathname: string): string {
   );
   return match?.label ?? "AeroRoute AI";
 }
+
+/** Routes wrapped by AppShell (not the marketing landing page). */
+export function isAppShellRoute(pathname: string): boolean {
+  return pathname !== "/" && !pathname.startsWith("/_");
+}
