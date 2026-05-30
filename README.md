@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment variables
+
+Copy the template and set values for your environment:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_BACKEND_URL` | Yes (for Aomi chat) | Aomi API base URL. Use `https://api.aomi.dev` in production, or `http://localhost:8080` when running a local Aomi backend. |
+| `OPENROUTER_API_KEY` | For OpenRouter-backed models | Server-only secret (`sk-or-...`). Never use the `NEXT_PUBLIC_` prefix. |
+| `NEXT_PUBLIC_CHAIN_ID` | For wallet UI | EVM chain id (e.g. `8453` for Base). |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | For WalletConnect | Project id from [WalletConnect Cloud](https://cloud.walletconnect.com). |
+
+`.env.local` is gitignored. For Vercel (or other hosts), add the same variables in the project’s **Environment Variables** settings so they are available at **build** time (`NEXT_PUBLIC_*` is inlined by Next.js).
+
 ## Getting Started
 
 First, run the development server:

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Logo } from "@/components/landing/logo";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -347,6 +348,7 @@ export default function AeroRouteDashboardPreview() {
       <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
         <header className="mb-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
+            <Logo className="mb-5 h-12 w-auto md:h-14" />
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
               <Sparkles size={14} />
               Aerodrome Route Engine
