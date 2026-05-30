@@ -37,7 +37,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             priority
             href="/dashboard"
             linkClassName="flex-1"
-            className="h-8 w-auto max-w-[min(11rem,calc(100vw-5.25rem))] sm:h-9 sm:max-w-[12rem]"
+            className="h-10 w-auto max-w-[min(13rem,calc(100vw-5.25rem))] sm:h-11 sm:max-w-[14rem]"
           />
         ) : (
           <p className="min-w-0 truncate text-sm font-black text-white md:text-base">
