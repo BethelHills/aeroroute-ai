@@ -12,7 +12,7 @@ export function Cta() {
             <h2 className="text-3xl font-black tracking-[-0.04em] md:text-4xl">Optimize every swap. Maximize every opportunity.</h2>
             <p className="mt-3 text-slate-300">Join traders using AeroRoute AI for smarter, faster, and safer swaps on Base.</p>
           </div>
-          <a href="/dashboard" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 px-7 py-4 font-black text-[#120800] shadow-[0_0_40px_rgba(255,122,24,0.3)]">
+          <a href="/route-optimizer" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 px-7 py-4 font-black text-[#120800] shadow-[0_0_40px_rgba(255,122,24,0.3)]">
             Optimize Your Route Now
             <Zap size={18} />
           </a>
