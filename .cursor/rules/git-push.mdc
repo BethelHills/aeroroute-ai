@@ -16,3 +16,5 @@ After completing meaningful work in this repo:
 Do not push unrelated files from outside this project directory. Keep commits scoped to `/Users/hb/aeroroute-ai`.
 
 If the user asks to push or says work is done, commit and push without waiting for a separate commit request.
+
+Always push after completing a task in this repo unless the user explicitly says not to commit or push.

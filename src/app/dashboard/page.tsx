@@ -346,9 +346,21 @@ export default function AeroRouteDashboardPreview() {
       <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
 
       <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <header className="mb-8 flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <Logo priority className="h-14 w-auto md:h-16 lg:h-20" />
+            <div className="flex flex-wrap gap-3">
+              <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
+                <Wallet size={17} />
+                0x8f...3a29
+              </button>
+              <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
+                Base Online
+                <Network size={17} />
+              </button>
+            </div>
+          </div>
           <div>
-            <Logo className="mb-5 h-12 w-auto md:h-14" />
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
               <Sparkles size={14} />
               Aerodrome Route Engine
@@ -359,16 +371,6 @@ export default function AeroRouteDashboardPreview() {
             <p className="mt-4 max-w-2xl text-slate-400">
               Compare routes, estimate output, detect slippage, and prepare smarter Aerodrome swaps on Base with AI assistance.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
-              <Wallet size={17} />
-              0x8f...3a29
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
-              Base Online
-              <Network size={17} />
-            </button>
           </div>
         </header>
 

@@ -331,12 +331,20 @@ export default function AeroRouteOptimizerPreview() {
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
               <Sparkles size={14} /> Aerodrome on Base
             </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">Route <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Optimizer</span></h1>
-            <p className="mt-4 max-w-2xl text-slate-400">Enter your swap intent and let AeroRoute AI compare liquidity, slippage, gas, and execution risk before you trade.</p>
+            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">
+              Route <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Optimizer</span>
+            </h1>
+            <p className="mt-4 max-w-2xl text-slate-400">
+              Enter your swap intent and let AeroRoute AI compare liquidity, slippage, gas, and execution risk before you trade.
+            </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl"><Wallet size={17} /> Connect Wallet</button>
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"><Network size={17} /> Base</button>
+            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
+              <Wallet size={17} /> Connect Wallet
+            </button>
+            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
+              <Network size={17} /> Base
+            </button>
           </div>
         </header>
 

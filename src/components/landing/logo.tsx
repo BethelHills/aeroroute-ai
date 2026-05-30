@@ -1,21 +1,37 @@
 import Image from "next/image";
+import Link from "next/link";
 
-const LOGO_SRC = "/assets/image/AeroRoute%20AI.logo.png";
+const LOGO_SRC = "/assets/image/aeroroute-ai-logo.png";
 
 type LogoProps = {
   className?: string;
   priority?: boolean;
+  href?: string;
 };
 
-export function Logo({ className = "h-10 w-auto", priority = false }: LogoProps) {
-  return (
+export function Logo({
+  className = "h-12 w-auto sm:h-14",
+  priority = false,
+  href = "/",
+}: LogoProps) {
+  const image = (
     <Image
       src={LOGO_SRC}
       alt="AeroRoute AI — Smarter routes. Better swaps."
       width={1536}
       height={1024}
-      className={className}
+      className={`block max-w-none ${className}`}
       priority={priority}
     />
+  );
+
+  if (!href) {
+    return image;
+  }
+
+  return (
+    <Link href={href} className="inline-block shrink-0">
+      {image}
+    </Link>
   );
 }
