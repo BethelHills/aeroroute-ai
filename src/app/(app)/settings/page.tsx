@@ -1,6 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  AppPageHeader,
+  AppPageRoot,
+  AppPageSection,
+  PageActions,
+  PageTitleBlock,
+} from "@/components/layout/page-shell";
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
@@ -20,7 +27,6 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
-  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -112,12 +118,12 @@ function SettingRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-black/20 p-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
+    <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-black/20 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+      <div className="min-w-0 flex-1">
         <p className="font-black text-white">{title}</p>
         <p className="mt-1 text-sm text-slate-500">{text}</p>
       </div>
-      <div className="shrink-0">{children}</div>
+      <div className="flex shrink-0 items-center self-start sm:self-center">{children}</div>
     </div>
   );
 }
@@ -167,44 +173,36 @@ export default function AeroRouteSettingsPreview() {
   const [selectedPreset, setSelectedPreset] = useState("Safe");
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
-
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
-              <Sparkles size={14} /> Control center
-            </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">
-              AeroRoute{" "}
-              <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
-                Settings
-              </span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Configure wallet behavior, route safety, Aomi backend settings,
-              notifications, and agent execution preferences.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
+    <AppPageRoot>
+      <AppPageSection>
+        <AppPageHeader className="lg:flex-row lg:items-end lg:justify-between">
+          <PageTitleBlock
+            badge={
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
+                <Sparkles size={14} /> Control center
+              </div>
+            }
+            title={
+              <>
+                AeroRoute{" "}
+                <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
+                  Settings
+                </span>
+              </>
+            }
+            description="Configure wallet behavior, route safety, Aomi backend settings, notifications, and agent execution preferences."
+          />
+          <PageActions>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl"
-            >
-              <Wallet size={17} /> 0x8f...3a29
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
             >
               <Save size={17} /> Save Settings
             </button>
-          </div>
-        </header>
+          </PageActions>
+        </AppPageHeader>
 
-        <div className="grid gap-6 xl:grid-cols-[1fr_390px]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,390px)]">
           <div className="space-y-6">
             <Panel icon={ShieldCheck} eyebrow="Safety" title="Transaction Protection">
               <div className="space-y-4">
@@ -236,7 +234,7 @@ export default function AeroRouteSettingsPreview() {
             </Panel>
 
             <Panel icon={Bot} eyebrow="Agent" title="Route Agent Behavior">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {presets.map((preset) => (
                   <PresetCard
                     key={preset.name}
@@ -323,9 +321,9 @@ export default function AeroRouteSettingsPreview() {
                     className="rounded-2xl border border-white/10 bg-black/20 p-4"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <p className="font-black text-white">{name}</p>
-                        <p className="mt-1 text-xs text-slate-500">{detail}</p>
+                        <p className="mt-1 break-words text-xs text-slate-500">{detail}</p>
                       </div>
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-bold ${status === "Active" ? "bg-emerald-400/10 text-emerald-300" : "bg-orange-400/10 text-orange-300"}`}
@@ -368,7 +366,7 @@ export default function AeroRouteSettingsPreview() {
           </aside>
         </div>
 
-        <div className="mt-6 grid gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5 md:grid-cols-2 xl:grid-cols-4">
           {[
             [Lock, "Non-Custodial", "AeroRoute never stores private keys."],
             [Gauge, "Slippage Guard", "Default protection before execution."],
@@ -388,7 +386,7 @@ export default function AeroRouteSettingsPreview() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </AppPageSection>
+    </AppPageRoot>
   );
 }

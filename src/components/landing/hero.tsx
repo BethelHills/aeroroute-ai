@@ -114,7 +114,7 @@ function HeroDashboard() {
 export function Hero() {
   return (
     <>
-      <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 lg:px-8">
+      <nav className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
         <Logo priority className="h-auto w-64 md:w-80 lg:w-96" href="/" />
         <div className="hidden items-center gap-8 text-sm text-slate-300 lg:flex">
           {navLinks.map((item) => (
@@ -130,7 +130,7 @@ export function Hero() {
         </div>
       </nav>
 
-      <section className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-12 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:pb-20 lg:pt-20">
+      <section className="relative z-10 mx-auto grid max-w-[1400px] items-center gap-12 px-4 sm:px-6 lg:px-8 pb-16 pt-12 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:pb-20 lg:pt-20">
         <Glow className="left-20 top-40 h-80 w-80 bg-emerald-500/25" />
         <Glow className="right-20 top-32 h-96 w-96 bg-orange-500/15" />
         <div>

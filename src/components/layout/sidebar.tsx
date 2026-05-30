@@ -73,7 +73,7 @@ function SidebarPanel({
         )}
       >
         {!collapsed && (
-          <Logo priority href="" className="h-auto w-44 md:w-48" />
+          <Logo priority href="/dashboard" className="h-auto w-36 sm:w-40 lg:w-44" />
         )}
         {showCollapseToggle && (
           <button
@@ -129,7 +129,7 @@ export function Sidebar({
         )}
       >
         <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
-          <Logo priority href="" className="h-auto w-48" />
+          <Logo priority href="/dashboard" className="h-auto w-40 max-w-full" />
           <button
             type="button"
             onClick={onMobileClose}

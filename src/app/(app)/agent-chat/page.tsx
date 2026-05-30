@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  AppPageHeader,
+  AppPageRoot,
+  AppPageSection,
+  PageTitleBlock,
+} from "@/components/layout/page-shell";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -14,7 +20,6 @@ import {
   Sparkles,
   Wallet,
   Zap,
-  Network,
 } from "lucide-react";
 
 const suggestions = [
@@ -79,7 +84,7 @@ function ChatBubble({ message }: { message: ChatMessage }) {
       className={`flex ${isUser ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`max-w-[86%] rounded-[1.6rem] p-5 ${
+        className={`max-w-[min(100%,32rem)] break-words rounded-[1.6rem] p-4 sm:p-5 ${
           isUser
             ? "bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#031014]"
             : "border border-white/10 bg-white/[0.035] text-slate-100 backdrop-blur-xl"
@@ -246,7 +251,7 @@ function ChatPanel() {
   const [input, setInput] = useState("Find best Aerodrome route for swapping 1 ETH to USDC");
 
   return (
-    <div className="flex min-h-[720px] flex-col rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl">
+    <div className="flex min-h-[min(70vh,720px)] max-h-[calc(100svh-12rem)] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5">
       <div className="mb-5 flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-[#031014] shadow-[0_0_35px_rgba(0,245,160,0.25)]">
@@ -264,19 +269,19 @@ function ChatPanel() {
         </button>
       </div>
 
-      <div className="flex-1 space-y-5 overflow-hidden pr-1">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overflow-x-hidden pr-1">
         {messages.map((message, index) => (
           <ChatBubble key={index} message={message} />
         ))}
         <RouteResultCard />
       </div>
 
-      <div className="mt-5 rounded-[1.5rem] border border-white/10 bg-black/25 p-3">
-        <div className="flex items-center gap-3">
+      <div className="mt-4 shrink-0 rounded-[1.5rem] border border-white/10 bg-black/25 p-3 sm:mt-5">
+        <div className="flex items-center gap-2 sm:gap-3">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-white outline-none placeholder:text-slate-600"
+            className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-white outline-none placeholder:text-slate-600 sm:px-3"
             placeholder="Ask AeroRoute AI..."
           />
           <button className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#031014]">
@@ -290,28 +295,30 @@ function ChatPanel() {
 
 export default function AeroRouteAgentChatPreview() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <AppPageRoot>
+      <AppPageSection>
+        <AppPageHeader>
+          <PageTitleBlock
+            badge={
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
+                <Sparkles size={14} /> Aomi-powered assistant
+              </div>
+            }
+            title={
+              <>
+                Agent{" "}
+                <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
+                  Chat
+                </span>
+              </>
+            }
+            description="Ask AeroRoute AI to quote swaps, compare routes, simulate transactions, and prepare Aerodrome actions on Base."
+          />
+        </AppPageHeader>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
-              <Sparkles size={14} /> Aomi-powered assistant
-            </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">Agent <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Chat</span></h1>
-            <p className="mt-4 max-w-2xl text-slate-400">Ask AeroRoute AI to quote swaps, compare routes, simulate transactions, and prepare Aerodrome actions on Base.</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl"><Wallet size={17} /> Connect Wallet</button>
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"><Network size={17} /> Base</button>
-          </div>
-        </header>
-
-        <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,360px)]">
           <ChatPanel />
-          <aside className="space-y-6">
+          <aside className="min-w-0 space-y-6">
             <WalletContext />
             <ExecutionTimeline />
             <QuickActions />
@@ -321,7 +328,7 @@ export default function AeroRouteAgentChatPreview() {
             </div>
           </aside>
         </div>
-      </section>
-    </main>
+      </AppPageSection>
+    </AppPageRoot>
   );
 }

@@ -19,7 +19,7 @@ function FeatureCard({ feature }: { feature: (typeof features)[number] }) {
 
 export function Features() {
   return (
-    <section className="relative z-10 mx-auto grid max-w-7xl gap-5 px-5 py-14 lg:grid-cols-4 lg:px-8">
+    <section className="relative z-10 mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-5 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
       {features.map((feature) => (
         <FeatureCard key={feature.title} feature={feature} />
       ))}

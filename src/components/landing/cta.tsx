@@ -3,7 +3,7 @@ import { Glow } from "./glow";
 
 export function Cta() {
   return (
-    <section className="relative z-10 mx-auto max-w-7xl px-5 py-16 lg:px-8">
+    <section className="relative z-10 mx-auto w-full max-w-[1400px] px-4 py-16 sm:px-6 lg:px-8">
       <div className="relative overflow-hidden rounded-[2rem] border border-orange-400/40 bg-gradient-to-r from-emerald-500/20 via-cyan-500/10 to-orange-500/20 p-8 md:p-12">
         <Glow className="bottom-0 left-0 h-72 w-72 bg-emerald-400/30" />
         <Glow className="right-0 top-0 h-72 w-72 bg-orange-400/25" />

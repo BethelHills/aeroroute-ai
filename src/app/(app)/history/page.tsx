@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import {
+  AppPageHeader,
+  AppPageRoot,
+  AppPageSection,
+  PageTitleBlock,
+} from "@/components/layout/page-shell";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -13,14 +19,12 @@ import {
   Gauge,
   History,
   Info,
-  Network,
   Route,
   Search,
   ShieldAlert,
   ShieldCheck,
   Sparkles,
   Timer,
-  Wallet,
   XCircle,
   Zap,
 } from "lucide-react";
@@ -120,11 +124,11 @@ function statusStyles(status: string) {
   }
 }
 
-function statusIcon(status: string) {
-  if (status === "confirmed") return CheckCircle2;
-  if (status === "failed") return XCircle;
-  if (status === "simulated") return ShieldCheck;
-  return Clock3;
+function HistoryStatusIcon({ status }: { status: string }) {
+  if (status === "confirmed") return <CheckCircle2 size={22} />;
+  if (status === "failed") return <XCircle size={22} />;
+  if (status === "simulated") return <ShieldCheck size={22} />;
+  return <Clock3 size={22} />;
 }
 
 function StatCard({ stat }: { stat: (typeof stats)[number] }) {
@@ -144,13 +148,12 @@ function StatCard({ stat }: { stat: (typeof stats)[number] }) {
 }
 
 function HistoryCard({ item }: { item: (typeof history)[number] }) {
-  const Icon = statusIcon(item.status);
   return (
     <motion.div whileHover={{ y: -3 }} className="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:border-emerald-400/30">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex gap-4">
           <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${statusStyles(item.status)}`}>
-            <Icon size={22} />
+            <HistoryStatusIcon status={item.status} />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -169,7 +172,7 @@ function HistoryCard({ item }: { item: (typeof history)[number] }) {
           </div>
         </div>
 
-        <div className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-6 lg:text-right">
+        <div className="grid w-full grid-cols-2 gap-4 text-sm sm:grid-cols-3 lg:grid-cols-6 lg:text-right">
           <MiniStat label="Amount" value={item.amount} />
           <MiniStat label="Output" value={item.output} />
           <MiniStat label="Impact" value={item.impact} accent />
@@ -180,8 +183,8 @@ function HistoryCard({ item }: { item: (typeof history)[number] }) {
       </div>
 
       <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <span className="font-mono">{item.hash}</span>
+        <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500">
+          <span className="min-w-0 truncate font-mono">{item.hash}</span>
           <button className="rounded-lg border border-white/10 p-1.5 hover:text-white"><Copy size={14} /></button>
         </div>
         <button className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-bold text-slate-300 hover:border-emerald-400/40 hover:text-white">
@@ -291,34 +294,28 @@ export default function AeroRouteHistoryPreview() {
   const filtered = useMemo(() => filter === "all" ? history : history.filter((item) => item.status === filter), [filter]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <AppPageRoot>
+      <AppPageSection>
+        <AppPageHeader>
+          <PageTitleBlock
+            badge={
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
+                <Sparkles size={14} /> Route execution records
+              </div>
+            }
+            title={
+              <>
+                Route{" "}
+                <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
+                  History
+                </span>
+              </>
+            }
+            description="Review simulated, staged, completed, and failed Aerodrome route actions with AI performance insights."
+          />
+        </AppPageHeader>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
-              <Sparkles size={14} /> Route execution records
-            </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">
-              Route <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">History</span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Review simulated, staged, completed, and failed Aerodrome route actions with AI performance insights.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
-              <Wallet size={17} /> 0x8f...3a29
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
-              <Network size={17} /> Base
-            </button>
-          </div>
-        </header>
-
-        <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((stat) => (
             <StatCard key={stat.label} stat={stat} />
           ))}
@@ -326,8 +323,8 @@ export default function AeroRouteHistoryPreview() {
 
         <FilterBar filter={filter} setFilter={setFilter} />
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
-          <div className="space-y-4">
+        <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,360px)]">
+          <div className="min-w-0 space-y-4">
             {filtered.map((item) => (
               <HistoryCard key={item.id} item={item} />
             ))}
@@ -335,7 +332,7 @@ export default function AeroRouteHistoryPreview() {
           <InsightPanel />
         </div>
 
-        <div className="mt-6 grid gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5 md:grid-cols-2 xl:grid-cols-4">
           {[
             [History, "Full Timeline", "Every route action in one place."],
             [Timer, "Execution Timing", "Track speed and confirmation."],
@@ -352,7 +349,7 @@ export default function AeroRouteHistoryPreview() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </AppPageSection>
+    </AppPageRoot>
   );
 }

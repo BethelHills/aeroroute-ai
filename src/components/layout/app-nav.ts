@@ -1,14 +1,9 @@
 import {
-  Bell,
   Bot,
   History,
   LayoutDashboard,
-  LineChart,
-  Link2,
-  PieChart,
   Route,
   Settings,
-  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,11 +18,6 @@ export const APP_NAV_ITEMS: AppNavItem[] = [
   { label: "Route Optimizer", href: "/route-optimizer", icon: Route },
   { label: "Agent Chat", href: "/agent-chat", icon: Bot },
   { label: "History", href: "/history", icon: History },
-  { label: "Portfolio", href: "/portfolio", icon: Wallet },
-  { label: "Protocols", href: "/protocols", icon: Link2 },
-  { label: "Analytics", href: "/analytics", icon: LineChart },
-  { label: "Alerts", href: "/alerts", icon: Bell },
-  { label: "Integrations", href: "/integrations", icon: PieChart },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 

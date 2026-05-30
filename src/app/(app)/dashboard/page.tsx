@@ -1,7 +1,12 @@
 "use client";
 
 import React from "react";
-import { Logo } from "@/components/landing/logo";
+import {
+  AppPageHeader,
+  AppPageRoot,
+  AppPageSection,
+  PageTitleBlock,
+} from "@/components/layout/page-shell";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -16,12 +21,10 @@ import {
   Layers,
   LineChart,
   Lock,
-  Network,
   RefreshCcw,
   Route,
   ShieldCheck,
   Sparkles,
-  Wallet,
   Zap,
 } from "lucide-react";
 
@@ -107,8 +110,8 @@ function MetricCard({ metric }: { metric: (typeof metrics)[number] }) {
 
 function RouteScoreGauge() {
   return (
-    <div className="relative flex h-48 items-center justify-center">
-      <div className="absolute h-44 w-44 rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-3 shadow-[0_0_55px_rgba(0,245,160,0.25)]">
+    <div className="relative mx-auto flex h-36 w-36 items-center justify-center sm:h-44 sm:w-44 md:mx-0 md:h-48 md:w-48">
+      <div className="absolute h-full w-full max-h-40 max-w-40 rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-3 shadow-[0_0_55px_rgba(0,245,160,0.25)] sm:max-h-44 sm:max-w-44">
         <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018]">
           <p className="text-sm text-slate-500">Route Score</p>
           <p className="text-5xl font-black text-emerald-300">98</p>
@@ -135,8 +138,8 @@ function RoutePath({ path }: { path: string[] }) {
 function BestRouteCard() {
   return (
     <div className="rounded-[2rem] border border-emerald-400/25 bg-gradient-to-br from-emerald-400/10 via-white/[0.03] to-cyan-500/10 p-6 shadow-[0_0_50px_rgba(0,245,160,0.12)] backdrop-blur-xl">
-      <div className="flex items-start justify-between gap-6">
-        <div>
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-300">
             <CheckCircle2 size={14} />
             Best Route Found
@@ -146,12 +149,10 @@ function BestRouteCard() {
             AI selected the deepest liquidity path with the lowest price impact and strongest execution score.
           </p>
         </div>
-        <div className="hidden md:block">
-          <RouteScoreGauge />
-        </div>
+        <RouteScoreGauge />
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-4">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           ["Expected Output", "3,176.82 USDC", "+0.92% vs avg"],
           ["Price Impact", "0.18%", "Very Low"],
@@ -236,29 +237,31 @@ function RouteComparison() {
       <div className="space-y-4">
         {routeOptions.map((route) => (
           <motion.div key={route.id} whileHover={{ y: -2 }} className="rounded-2xl border border-white/10 bg-black/20 p-4 transition hover:border-emerald-400/30">
-            <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr_0.65fr_0.65fr_0.5fr] lg:items-center">
-              <div>
-                <div className="flex items-center gap-2">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-black text-white">{route.name}</h3>
                   <span className={`rounded-full px-2 py-1 text-[10px] font-bold ${route.status === "Best" ? "bg-emerald-400/10 text-emerald-300" : "bg-white/10 text-slate-300"}`}>{route.status}</span>
                 </div>
                 <div className="mt-3"><RoutePath path={route.path} /></div>
               </div>
-              <div>
-                <p className="text-xs text-slate-500">Output</p>
-                <p className="mt-1 font-black text-white">{route.output}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Gas</p>
-                <p className="mt-1 font-bold text-slate-200">{route.gas}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Impact</p>
-                <p className="mt-1 font-bold text-emerald-300">{route.impact}</p>
-              </div>
-              <div>
-                <p className="text-xs text-slate-500">Score</p>
-                <p className="mt-1 text-xl font-black text-white">{route.score}</p>
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div>
+                  <p className="text-xs text-slate-500">Output</p>
+                  <p className="mt-1 font-black text-white">{route.output}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Gas</p>
+                  <p className="mt-1 font-bold text-slate-200">{route.gas}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Impact</p>
+                  <p className="mt-1 font-bold text-emerald-300">{route.impact}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Score</p>
+                  <p className="mt-1 text-xl font-black text-white">{route.score}</p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -341,55 +344,44 @@ function AiRecommendation() {
 
 export default function AeroRouteDashboardPreview() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.16),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <AppPageRoot>
+      <AppPageSection>
+        <AppPageHeader>
+          <PageTitleBlock
+            badge={
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
+                <Sparkles size={14} />
+                Aerodrome Route Engine
+              </div>
+            }
+            title={
+              <>
+                Route Optimizer{" "}
+                <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
+                  Dashboard
+                </span>
+              </>
+            }
+            description="Compare routes, estimate output, detect slippage, and prepare smarter Aerodrome swaps on Base with AI assistance."
+          />
+        </AppPageHeader>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Logo priority href="" className="h-auto w-64 md:w-80 lg:w-96" />
-            <div className="flex flex-wrap gap-3">
-              <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
-                <Wallet size={17} />
-                0x8f...3a29
-              </button>
-              <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
-                Base Online
-                <Network size={17} />
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
-              <Sparkles size={14} />
-              Aerodrome Route Engine
-            </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">
-              Route Optimizer <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Dashboard</span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Compare routes, estimate output, detect slippage, and prepare smarter Aerodrome swaps on Base with AI assistance.
-            </p>
-          </div>
-        </header>
-
-        <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((metric) => <MetricCard key={metric.label} metric={metric} />)}
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[390px_1fr]">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,390px)_1fr]">
+          <div className="min-w-0 space-y-6">
             <SwapPanel />
             <AiRecommendation />
           </div>
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <BestRouteCard />
             <RouteComparison />
           </div>
         </div>
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_420px]">
+        <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,420px)]">
           <AnalyticsPanel />
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
             <div className="mb-6 flex items-center justify-between">
@@ -425,7 +417,7 @@ export default function AeroRouteDashboardPreview() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:grid-cols-2 xl:grid-cols-4">
           {[
             [ShieldCheck, "Non-Custodial", "You approve every transaction."],
             [Lock, "Simulation First", "Review before signing."],
@@ -442,7 +434,7 @@ export default function AeroRouteDashboardPreview() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </AppPageSection>
+    </AppPageRoot>
   );
 }

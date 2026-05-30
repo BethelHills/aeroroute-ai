@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  AppPageHeader,
+  AppPageRoot,
+  AppPageSection,
+  PageTitleBlock,
+} from "@/components/layout/page-shell";
 import { motion } from "framer-motion";
 import {
   ArrowDown,
@@ -12,12 +18,10 @@ import {
   Flame,
   Gauge,
   Lock,
-  Network,
   RefreshCcw,
   Route,
   ShieldCheck,
   Sparkles,
-  Wallet,
   Zap,
 } from "lucide-react";
 
@@ -177,10 +181,10 @@ function BestRoute() {
           <div className="mt-5"><RoutePath path={best.path} /></div>
         </div>
 
-        <div className="flex h-40 w-40 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-3 shadow-[0_0_60px_rgba(0,245,160,0.25)]">
+        <div className="mx-auto flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-2 shadow-[0_0_60px_rgba(0,245,160,0.25)] sm:mx-0 sm:h-40 sm:w-40 sm:p-3">
           <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018]">
             <p className="text-xs text-slate-500">Score</p>
-            <p className="text-5xl font-black text-emerald-300">98</p>
+            <p className="text-4xl font-black text-emerald-300 sm:text-5xl">98</p>
             <p className="text-xs text-emerald-300">Excellent</p>
           </div>
         </div>
@@ -323,47 +327,47 @@ function MiniChart() {
 
 export default function AeroRouteOptimizerPreview() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <AppPageRoot>
+      <AppPageSection>
+        <AppPageHeader>
+          <PageTitleBlock
+            badge={
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
+                <Sparkles size={14} /> Aerodrome on Base
+              </div>
+            }
+            title={
+              <>
+                Route{" "}
+                <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">
+                  Optimizer
+                </span>
+              </>
+            }
+            description="Enter your swap intent and let AeroRoute AI compare liquidity, slippage, gas, and execution risk before you trade."
+          />
+        </AppPageHeader>
 
-      <section className="relative z-10 w-full max-w-7xl overflow-hidden px-5 py-8 lg:px-8">
-        <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
-              <Sparkles size={14} /> Aerodrome on Base
-            </div>
-            <h1 className="text-4xl font-black tracking-[-0.05em] md:text-6xl">
-              Route <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Optimizer</span>
-            </h1>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Enter your swap intent and let AeroRoute AI compare liquidity, slippage, gas, and execution risk before you trade.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl">
-              <Wallet size={17} /> Connect Wallet
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]">
-              <Network size={17} /> Base
-            </button>
-          </div>
-        </header>
-
-        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-[minmax(0,420px)_1fr]">
-          <div className="space-y-6 min-w-0">
+        <div className="grid w-full grid-cols-1 gap-6 xl:grid-cols-[minmax(0,420px)_1fr]">
+          <div className="min-w-0 space-y-6">
             <SwapForm />
-            <AiSummary />
-            <TransactionPreview />
+            <div className="hidden space-y-6 xl:block">
+              <AiSummary />
+              <TransactionPreview />
+            </div>
           </div>
-          <div className="space-y-6 min-w-0">
+          <div className="min-w-0 space-y-6">
             <BestRoute />
             <RouteComparison />
+            <div className="space-y-6 xl:hidden">
+              <AiSummary />
+              <TransactionPreview />
+            </div>
             <MiniChart />
           </div>
         </div>
 
-        <div className="mt-6 grid w-full grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid w-full grid-cols-1 gap-4 rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5 md:grid-cols-2 xl:grid-cols-4">
           {[
             [ShieldCheck, "Protected", "Simulation-first route planning."],
             [Clock3, "Fast", "Route analysis in seconds."],
@@ -380,7 +384,7 @@ export default function AeroRouteOptimizerPreview() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </AppPageSection>
+    </AppPageRoot>
   );
 }
