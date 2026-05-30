@@ -76,7 +76,11 @@ function SidebarPanel({
           )}
         >
           {!collapsed && showLogo && (
-            <Logo priority href="/dashboard" className="h-auto w-36 sm:w-40 lg:w-44" />
+            <Logo
+              priority
+              href="/dashboard"
+              className="h-auto w-[170px] lg:w-[220px]"
+            />
           )}
           {showCollapseToggle && (
             <button

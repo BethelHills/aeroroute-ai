@@ -36,10 +36,11 @@ export function Header({ onMenuClick }: HeaderProps) {
           <Logo
             priority
             href="/dashboard"
-            width={140}
-            height={32}
-            linkClassName="min-w-0 flex-1"
-            className="h-8 w-auto"
+            alt="AeroRoute AI"
+            width={220}
+            height={52}
+            linkClassName="min-w-0 shrink-0"
+            className="h-auto w-[130px]"
           />
         ) : (
           <p className="min-w-0 truncate text-sm font-black text-white md:text-base">
