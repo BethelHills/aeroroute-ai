@@ -134,7 +134,7 @@ const ThreadWelcome: FC = () => {
             exit={{ opacity: 0, y: 10 }}
             className="aui-thread-welcome-message-motion-1 text-2xl font-medium antialiased [color:var(--aomi-welcome-title,oklch(0.42_0.006_285.823))]"
           >
-            Hello there!
+            AeroRoute AI
           </m.div>
           <m.div
             initial={{ opacity: 0, y: 10 }}
@@ -143,7 +143,7 @@ const ThreadWelcome: FC = () => {
             transition={{ delay: 0.1 }}
             className="aui-thread-welcome-message-motion-2 text-2xl antialiased [color:var(--aomi-welcome-subtitle,oklch(0.68_0.012_286))]"
           >
-            How can I help you today?
+            Ask for Aerodrome routes on Base
           </m.div>
         </div>
       </div>
@@ -157,16 +157,16 @@ const ThreadSuggestions: FC = () => {
     <div className="aui-thread-welcome-suggestions @md:grid-cols-2 grid w-full gap-2 px-1 pb-4">
       {[
         {
+          title: "Find best Aerodrome route",
+          label: "swap 1 ETH to USDC",
+          action: "Find best Aerodrome route for swapping 1 ETH to USDC",
+          icon: ArrowLeftRightIcon,
+        },
+        {
           title: "Show my wallet balances",
           label: "and positions",
           action: "Show my wallet balances and positions",
           icon: WalletIcon,
-        },
-        {
-          title: "Swap 1 ETH to USDC",
-          label: "with the best price",
-          action: "Swap 1 ETH to USDC with the best price",
-          icon: ArrowLeftRightIcon,
         },
         {
           title: "Stake half of my ETH",
