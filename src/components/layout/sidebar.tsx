@@ -79,7 +79,7 @@ function SidebarPanel({
             <Logo
               priority
               href="/dashboard"
-              className="h-auto w-[170px] lg:w-[220px]"
+              className="h-auto w-[130px] md:w-[170px] lg:w-[220px]"
             />
           )}
           {showCollapseToggle && (

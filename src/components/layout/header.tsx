@@ -37,9 +37,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             priority
             href="/dashboard"
             alt="AeroRoute AI"
-            width={220}
-            height={52}
-            linkClassName="min-w-0 shrink-0"
+            linkClassName="shrink-0"
             className="h-auto w-[130px]"
           />
         ) : (

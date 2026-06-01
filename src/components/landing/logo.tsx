@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export const LOGO_SRC = "/assets/image/AeroRoute-AI-logo.png";
+/** Canonical path — must match filename in public/ (case-sensitive on Linux). */
+export const LOGO_SRC = "/AeroRoute-AI-logo.png";
 
 type LogoProps = {
   className?: string;
@@ -22,8 +23,8 @@ export function Logo({
   href = "/",
   src = LOGO_SRC,
   alt = "AeroRoute AI",
-  width = 220,
-  height = 52,
+  width = 1536,
+  height = 1024,
 }: LogoProps) {
   const image = (
     <Image
@@ -31,7 +32,8 @@ export function Logo({
       alt={alt}
       width={width}
       height={height}
-      className={cn("block h-auto max-w-full object-contain object-left", className)}
+      sizes="(max-width: 768px) 130px, (max-width: 1024px) 170px, 220px"
+      className={cn("block h-auto w-auto max-w-full object-contain object-left", className)}
       priority={priority}
     />
   );
@@ -43,7 +45,7 @@ export function Logo({
   return (
     <Link
       href={href}
-      className={cn("inline-block min-w-0 max-w-full shrink", linkClassName)}
+      className={cn("inline-flex shrink-0 items-center", linkClassName)}
     >
       {image}
     </Link>
