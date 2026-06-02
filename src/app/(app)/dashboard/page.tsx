@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import {
   AppPageHeader,
@@ -18,10 +18,12 @@ import {
   Cpu,
   Flame,
   Gauge,
+  ChevronDown,
   History,
   Info,
   Layers,
   LineChart,
+  Loader2,
   Lock,
   RefreshCcw,
   Route,
@@ -30,13 +32,31 @@ import {
   Zap,
 } from "lucide-react";
 
-const PREPARE_SWAP_PROMPT =
-  "Prepare a wallet-safe swap plan for swapping 1 ETH to USDC on Base using the best available route. Include Aerodrome if available.";
-
-const AGENT_CHAT_PREPARE_HREF = `/agent-chat?prompt=${encodeURIComponent(PREPARE_SWAP_PROMPT)}`;
+const tokens = [
+  { symbol: "ETH", name: "Ethereum", balance: "4.2800", balanceNum: 4.28, color: "bg-gradient-to-br from-blue-500 to-violet-500" },
+  { symbol: "USDC", name: "USD Coin", balance: "1,240.00", balanceNum: 1240, color: "bg-gradient-to-br from-cyan-500 to-blue-500" },
+  { symbol: "AERO", name: "Aerodrome", balance: "2,918.44", balanceNum: 2918.44, color: "bg-gradient-to-br from-red-500 to-blue-500" },
+  { symbol: "DAI", name: "Dai Stablecoin", balance: "845.30", balanceNum: 845.3, color: "bg-gradient-to-br from-yellow-400 to-orange-500" },
+];
 
 const ctaLinkClass =
   "inline-flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl px-6 py-4 font-black transition hover:scale-[1.01] hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50";
+
+const ctaButtonClass =
+  "inline-flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl px-6 py-4 font-black transition hover:scale-[1.01] hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100";
+
+function buildPrepareSwapHref(from: string, to: string, amount: string) {
+  const prompt = `Prepare a wallet-safe swap plan for swapping ${amount} ${from} to ${to} on Base using the best available route. Include Aerodrome if available.`;
+  return `/agent-chat?prompt=${encodeURIComponent(prompt)}`;
+}
+
+function nextTokenIndex(current: number, otherIndex: number) {
+  for (let i = 0; i < tokens.length; i++) {
+    const next = (current + 1 + i) % tokens.length;
+    if (next !== otherIndex) return next;
+  }
+  return current;
+}
 
 const routeOptions = [
   {
@@ -88,23 +108,39 @@ const metrics = [
 const cardClass =
   "w-full min-w-0 rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-6";
 
-function TokenButton({ symbol, name, color }: { symbol: string; name: string; color: string }) {
+function TokenButton({
+  token,
+  label,
+  onSelect,
+}: {
+  token: (typeof tokens)[number];
+  label: string;
+  onSelect: () => void;
+}) {
   return (
-    <button
-      type="button"
-      className="flex w-full min-w-0 cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-left transition hover:border-emerald-400/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
-    >
-      <div className="flex min-w-0 items-center gap-3">
-        <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${color} text-sm font-black text-white shadow-[0_0_25px_rgba(0,245,160,0.18)]`}>
-          {symbol.slice(0, 1)}
-        </span>
-        <div className="min-w-0">
-          <p className="font-black text-white">{symbol}</p>
-          <p className="text-xs text-slate-500">{name}</p>
-        </div>
+    <div className="w-full min-w-0">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+        <span>{label}</span>
+        <span>Balance: {token.balance}</span>
       </div>
-      <span className="shrink-0 text-slate-500">⌄</span>
-    </button>
+      <button
+        type="button"
+        onClick={onSelect}
+        className="flex w-full min-w-0 cursor-pointer items-center justify-between rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-left transition hover:border-emerald-400/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
+        aria-label={`Change ${label} token, currently ${token.symbol}`}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${token.color} text-sm font-black text-white shadow-[0_0_25px_rgba(0,245,160,0.18)]`}>
+            {token.symbol.slice(0, 1)}
+          </span>
+          <div className="min-w-0">
+            <p className="font-black text-white">{token.symbol}</p>
+            <p className="text-xs text-slate-500">{token.name}</p>
+          </div>
+        </div>
+        <ChevronDown size={18} className="shrink-0 text-slate-500" />
+      </button>
+    </div>
   );
 }
 
@@ -124,13 +160,13 @@ function MetricCard({ metric }: { metric: (typeof metrics)[number] }) {
   );
 }
 
-function RouteScoreGauge() {
+function RouteScoreGauge({ score }: { score: number }) {
   return (
     <div className="relative mx-auto flex h-28 w-28 shrink-0 items-center justify-center md:mx-0 md:h-36 md:w-36 lg:h-44 lg:w-44">
       <div className="flex h-full w-full items-center justify-center rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-2 shadow-[0_0_55px_rgba(0,245,160,0.25)] md:p-3">
         <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018]">
           <p className="text-xs text-slate-500 md:text-sm">Route Score</p>
-          <p className="text-3xl font-black text-emerald-300 md:text-4xl lg:text-5xl">98</p>
+          <p className="text-3xl font-black text-emerald-300 md:text-4xl lg:text-5xl">{score}</p>
           <p className="text-xs text-emerald-300 md:text-sm">Excellent</p>
         </div>
       </div>
@@ -151,7 +187,15 @@ function RoutePath({ path }: { path: string[] }) {
   );
 }
 
-function BestRouteCard() {
+function BestRouteCard({
+  fromSymbol,
+  toSymbol,
+  score,
+}: {
+  fromSymbol: string;
+  toSymbol: string;
+  score: number;
+}) {
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-[2rem] border border-emerald-400/25 bg-gradient-to-br from-emerald-400/10 via-white/[0.03] to-cyan-500/10 p-4 shadow-[0_0_50px_rgba(0,245,160,0.12)] backdrop-blur-xl sm:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -162,10 +206,13 @@ function BestRouteCard() {
           </div>
           <h2 className="text-2xl font-black text-white">Aerodrome V2 Direct</h2>
           <p className="mt-2 max-w-lg break-words text-sm leading-6 text-slate-400">
-            AI selected the deepest liquidity path with the lowest price impact and strongest execution score.
+            Best path for {fromSymbol} → {toSymbol}: deepest liquidity, lowest price impact, and strongest execution score on Base.
           </p>
+          <div className="mt-4">
+            <RoutePath path={[fromSymbol, toSymbol]} />
+          </div>
         </div>
-        <RouteScoreGauge />
+        <RouteScoreGauge score={score} />
       </div>
 
       <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -186,7 +233,36 @@ function BestRouteCard() {
   );
 }
 
-function SwapPanel() {
+type SwapPanelProps = {
+  fromIndex: number;
+  toIndex: number;
+  amount: string;
+  isAnalyzing: boolean;
+  onAmountChange: (value: string) => void;
+  onSwapDirection: () => void;
+  onFromCycle: () => void;
+  onToCycle: () => void;
+  onReset: () => void;
+  onAnalyze: () => void;
+  onPreset: (preset: "25%" | "50%" | "MAX") => void;
+};
+
+function SwapPanel({
+  fromIndex,
+  toIndex,
+  amount,
+  isAnalyzing,
+  onAmountChange,
+  onSwapDirection,
+  onFromCycle,
+  onToCycle,
+  onReset,
+  onAnalyze,
+  onPreset,
+}: SwapPanelProps) {
+  const from = tokens[fromIndex];
+  const to = tokens[toIndex];
+
   return (
     <div className={cardClass}>
       <div className="mb-6 flex items-center justify-between gap-3">
@@ -196,65 +272,113 @@ function SwapPanel() {
         </div>
         <button
           type="button"
+          onClick={onReset}
           className="shrink-0 cursor-pointer rounded-xl border border-white/10 bg-black/20 p-3 text-slate-400 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
-          aria-label="Refresh swap intent"
+          aria-label="Reset swap intent"
         >
           <RefreshCcw size={18} />
         </button>
       </div>
 
       <div className="space-y-4">
-        <div className="w-full min-w-0">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
-            <span>From</span>
-            <span>Balance: 4.28 ETH</span>
-          </div>
-          <TokenButton symbol="ETH" name="Ethereum" color="bg-gradient-to-br from-blue-500 to-violet-500" />
-        </div>
+        <TokenButton token={from} label="From" onSelect={onFromCycle} />
 
         <div className="flex justify-center">
           <button
             type="button"
-            className="cursor-pointer rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-3 text-emerald-300 transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
-            aria-label="Swap direction"
+            onClick={onSwapDirection}
+            className="cursor-pointer rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-3 text-emerald-300 transition hover:scale-105 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
+            aria-label={`Swap direction: switch from ${from.symbol} to ${to.symbol}`}
           >
             <ArrowDown size={20} />
           </button>
         </div>
 
-        <div className="w-full min-w-0">
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
-            <span>To</span>
-            <span>Balance: 1,240.00 USDC</span>
-          </div>
-          <TokenButton symbol="USDC" name="USD Coin" color="bg-gradient-to-br from-cyan-500 to-blue-500" />
-        </div>
+        <TokenButton token={to} label="To" onSelect={onToCycle} />
 
         <div className="w-full min-w-0">
-          <label className="mb-2 block text-sm text-slate-500">Amount</label>
+          <label htmlFor="dashboard-swap-amount" className="mb-2 block text-sm text-slate-500">
+            Amount
+          </label>
           <div className="w-full rounded-2xl border border-white/10 bg-black/25 p-4">
             <input
-              value="1.0000"
-              readOnly
+              id="dashboard-swap-amount"
+              value={amount}
+              onChange={(e) => onAmountChange(e.target.value)}
               className="w-full min-w-0 bg-transparent text-2xl font-black text-white outline-none sm:text-3xl"
             />
-            <p className="mt-1 text-sm text-slate-500">≈ $3,182.45</p>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+              <span>≈ $3,182.45</span>
+              <div className="flex flex-wrap gap-2">
+                {(["25%", "50%", "MAX"] as const).map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => onPreset(item)}
+                    className="cursor-pointer rounded-full border border-white/10 px-3 py-1 text-xs transition hover:border-emerald-400/40 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={onAnalyze}
+          disabled={isAnalyzing || fromIndex === toIndex}
+          className={`${ctaButtonClass} group mt-2 bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014] shadow-[0_0_35px_rgba(0,245,160,0.25)]`}
+        >
+          {isAnalyzing ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Analyzing routes…
+            </>
+          ) : (
+            <>
+              Analyze Best Route
+              <Zap size={18} className="transition group-hover:rotate-12" />
+            </>
+          )}
+        </button>
 
         <Link
           href="/route-optimizer"
-          className={`${ctaLinkClass} group mt-4 bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014] shadow-[0_0_35px_rgba(0,245,160,0.25)]`}
+          className={`${ctaLinkClass} border border-white/10 bg-white/[0.04] text-sm text-emerald-200 hover:bg-white/[0.06]`}
         >
-          Analyze Best Route
-          <Zap size={18} className="transition group-hover:rotate-12" />
+          Open full Route Optimizer
+          <ArrowRight size={16} />
         </Link>
       </div>
     </div>
   );
 }
 
-function RouteComparison() {
+function DashboardAnalysisPlaceholder({ onAnalyze }: { onAnalyze: () => void }) {
+  return (
+    <div className={`${cardClass} flex flex-col items-center justify-center py-10 text-center`}>
+      <Route className="mb-4 text-emerald-300" size={36} />
+      <h2 className="text-lg font-black text-white">Analyze to see routes</h2>
+      <p className="mt-2 max-w-sm break-words text-sm text-slate-400">
+        Configure your swap intent, then run analysis to compare Aerodrome paths here on the dashboard.
+      </p>
+      <button
+        type="button"
+        onClick={onAnalyze}
+        className={`${ctaButtonClass} mt-5 max-w-xs bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014]`}
+      >
+        Analyze Best Route
+        <Zap size={16} />
+      </button>
+    </div>
+  );
+}
+
+function RouteComparison({ visible }: { visible: boolean }) {
+  if (!visible) return null;
+
   return (
     <div className={`${cardClass} overflow-hidden`}>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -344,7 +468,15 @@ function AnalyticsPanel() {
   );
 }
 
-function AiRecommendation() {
+function AiRecommendation({
+  agentHref,
+  visible,
+}: {
+  agentHref: string;
+  visible: boolean;
+}) {
+  if (!visible) return null;
+
   return (
     <div className="order-3 w-full min-w-0 overflow-hidden rounded-[2rem] border border-orange-400/25 bg-gradient-to-br from-orange-400/10 via-white/[0.03] to-emerald-400/10 p-4 backdrop-blur-xl sm:p-6 xl:order-none">
       <div className="flex items-center gap-3">
@@ -372,7 +504,7 @@ function AiRecommendation() {
         ))}
       </div>
       <Link
-        href={AGENT_CHAT_PREPARE_HREF}
+        href={agentHref}
         className={`${ctaLinkClass} mt-6 bg-gradient-to-r from-orange-400 to-amber-300 text-[#130900]`}
       >
         Prepare Swap Transaction
@@ -420,6 +552,68 @@ function RecentRoutesPanel() {
 }
 
 export default function AeroRouteDashboardPreview() {
+  const [fromIndex, setFromIndex] = useState(0);
+  const [toIndex, setToIndex] = useState(1);
+  const [amount, setAmount] = useState("1.0000");
+  const [hasAnalyzed, setHasAnalyzed] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const from = tokens[fromIndex];
+  const to = tokens[toIndex];
+  const agentHref = buildPrepareSwapHref(from.symbol, to.symbol, amount);
+  const bestScore = routeOptions[0].score;
+
+  const handleSwapDirection = useCallback(() => {
+    setFromIndex(toIndex);
+    setToIndex(fromIndex);
+    setHasAnalyzed(false);
+  }, [fromIndex, toIndex]);
+
+  const handleFromCycle = useCallback(() => {
+    setFromIndex((i) => nextTokenIndex(i, toIndex));
+    setHasAnalyzed(false);
+  }, [toIndex]);
+
+  const handleToCycle = useCallback(() => {
+    setToIndex((i) => nextTokenIndex(i, fromIndex));
+    setHasAnalyzed(false);
+  }, [fromIndex]);
+
+  const handleReset = useCallback(() => {
+    setFromIndex(0);
+    setToIndex(1);
+    setAmount("1.0000");
+    setHasAnalyzed(false);
+    setIsAnalyzing(false);
+  }, []);
+
+  const handlePreset = useCallback(
+    (preset: "25%" | "50%" | "MAX") => {
+      const bal = tokens[fromIndex].balanceNum;
+      const factor = preset === "25%" ? 0.25 : preset === "50%" ? 0.5 : 1;
+      const value = bal * factor;
+      setAmount(value >= 1 ? value.toFixed(4) : value.toFixed(6));
+      setHasAnalyzed(false);
+    },
+    [fromIndex],
+  );
+
+  const handleAnalyze = useCallback(() => {
+    if (fromIndex === toIndex || isAnalyzing) return;
+
+    setIsAnalyzing(true);
+    setHasAnalyzed(false);
+
+    window.setTimeout(() => {
+      setIsAnalyzing(false);
+      setHasAnalyzed(true);
+      requestAnimationFrame(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }, 700);
+  }, [fromIndex, toIndex, isAnalyzing]);
+
   return (
     <AppPageRoot>
       <AppPageSection className="max-w-[1500px]">
@@ -452,14 +646,43 @@ export default function AeroRouteDashboardPreview() {
 
         <div className="grid w-full min-w-0 grid-cols-1 gap-6 overflow-x-hidden xl:grid-cols-[390px_1fr]">
           <div className="order-1 min-w-0 xl:order-none xl:col-start-1 xl:row-start-1">
-            <SwapPanel />
+            <SwapPanel
+              fromIndex={fromIndex}
+              toIndex={toIndex}
+              amount={amount}
+              isAnalyzing={isAnalyzing}
+              onAmountChange={(value) => {
+                setAmount(value);
+                setHasAnalyzed(false);
+              }}
+              onSwapDirection={handleSwapDirection}
+              onFromCycle={handleFromCycle}
+              onToCycle={handleToCycle}
+              onReset={handleReset}
+              onAnalyze={handleAnalyze}
+              onPreset={handlePreset}
+            />
           </div>
-          <div className="order-2 min-w-0 xl:order-none xl:col-start-2 xl:row-start-1">
-            <BestRouteCard />
+
+          <div
+            ref={resultsRef}
+            className="order-2 min-w-0 scroll-mt-24 xl:order-none xl:col-start-2 xl:row-start-1"
+          >
+            {hasAnalyzed ? (
+              <BestRouteCard
+                fromSymbol={from.symbol}
+                toSymbol={to.symbol}
+                score={bestScore}
+              />
+            ) : (
+              <DashboardAnalysisPlaceholder onAnalyze={handleAnalyze} />
+            )}
           </div>
-          <AiRecommendation />
+
+          <AiRecommendation agentHref={agentHref} visible={hasAnalyzed} />
+
           <div className="order-4 min-w-0 xl:order-none xl:col-start-2 xl:row-start-2">
-            <RouteComparison />
+            <RouteComparison visible={hasAnalyzed} />
           </div>
         </div>
 
