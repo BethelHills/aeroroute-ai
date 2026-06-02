@@ -6,3 +6,4 @@ export { getVendorIcon } from "./vendor-map";
 export { getChainIcon } from "./chain-map";
 export { getAppIcon } from "./app-map";
 export { renderIcon } from "./render-icon";
+export { SwapTokenIcon, getSwapTokenIconUrl } from "./swap-token-icon";

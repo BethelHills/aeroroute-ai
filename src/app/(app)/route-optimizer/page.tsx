@@ -27,6 +27,7 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
+import { SwapTokenIcon } from "@/components/icons/swap-token-icon";
 import {
   nextSwapTokenIndex,
   SWAP_TOKENS,
@@ -108,9 +109,7 @@ function TokenSelect({ label, token, onSelect }: TokenSelectProps) {
         aria-label={`Change ${label} token, currently ${token.symbol}`}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${token.color} text-sm font-black text-white shadow-[0_0_24px_rgba(0,245,160,0.18)]`}>
-            {token.symbol.slice(0, 1)}
-          </span>
+          <SwapTokenIcon token={token} size="md" />
           <div className="min-w-0">
             <p className="text-lg font-black text-white">{token.symbol}</p>
             <p className="text-xs text-slate-500">{token.name}</p>
