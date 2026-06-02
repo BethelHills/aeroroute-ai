@@ -1,148 +1,88 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { EIP6963ProviderDetail } from "mipd";
+import { useEffect, useState } from "react";
+import { getConnectors } from "@wagmi/core";
 import { useConfig } from "wagmi";
-import { getEip6963Store } from "@/lib/wallet/eip6963-store";
+import type { Connector } from "wagmi";
 
-export type WalletOption =
-  | {
-      kind: "connector";
-      id: string;
-      name: string;
-      icon?: string;
-      connectorUid: string;
-    }
-  | {
-      kind: "eip6963";
-      id: string;
-      name: string;
-      icon?: string;
-      detail: EIP6963ProviderDetail;
-    }
-  | {
-      kind: "named";
-      id: string;
-      name: string;
-      target: NamedWalletTarget;
-    };
-
-export type NamedWalletTarget =
-  | "metaMask"
-  | "coinbaseWallet"
-  | "rabby"
-  | "braveWallet"
-  | "rainbow"
-  | "okxWallet"
-  | "trustWallet"
-  | "phantom";
-
-/** Always listed so users can pick a wallet even before EIP-6963 announces. */
-const FALLBACK_WALLETS: ReadonlyArray<{
+export type WalletOption = {
+  connectorUid: string;
   id: string;
   name: string;
-  target: NamedWalletTarget;
-}> = [
-  { id: "fallback-metaMask", name: "MetaMask", target: "metaMask" },
-  {
-    id: "fallback-coinbaseWallet",
-    name: "Coinbase Wallet",
-    target: "coinbaseWallet",
-  },
-  { id: "fallback-rabby", name: "Rabby", target: "rabby" },
-  { id: "fallback-braveWallet", name: "Brave Wallet", target: "braveWallet" },
-  { id: "fallback-rainbow", name: "Rainbow", target: "rainbow" },
-  { id: "fallback-okxWallet", name: "OKX Wallet", target: "okxWallet" },
-  { id: "fallback-trustWallet", name: "Trust Wallet", target: "trustWallet" },
-  { id: "fallback-phantom", name: "Phantom", target: "phantom" },
-];
+  icon?: string;
+  available: boolean;
+};
 
-function normalizeName(name: string): string {
-  return name.trim().toLowerCase();
+function connectorIcon(connector: Connector): string | undefined {
+  return typeof connector.icon === "string" ? connector.icon : undefined;
 }
 
-function formatConnectorLabel(id: string, name: string): string {
-  if (id === "injected") return "";
-  if (normalizeName(name) === "injected") return "";
-  return name;
-}
-
-function dedupeOptions(options: WalletOption[]): WalletOption[] {
-  const seen = new Set<string>();
-  return options.filter((option) => {
-    const key = normalizeName(option.name);
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
+async function isConnectorAvailable(connector: Connector): Promise<boolean> {
+  if (connector.type === "walletConnect") {
     return true;
-  });
+  }
+
+  if (typeof connector.getProvider !== "function") {
+    return false;
+  }
+
+  try {
+    const provider = await connector.getProvider();
+    return Boolean(provider);
+  } catch {
+    return false;
+  }
+}
+
+function logConnectors(connectors: readonly Connector[]) {
+  console.log(
+    "[wallet] getConnectors()",
+    connectors.map((connector) => ({
+      id: connector.id,
+      name: connector.name,
+      type: connector.type,
+      uid: connector.uid,
+    })),
+  );
 }
 
 export function useWalletOptions(refreshToken = 0): WalletOption[] {
-  const { connectors } = useConfig();
-  const [eip6963Providers, setEip6963Providers] = useState<
-    EIP6963ProviderDetail[]
-  >([]);
+  const config = useConfig();
+  const [options, setOptions] = useState<WalletOption[]>([]);
 
   useEffect(() => {
-    const store = getEip6963Store();
-    if (!store) return;
+    let cancelled = false;
 
-    store.reset();
-    setEip6963Providers([...store.getProviders()]);
+    async function loadOptions() {
+      const connectors = getConnectors(config);
+      logConnectors(connectors);
 
-    return store.subscribe((providers) => {
-      setEip6963Providers([...providers]);
-    });
-  }, [refreshToken]);
+      const probed = await Promise.all(
+        connectors.map(async (connector) => ({
+          connectorUid: connector.uid,
+          id: connector.id,
+          name: connector.name,
+          icon: connectorIcon(connector),
+          available: await isConnectorAvailable(connector),
+        })),
+      );
 
-  return useMemo(() => {
-    const connectorOptions: Extract<WalletOption, { kind: "connector" }>[] = [];
-    for (const connector of connectors) {
-      const label = formatConnectorLabel(connector.id, connector.name);
-      if (!label) continue;
-      connectorOptions.push({
-        kind: "connector",
-        id: connector.id,
-        name: label,
-        icon: typeof connector.icon === "string" ? connector.icon : undefined,
-        connectorUid: connector.uid,
+      if (cancelled) return;
+
+      probed.sort((a, b) => {
+        if (a.available === b.available) return a.name.localeCompare(b.name);
+        return a.available ? -1 : 1;
       });
+
+      setOptions(probed);
     }
 
-    const eip6963Options: WalletOption[] = eip6963Providers.map((detail) => ({
-      kind: "eip6963" as const,
-      id: detail.info.uuid,
-      name: detail.info.name,
-      icon: detail.info.icon,
-      detail,
-    }));
+    void loadOptions();
 
-    const existingNames = new Set(
-      [...connectorOptions, ...eip6963Options].map((o) => normalizeName(o.name)),
-    );
+    return () => {
+      cancelled = true;
+    };
+  }, [config, refreshToken]);
 
-    const fallbackOptions: WalletOption[] = FALLBACK_WALLETS.filter(
-      (wallet) => !existingNames.has(normalizeName(wallet.name)),
-    ).map((wallet) => ({
-      kind: "named" as const,
-      id: wallet.id,
-      name: wallet.name,
-      target: wallet.target,
-    }));
-
-    const merged = dedupeOptions([
-      ...eip6963Options,
-      ...connectorOptions,
-      ...fallbackOptions,
-    ]);
-
-    return merged.length > 0
-      ? merged
-      : FALLBACK_WALLETS.map((wallet) => ({
-          kind: "named" as const,
-          id: wallet.id,
-          name: wallet.name,
-          target: wallet.target,
-        }));
-  }, [connectors, eip6963Providers]);
+  return options;
 }

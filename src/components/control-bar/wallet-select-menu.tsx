@@ -23,16 +23,11 @@ type WalletSelectMenuProps = WalletSelectProps & {
 };
 
 function WalletOptionIcon({ option }: { option: WalletOption }) {
-  const icon =
-    option.kind === "connector" || option.kind === "eip6963"
-      ? option.icon
-      : undefined;
-
-  if (icon) {
+  if (option.icon) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- wallet brand icons (EIP-6963 / wagmi)
+      // eslint-disable-next-line @next/next/no-img-element -- wallet brand icons from wagmi
       <img
-        src={icon}
+        src={option.icon}
         alt=""
         className="size-8 shrink-0 rounded-lg object-contain"
       />
@@ -127,14 +122,12 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   const canOpenMenu = !identity.isConnected;
 
   const handlePick = async (option: WalletOption) => {
+    if (!option.available) return;
+
     setConnectError(null);
     setIsConnecting(true);
     try {
-      await connectWalletOption(
-        wagmiConfig,
-        option,
-        wagmiConfig.connectors,
-      );
+      await connectWalletOption(wagmiConfig, option);
       setOpen(false);
     } catch (error) {
       const message =
@@ -183,18 +176,21 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
               <div className="min-h-[12rem] min-w-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
                 {walletOptions.map((option) => (
                     <button
-                      key={`${option.kind}-${option.id}`}
+                      key={option.connectorUid}
                       type="button"
                       role="menuitem"
-                      disabled={isConnecting}
+                      disabled={isConnecting || !option.available}
                       onClick={() => void handlePick(option)}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-wait disabled:opacity-60"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <WalletOptionIcon option={option} />
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold">{option.name}</span>
-                        {option.kind === "connector" &&
-                        option.id === "walletConnect" ? (
+                        {!option.available ? (
+                          <span className="block text-xs text-slate-500">
+                            Not Installed
+                          </span>
+                        ) : option.id === "walletConnect" ? (
                           <span className="block text-xs text-slate-500">
                             Mobile &amp; desktop apps
                           </span>

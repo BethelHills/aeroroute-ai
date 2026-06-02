@@ -1,11 +1,15 @@
 import { createConfig, http } from "wagmi";
-import { injected, walletConnect } from "wagmi/connectors";
+import {
+  coinbaseWallet,
+  injected,
+  metaMask,
+  walletConnect,
+} from "wagmi/connectors";
 import { base } from "viem/chains";
 import { getWalletConnectProjectId } from "@/lib/wallet/para-config";
 
 const projectId = getWalletConnectProjectId();
-const hasWalletConnect =
-  Boolean(projectId) && projectId !== "your_walletconnect_project_id";
+const hasWalletConnect = Boolean(projectId);
 
 /** Registered wagmi connectors — each appears in the Select Wallet menu. */
 export const wagmiConfig = createConfig({
@@ -14,8 +18,8 @@ export const wagmiConfig = createConfig({
     [base.id]: http(),
   },
   connectors: [
-    injected({ target: "metaMask" }),
-    injected({ target: "coinbaseWallet" }),
+    metaMask({ dappMetadata: { name: "AeroRoute AI" } }),
+    coinbaseWallet({ appName: "AeroRoute AI", preference: "all" }),
     injected({ target: "rabby" }),
     injected({ target: "braveWallet" }),
     injected({ target: "rainbow" }),
