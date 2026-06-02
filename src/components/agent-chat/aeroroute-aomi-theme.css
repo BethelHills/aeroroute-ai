@@ -173,6 +173,14 @@
   color: #fecaca !important;
 }
 
+.aeroroute-aomi-thread.dark .aui-assistant-route-results {
+  max-width: 100%;
+}
+
+.aeroroute-aomi-thread.dark .aui-assistant-route-results table {
+  color: #cbd5e1;
+}
+
 .aeroroute-aomi-chat.dark [data-radix-popper-content-wrapper] [role="dialog"],
 .aeroroute-aomi-chat.dark [data-slot="popover-content"] {
   background-color: #061018 !important;

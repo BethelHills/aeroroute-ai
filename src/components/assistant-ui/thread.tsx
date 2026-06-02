@@ -44,6 +44,7 @@ import { ApiKeyInput } from "@/components/control-bar/api-key-input";
 import { NetworkSelect } from "@/components/control-bar/network-select";
 import { WalletSelect } from "@/components/control-bar/wallet-select";
 import { SwitchToBasePrompt } from "@/components/wallet/switch-to-base-prompt";
+import { AssistantRouteResults } from "@/components/agent-chat/assistant-route-results";
 import { SecretGate } from "@/components/control-bar/secret-gate";
 import { PaymentRequiredGate } from "@/components/control-bar/payment-required-gate";
 import {
@@ -423,6 +424,7 @@ const AssistantMessage: FC = () => {
                     />
                   )}
                   <MessageError />
+                  <AssistantRouteResults />
                 </div>
               )}{!showLoadingDot && (
                 <div
