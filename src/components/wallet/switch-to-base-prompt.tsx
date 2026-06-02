@@ -85,8 +85,8 @@ export const SwitchToBasePrompt: FC<SwitchToBasePromptProps> = ({
         className={cn(
           "inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 font-bold text-[#041014] transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60",
           isCompact
-            ? "self-start px-4 py-2 text-xs sm:self-auto sm:text-sm"
-            : "px-5 py-2.5 text-sm",
+            ? "w-full px-4 py-2 text-xs sm:w-auto sm:text-sm"
+            : "w-full px-5 py-2.5 text-sm sm:w-auto",
         )}
       >
         <ArrowRightLeft className="size-4 shrink-0" />

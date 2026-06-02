@@ -76,7 +76,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
       const menuWidth = Math.min(
         320,
         window.innerWidth - 24,
-        Math.max(rect.width, 260),
+        Math.max(rect.width, Math.min(260, window.innerWidth - 24)),
       );
       const left = Math.max(
         12,
@@ -177,7 +177,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
               role="menu"
               aria-label="Choose a wallet"
               style={menuStyle}
-              className="aui-wallet-select-menu fixed z-[10000] flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#061018] text-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.55)]"
+              className="aui-wallet-select-menu fixed z-[10000] flex max-w-[calc(100vw-24px)] flex-col overflow-hidden rounded-xl border border-white/15 bg-[#061018] text-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.55)]"
             >
               <p className="shrink-0 border-b border-white/10 px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Choose a wallet
