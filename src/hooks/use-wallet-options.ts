@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { EIP6963ProviderDetail } from "mipd";
 import { useConfig } from "wagmi";
 import { getEip6963Store } from "@/lib/wallet/eip6963-store";
@@ -67,17 +67,6 @@ function formatConnectorLabel(id: string, name: string): string {
   return name;
 }
 
-function subscribeEip6963(onChange: () => void) {
-  const mipdStore = getEip6963Store();
-  if (!mipdStore) return () => {};
-  return mipdStore.subscribe(() => onChange());
-}
-
-function getEip6963Providers(): EIP6963ProviderDetail[] {
-  const providers = getEip6963Store()?.getProviders() ?? [];
-  return [...providers];
-}
-
 function dedupeOptions(options: WalletOption[]): WalletOption[] {
   const seen = new Set<string>();
   return options.filter((option) => {
@@ -90,14 +79,20 @@ function dedupeOptions(options: WalletOption[]): WalletOption[] {
 
 export function useWalletOptions(refreshToken = 0): WalletOption[] {
   const { connectors } = useConfig();
-  const eip6963Providers = useSyncExternalStore(
-    subscribeEip6963,
-    getEip6963Providers,
-    () => [],
-  );
+  const [eip6963Providers, setEip6963Providers] = useState<
+    EIP6963ProviderDetail[]
+  >([]);
 
   useEffect(() => {
-    getEip6963Store()?.reset();
+    const store = getEip6963Store();
+    if (!store) return;
+
+    store.reset();
+    setEip6963Providers([...store.getProviders()]);
+
+    return store.subscribe((providers) => {
+      setEip6963Providers([...providers]);
+    });
   }, [refreshToken]);
 
   return useMemo(() => {
@@ -141,11 +136,13 @@ export function useWalletOptions(refreshToken = 0): WalletOption[] {
       ...fallbackOptions,
     ]);
 
-    return merged.length > 0 ? merged : FALLBACK_WALLETS.map((wallet) => ({
-      kind: "named" as const,
-      id: wallet.id,
-      name: wallet.name,
-      target: wallet.target,
-    }));
+    return merged.length > 0
+      ? merged
+      : FALLBACK_WALLETS.map((wallet) => ({
+          kind: "named" as const,
+          id: wallet.id,
+          name: wallet.name,
+          target: wallet.target,
+        }));
   }, [connectors, eip6963Providers]);
 }

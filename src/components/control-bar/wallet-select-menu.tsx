@@ -14,7 +14,6 @@ import { useConfig } from "wagmi";
 import { cn } from "@aomi-labs/react";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 import { connectWalletOption } from "@/lib/wallet/connect-wallet-option";
-import { getEip6963Store } from "@/lib/wallet/eip6963-store";
 import { useWalletOptions, type WalletOption } from "@/hooks/use-wallet-options";
 import { ConnectButton } from "./connect-button";
 import type { WalletSelectProps } from "./wallet-select";
@@ -67,7 +66,6 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   useEffect(() => {
     if (!open) return;
     setConnectError(null);
-    getEip6963Store()?.reset();
     const timer = window.setTimeout(() => {
       setRefreshToken((value) => value + 1);
     }, 150);

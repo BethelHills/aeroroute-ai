@@ -1,9 +1,9 @@
 "use client";
 
-import { useSyncExternalStore, type FC } from "react";
+import dynamic from "next/dynamic";
+import { type FC } from "react";
 import { WalletIcon } from "lucide-react";
 import { cn } from "@aomi-labs/react";
-import { WalletSelectMenu } from "./wallet-select-menu";
 
 export type WalletSelectProps = {
   className?: string;
@@ -11,10 +11,6 @@ export type WalletSelectProps = {
   /** Unique id for the portaled menu (use when multiple pickers on one page). */
   menuId?: string;
 };
-
-function subscribeNoop() {
-  return () => {};
-}
 
 function WalletSelectPlaceholder({
   className,
@@ -39,16 +35,15 @@ function WalletSelectPlaceholder({
   );
 }
 
+const WalletSelectMenu = dynamic(
+  () =>
+    import("./wallet-select-menu").then((mod) => mod.WalletSelectMenu),
+  {
+    ssr: false,
+    loading: () => <WalletSelectPlaceholder />,
+  },
+);
+
 export const WalletSelect: FC<WalletSelectProps> = (props) => {
-  const mounted = useSyncExternalStore(
-    subscribeNoop,
-    () => true,
-    () => false,
-  );
-
-  if (!mounted) {
-    return <WalletSelectPlaceholder {...props} />;
-  }
-
   return <WalletSelectMenu {...props} />;
 };

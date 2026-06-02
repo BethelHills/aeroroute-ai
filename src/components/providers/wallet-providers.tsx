@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import {
@@ -37,14 +37,6 @@ function getQueryClient() {
   return browserQueryClient;
 }
 
-function useIsClient() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-}
-
 function Eip6963Bootstrap() {
   useEffect(() => {
     getEip6963Store()?.reset();
@@ -53,8 +45,12 @@ function Eip6963Bootstrap() {
 }
 
 export function WalletProviders({ children }: WalletProvidersProps) {
-  const mounted = useIsClient();
+  const [mounted, setMounted] = useState(false);
   const [queryClient] = useState(getQueryClient);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return (
