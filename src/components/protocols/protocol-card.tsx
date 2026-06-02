@@ -1,133 +1,113 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, Bot, Route, Shield } from "lucide-react";
-import {
-  protocolAgentChatHref,
-  ROUTE_OPTIMIZER_HREF,
-  type Protocol,
-} from "@/lib/protocols-data";
-import { cn } from "@/lib/utils";
-
-const statusStyles: Record<Protocol["status"], string> = {
-  Active: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-  Beta: "border-cyan-400/30 bg-cyan-400/10 text-cyan-300",
-  Monitoring: "border-orange-400/30 bg-orange-400/10 text-orange-300",
-};
-
-const riskStyles: Record<Protocol["risk"], string> = {
-  Low: "text-emerald-300",
-  Medium: "text-orange-300",
-  High: "text-red-300",
-};
-
-const categoryAccent: Record<Protocol["category"], string> = {
-  DEX: "from-emerald-400/15 to-cyan-500/10",
-  Bridge: "from-cyan-400/15 to-blue-500/10",
-  Lending: "from-orange-400/15 to-amber-400/10",
-  Network: "from-violet-400/15 to-fuchsia-500/10",
-  "AI Runtime": "from-emerald-400/15 to-orange-400/10",
-};
+import { ArrowRight, BarChart3, ShieldCheck, Zap } from "lucide-react";
+import type { Protocol } from "@/lib/protocols-data";
 
 type ProtocolCardProps = {
   protocol: Protocol;
 };
 
+const riskStyles: Record<Protocol["risk"], string> = {
+  Low: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
+  Medium: "border-orange-400/30 bg-orange-400/10 text-orange-300",
+  High: "border-red-400/30 bg-red-400/10 text-red-300",
+};
+
+const statusStyles: Record<Protocol["status"], string> = {
+  Active: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
+  Ready: "border-cyan-400/30 bg-cyan-400/10 text-cyan-300",
+  Preview: "border-orange-400/30 bg-orange-400/10 text-orange-300",
+};
+
 export function ProtocolCard({ protocol }: ProtocolCardProps) {
-  const showRouteOptimizer = protocol.category !== "AI Runtime";
+  const agentPrompt = encodeURIComponent(`Analyze ${protocol.name} on Base`);
 
   return (
-    <motion.article
-      whileHover={{ y: -4 }}
-      className={cn(
-        "flex h-full min-w-0 flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-br p-5 backdrop-blur-xl",
-        categoryAccent[protocol.category],
-      )}
-    >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-            {protocol.category}
-          </p>
-          <h3 className="mt-1 text-xl font-black text-white">{protocol.name}</h3>
+    <article className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:-translate-y-1 hover:border-emerald-400/30">
+      <div
+        className={`absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br ${protocol.accent} blur-3xl transition group-hover:opacity-80`}
+      />
+
+      <div className="relative z-10">
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/10 text-emerald-300 shadow-[0_0_24px_rgba(0,245,160,0.15)]">
+              <Zap size={22} />
+            </div>
+
+            <div>
+              <h3 className="text-xl font-black text-white">{protocol.name}</h3>
+              <p className="text-sm text-slate-500">{protocol.category}</p>
+            </div>
+          </div>
+
+          <span
+            className={`rounded-full border px-3 py-1 text-xs font-bold ${statusStyles[protocol.status]}`}
+          >
+            {protocol.status}
+          </span>
         </div>
-        <span
-          className={cn(
-            "shrink-0 rounded-full border px-3 py-1 text-xs font-bold",
-            statusStyles[protocol.status],
-          )}
-        >
-          {protocol.status}
-        </span>
-      </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 text-xs">
-        <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 font-bold text-slate-300">
-          {protocol.network}
-        </span>
-        <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-slate-400">
-          TVL {protocol.tvl}
-        </span>
-        <span
-          className={cn(
-            "inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-3 py-1 font-bold",
-            riskStyles[protocol.risk],
-          )}
-        >
-          <Shield size={12} />
-          {protocol.risk} risk
-        </span>
-      </div>
-
-      <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-400">
-        {protocol.description}
-      </p>
-
-      <div className="mt-4">
-        <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-          Supported actions
+        <p className="min-h-[72px] text-sm leading-6 text-slate-400">
+          {protocol.description}
         </p>
-        <div className="flex flex-wrap gap-2">
-          {protocol.supportedActions.map((action) => (
+
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="mb-2 flex items-center gap-2 text-slate-500">
+              <BarChart3 size={15} />
+              <span className="text-xs">TVL</span>
+            </div>
+            <p className="font-black text-white">{protocol.tvl}</p>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="mb-2 flex items-center gap-2 text-slate-500">
+              <ShieldCheck size={15} />
+              <span className="text-xs">Risk</span>
+            </div>
             <span
-              key={action}
-              className="rounded-full border border-emerald-400/20 bg-emerald-400/5 px-3 py-1 text-xs font-semibold text-emerald-100/90"
+              className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${riskStyles[protocol.risk]}`}
             >
-              {action}
+              {protocol.risk}
             </span>
-          ))}
+          </div>
+        </div>
+
+        <div className="mt-5">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+            Supported Actions
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {protocol.actions.map((action) => (
+              <span
+                key={action}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-slate-300"
+              >
+                {action}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <Link
+            href={`/agent-chat?prompt=${agentPrompt}`}
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200 transition hover:bg-emerald-400/15"
+          >
+            Analyze
+            <ArrowRight size={16} />
+          </Link>
+
+          <Link
+            href="/route-optimizer"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014] transition hover:scale-[1.01]"
+          >
+            Route
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
-
-      <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-        <Link
-          href={protocolAgentChatHref(protocol.name)}
-          className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014] transition hover:opacity-90"
-        >
-          <Bot size={16} />
-          Analyze in Agent Chat
-        </Link>
-        {showRouteOptimizer ? (
-          <Link
-            href={ROUTE_OPTIMIZER_HREF}
-            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold text-slate-200 transition hover:border-emerald-400/40 hover:text-white"
-          >
-            <Route size={16} />
-            Route Optimizer
-            <ArrowRight size={14} />
-          </Link>
-        ) : (
-          <Link
-            href={protocolAgentChatHref(protocol.name)}
-            className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl border border-orange-400/25 bg-orange-400/10 px-4 py-3 text-sm font-bold text-orange-200 transition hover:border-orange-400/40"
-          >
-            <Bot size={16} />
-            Open Agent
-            <ArrowRight size={14} />
-          </Link>
-        )}
-      </div>
-    </motion.article>
+    </article>
   );
 }

@@ -5,43 +5,34 @@ export type ProtocolCategory =
   | "Network"
   | "AI Runtime";
 
-export type ProtocolStatus = "Active" | "Beta" | "Monitoring";
+export type RiskLevel = "Low" | "Medium" | "High";
 
-export type ProtocolRisk = "Low" | "Medium" | "High";
-
-export type Protocol = {
+export interface Protocol {
   id: string;
   name: string;
   category: ProtocolCategory;
   network: string;
-  status: ProtocolStatus;
-  description: string;
-  supportedActions: string[];
+  status: "Active" | "Ready" | "Preview";
   tvl: string;
-  risk: ProtocolRisk;
-};
+  risk: RiskLevel;
+  description: string;
+  actions: string[];
+  accent: string;
+}
 
-export const PROTOCOL_CATEGORIES: Array<ProtocolCategory | "All"> = [
-  "All",
-  "DEX",
-  "Bridge",
-  "Lending",
-  "Network",
-  "AI Runtime",
-];
-
-export const PROTOCOLS: Protocol[] = [
+export const protocols: Protocol[] = [
   {
     id: "aerodrome",
     name: "Aerodrome",
     category: "DEX",
     network: "Base",
     status: "Active",
-    description:
-      "Primary liquidity hub on Base with volatile and stable pools, veAERO incentives, and concentrated liquidity routes.",
-    supportedActions: ["Swap", "Route compare", "Pool depth", "Slippage sim"],
-    tvl: "$1.8B",
+    tvl: "$850M",
     risk: "Low",
+    description:
+      "Base's leading liquidity hub for swaps, routing, and incentives.",
+    actions: ["Swap", "Liquidity", "Route Analysis"],
+    accent: "from-emerald-500/20 to-cyan-500/20",
   },
   {
     id: "uniswap",
@@ -49,59 +40,64 @@ export const PROTOCOLS: Protocol[] = [
     category: "DEX",
     network: "Base",
     status: "Active",
-    description:
-      "Universal AMM with v3 concentrated liquidity; common fallback path for ETH-stable and blue-chip pairs on Base.",
-    supportedActions: ["Swap", "Quote", "Price impact", "Multi-hop"],
-    tvl: "$2.4B",
+    tvl: "$620M",
     risk: "Low",
+    description:
+      "Decentralized exchange supporting concentrated liquidity pools.",
+    actions: ["Swap", "Liquidity"],
+    accent: "from-pink-500/20 to-purple-500/20",
   },
   {
     id: "curve",
     name: "Curve",
     category: "DEX",
     network: "Base",
-    status: "Active",
-    description:
-      "Stableswap-optimized pools for USDC, DAI, and LST pairs with low slippage on like-asset routes.",
-    supportedActions: ["Stable swap", "Pool select", "Impact check"],
-    tvl: "$620M",
+    status: "Ready",
+    tvl: "$210M",
     risk: "Low",
+    description:
+      "Optimized stablecoin liquidity and low-slippage swaps.",
+    actions: ["Stable Swaps"],
+    accent: "from-orange-500/20 to-yellow-500/20",
   },
   {
     id: "balancer",
     name: "Balancer",
     category: "DEX",
     network: "Base",
-    status: "Active",
-    description:
-      "Weighted and composable pools for custom liquidity strategies and multi-asset routing.",
-    supportedActions: ["Swap", "Batch route", "Pool weights"],
-    tvl: "$310M",
+    status: "Ready",
+    tvl: "$175M",
     risk: "Medium",
+    description:
+      "Composable liquidity pools and custom asset weighting.",
+    actions: ["Liquidity", "Routing"],
+    accent: "from-cyan-500/20 to-blue-500/20",
   },
   {
     id: "across",
     name: "Across",
     category: "Bridge",
-    network: "Base",
+    network: "Ethereum ↔ Base",
     status: "Active",
-    description:
-      "Intent-based bridging with competitive fees for moving assets into Base for swap execution.",
-    supportedActions: ["Bridge in", "Bridge out", "ETA quote"],
-    tvl: "$1.1B",
+    tvl: "$490M",
     risk: "Medium",
+    description:
+      "Fast cross-chain asset bridging with low fees.",
+    actions: ["Bridge Assets"],
+    accent: "from-green-500/20 to-teal-500/20",
   },
   {
     id: "stargate",
     name: "Stargate",
     category: "Bridge",
-    network: "Base",
+    network: "Multi-chain",
     status: "Active",
-    description:
-      "Omnichain liquidity layer for native asset transfers across chains into Base.",
-    supportedActions: ["Cross-chain transfer", "Liquidity check"],
-    tvl: "$890M",
+    tvl: "$390M",
     risk: "Medium",
+    description:
+      "Cross-chain liquidity transport across major ecosystems.",
+    actions: ["Bridge Assets"],
+    accent: "from-indigo-500/20 to-cyan-500/20",
   },
   {
     id: "moonwell",
@@ -109,72 +105,86 @@ export const PROTOCOLS: Protocol[] = [
     category: "Lending",
     network: "Base",
     status: "Active",
-    description:
-      "Native Base lending market for supplying collateral and borrowing against routed swap inventory.",
-    supportedActions: ["Supply", "Borrow", "APY view", "Health factor"],
-    tvl: "$480M",
+    tvl: "$560M",
     risk: "Medium",
+    description:
+      "Borrow and lend crypto assets on Base.",
+    actions: ["Borrow", "Supply"],
+    accent: "from-violet-500/20 to-blue-500/20",
   },
   {
     id: "seamless",
     name: "Seamless",
     category: "Lending",
     network: "Base",
-    status: "Beta",
-    description:
-      "Modular lending protocol on Base with isolated markets and governance-driven risk parameters.",
-    supportedActions: ["Lend", "Borrow", "Market scan"],
-    tvl: "$210M",
+    status: "Ready",
+    tvl: "$145M",
     risk: "Medium",
+    description:
+      "Permissionless lending and borrowing markets.",
+    actions: ["Borrow", "Supply"],
+    accent: "from-emerald-500/20 to-green-500/20",
   },
   {
     id: "compound",
     name: "Compound",
     category: "Lending",
     network: "Base",
-    status: "Active",
-    description:
-      "Algorithmic money markets for USDC and WETH with composable cToken positions on Base.",
-    supportedActions: ["Supply", "Borrow", "Rate compare"],
-    tvl: "$540M",
+    status: "Ready",
+    tvl: "$300M",
     risk: "Low",
+    description:
+      "Algorithmic money markets for lending and borrowing.",
+    actions: ["Lending"],
+    accent: "from-green-500/20 to-lime-500/20",
   },
   {
     id: "aave",
     name: "Aave",
     category: "Lending",
     network: "Base",
-    status: "Active",
-    description:
-      "Deep lending liquidity with e-mode and flash-loan infrastructure for advanced route strategies.",
-    supportedActions: ["Supply", "Borrow", "Flash loan", "e-mode"],
-    tvl: "$1.3B",
+    status: "Ready",
+    tvl: "$900M",
     risk: "Low",
+    description:
+      "One of the largest DeFi lending protocols.",
+    actions: ["Lending", "Borrowing"],
+    accent: "from-purple-500/20 to-indigo-500/20",
   },
   {
     id: "base",
     name: "Base",
     category: "Network",
-    network: "Base",
+    network: "Layer 2",
     status: "Active",
-    description:
-      "Coinbase L2 settlement layer (chain ID 8453) where AeroRoute executes and simulates all routes.",
-    supportedActions: ["Gas estimate", "Chain status", "Block time"],
-    tvl: "—",
+    tvl: "$5.2B",
     risk: "Low",
+    description:
+      "Ethereum Layer 2 network developed by Coinbase.",
+    actions: ["Deploy", "Transact"],
+    accent: "from-blue-500/20 to-cyan-500/20",
   },
   {
     id: "aomi",
     name: "Aomi",
     category: "AI Runtime",
-    network: "Base",
+    network: "Multi-chain",
     status: "Active",
-    description:
-      "Agent runtime powering AeroRoute chat, simulation, and wallet-aware route preparation on Base.",
-    supportedActions: ["Agent chat", "Simulate", "Tool routing", "BYOK models"],
-    tvl: "—",
+    tvl: "N/A",
     risk: "Low",
+    description:
+      "Agent runtime powering AeroRoute AI workflows.",
+    actions: ["Automation", "Execution"],
+    accent: "from-orange-500/20 to-red-500/20",
   },
+];
+
+export const protocolCategories: ProtocolCategory[] = [
+  "DEX",
+  "Bridge",
+  "Lending",
+  "Network",
+  "AI Runtime",
 ];
 
 export function protocolAgentChatHref(protocolName: string): string {

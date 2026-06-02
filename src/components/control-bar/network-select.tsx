@@ -17,11 +17,14 @@ export type NetworkSelectProps = {
   className?: string;
   /** Override the default chain list from the lib */
   chains?: readonly Chain[];
+  /** Append numeric chain id next to the network label (e.g. Base 8453). */
+  showChainId?: boolean;
 };
 
 export const NetworkSelect: FC<NetworkSelectProps> = ({
   className,
   chains,
+  showChainId = false,
 }) => {
   const adapter = useAomiAuthAdapter();
   const { chainId, isConnected } = adapter.identity;
@@ -46,7 +49,12 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
                     )} />}>{renderIcon(
                       chainId ? getChainIcon(chainId) : undefined,
                       { className: "h-3 w-3 shrink-0 opacity-60" },
-                    )}<span className="truncate">{displayName}</span><ChevronDownIcon className="ml-1 h-3 w-3 shrink-0 opacity-50" /></PopoverTrigger>
+                    )}<span className="truncate">
+                      {displayName}
+                      {showChainId && chainId ? (
+                        <span className="opacity-80"> {chainId}</span>
+                      ) : null}
+                    </span><ChevronDownIcon className="ml-1 h-3 w-3 shrink-0 opacity-50" /></PopoverTrigger>
       <PopoverContent
         align="start"
         sideOffset={4}
