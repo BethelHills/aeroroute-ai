@@ -1,91 +1,94 @@
 import Link from "next/link";
-import { ArrowRight, Bot, Route, Sparkles } from "lucide-react";
-import {
-  PORTFOLIO_AGENT_CHAT_HREF,
-  PORTFOLIO_ROUTE_OPTIMIZER_HREF,
-  portfolioInsights,
-  type PortfolioInsight,
-} from "@/lib/portfolio-data";
-
-function InsightGroup({
-  title,
-  items,
-}: {
-  title: string;
-  items: PortfolioInsight[];
-}) {
-  return (
-    <div>
-      <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-        {title}
-      </p>
-      <div className="space-y-2">
-        {items.map((item) => (
-          <Link
-            key={item.id}
-            href={item.href}
-            className="block rounded-2xl border border-white/10 bg-black/20 px-4 py-3 transition hover:border-emerald-400/30 hover:bg-white/[0.04]"
-          >
-            <p className="font-bold text-white">{item.title}</p>
-            <p className="mt-1 text-sm text-slate-500">{item.description}</p>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
+import { ArrowRight, CheckCircle2, Cpu, Route } from "lucide-react";
+import { recentRouteActivity } from "@/lib/portfolio-data";
 
 export function AiPortfolioInsights() {
+  const prompt = encodeURIComponent(
+    "Analyze my Base wallet and suggest the best Aerodrome route opportunities"
+  );
+
   return (
     <div className="space-y-6">
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">
+      <div className="rounded-[2rem] border border-orange-400/25 bg-gradient-to-br from-orange-400/10 via-white/[0.03] to-emerald-400/10 p-6 backdrop-blur-xl">
         <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-400/10 text-orange-300">
-            <Sparkles size={22} />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-400/10 text-orange-300">
+            <Cpu size={23} />
           </div>
+
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-300">
-              AeroRoute AI
+              AI Insights
             </p>
-            <h2 className="text-xl font-black text-white">AI insights</h2>
+            <h2 className="text-xl font-black text-white">
+              Portfolio Route Opportunities
+            </h2>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <InsightGroup
-            title="Best route opportunities"
-            items={portfolioInsights.routeOpportunities}
-          />
-          <InsightGroup
-            title="Suggested swaps"
-            items={portfolioInsights.suggestedSwaps}
-          />
-          <InsightGroup
-            title="Liquidity alerts"
-            items={portfolioInsights.liquidityAlerts}
-          />
+        <div className="space-y-3">
+          {[
+            "ETH balance is high enough for efficient ETH → USDC route testing.",
+            "Stable allocation supports low-risk route simulation.",
+            "AERO exposure gives useful protocol-aligned portfolio context.",
+            "Recommended next action: simulate ETH → USDC on Aerodrome.",
+          ].map((item) => (
+            <div key={item} className="flex gap-3 text-sm text-slate-300">
+              <CheckCircle2 size={17} className="mt-1 shrink-0 text-emerald-300" />
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/route-optimizer"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014]"
+          >
+            Open Optimizer
+            <Route size={16} />
+          </Link>
+
+          <Link
+            href={`/agent-chat?prompt=${prompt}`}
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200"
+          >
+            Ask Agent
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">
-        <h2 className="text-lg font-black text-white">Actions</h2>
-        <div className="mt-4 grid gap-3">
-          <Link
-            href={PORTFOLIO_ROUTE_OPTIMIZER_HREF}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014] transition hover:opacity-95"
-          >
-            <Route size={16} />
-            Open Route Optimizer
-            <ArrowRight size={16} />
-          </Link>
-          <Link
-            href={PORTFOLIO_AGENT_CHAT_HREF}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200 transition hover:bg-emerald-400/15"
-          >
-            <Bot size={16} />
-            Ask Agent Chat
-            <ArrowRight size={16} />
-          </Link>
+      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-300">
+          Recent Activity
+        </p>
+
+        <h2 className="mt-2 text-2xl font-black text-white">
+          Route Activity
+        </h2>
+
+        <div className="mt-5 space-y-3">
+          {recentRouteActivity.map((activity) => (
+            <div
+              key={`${activity.pair}-${activity.time}`}
+              className="rounded-2xl border border-white/10 bg-black/20 p-4"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-black text-white">{activity.pair}</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {activity.action}
+                  </p>
+                </div>
+
+                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-300">
+                  {activity.status}
+                </span>
+              </div>
+
+              <p className="mt-3 text-xs text-slate-500">{activity.time}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

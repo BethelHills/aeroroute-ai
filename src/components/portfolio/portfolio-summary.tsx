@@ -1,94 +1,54 @@
-import { Network, ShieldCheck, TrendingUp, Wallet, Zap } from "lucide-react";
-import type { PortfolioState } from "@/lib/portfolio-data";
-import { cn } from "@/lib/utils";
+import { BarChart3, Gauge, ShieldCheck, Wallet } from "lucide-react";
+import { portfolioSummary } from "@/lib/portfolio-data";
 
-type PortfolioSummaryProps = {
-  state: PortfolioState;
-  displayAddress: string;
-  balancesLoading?: boolean;
-};
+const cards = [
+  {
+    label: "Total Value",
+    value: portfolioSummary.totalValue,
+    sub: `${portfolioSummary.dailyChange} today`,
+    icon: Wallet,
+  },
+  {
+    label: "24h Change",
+    value: portfolioSummary.dailyPercent,
+    sub: "Portfolio growth",
+    icon: BarChart3,
+  },
+  {
+    label: "Route Readiness",
+    value: portfolioSummary.routeReadiness,
+    sub: "Swap-ready balance",
+    icon: Gauge,
+  },
+  {
+    label: "Risk Level",
+    value: portfolioSummary.riskLevel,
+    sub: "Stable exposure healthy",
+    icon: ShieldCheck,
+  },
+];
 
-export function PortfolioSummary({
-  state,
-  displayAddress,
-  balancesLoading,
-}: PortfolioSummaryProps) {
-  const isConnected = state.mode === "connected";
-  const { summary } = state;
-
+export function PortfolioSummary() {
   return (
-    <div className="space-y-4">
-      <div
-        className={cn(
-          "flex flex-col gap-4 rounded-[2rem] border px-5 py-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between",
-          isConnected
-            ? "border-emerald-400/25 bg-emerald-400/10"
-            : "border-cyan-400/25 bg-cyan-400/10",
-        )}
-      >
-        <div className="flex min-w-0 items-center gap-3">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => {
+        const Icon = card.icon;
+
+        return (
           <div
-            className={cn(
-              "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl",
-              isConnected
-                ? "bg-emerald-400/15 text-emerald-300"
-                : "bg-cyan-400/15 text-cyan-300",
-            )}
+            key={card.label}
+            className="rounded-3xl border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl"
           >
-            <Wallet size={22} />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
+              <Icon size={22} />
+            </div>
+
+            <p className="mt-5 text-sm text-slate-500">{card.label}</p>
+            <p className="mt-2 text-3xl font-black text-white">{card.value}</p>
+            <p className="mt-1 text-sm text-emerald-300">{card.sub}</p>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-              Wallet summary
-            </p>
-            <p className="font-black text-white">{state.modeLabel}</p>
-            <p className="mt-1 truncate font-mono text-sm text-slate-400">
-              {displayAddress}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-bold text-slate-300">
-            <Network size={14} />
-            {state.chainLabel}
-          </span>
-          {balancesLoading ? (
-            <span className="rounded-xl border border-orange-400/25 bg-orange-400/10 px-3 py-2 text-xs font-bold text-orange-200">
-              Syncing balances…
-            </span>
-          ) : null}
-        </div>
-      </div>
-
-      <p className="text-sm text-slate-500">{state.statusNote}</p>
-
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-500">
-          Total portfolio value
-        </p>
-        <p className="mt-3 text-4xl font-black tracking-tight text-white md:text-5xl">
-          {summary.totalValue}
-        </p>
-        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-          <span className="flex items-center gap-2 font-bold text-emerald-300">
-            <TrendingUp size={16} />
-            {summary.dailyChange}
-          </span>
-          <span className="font-bold text-emerald-300">{summary.dailyPercent}</span>
-        </p>
-
-        <div className="mt-5 flex flex-wrap gap-3">
-          <span className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-300">
-            <Zap size={14} />
-            Route readiness · {summary.routeReadiness}
-          </span>
-          <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-bold text-slate-300">
-            <ShieldCheck size={14} />
-            Risk · {summary.riskLevel}
-          </span>
-        </div>
-      </div>
+        );
+      })}
     </div>
   );
 }

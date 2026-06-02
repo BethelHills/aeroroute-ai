@@ -1,94 +1,40 @@
-"use client";
+import { portfolioAssets } from "@/lib/portfolio-data";
 
-import { useSyncExternalStore } from "react";
-import { LineChart } from "lucide-react";
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
-import { assetsToAllocation, type PortfolioAsset } from "@/lib/portfolio-data";
-
-type AllocationCardProps = {
-  assets: PortfolioAsset[];
-};
-
-function useIsClient() {
-  return useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
-}
-
-export function AllocationCard({ assets }: AllocationCardProps) {
-  const mounted = useIsClient();
-  const allocation = assetsToAllocation(assets);
-
+export function AllocationCard() {
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
-          <LineChart size={22} />
-        </div>
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
-            Allocation
-          </p>
-          <h2 className="text-xl font-black text-white">Asset allocation</h2>
-        </div>
-      </div>
+    <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
+      <p className="text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">
+        Allocation
+      </p>
 
-      <div className="h-56 w-full min-w-0 sm:h-64">
-        {mounted ? (
-          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-            <PieChart>
-              <Pie
-                data={allocation}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                innerRadius={58}
-                outerRadius={88}
-                paddingAngle={3}
-                stroke="transparent"
-              >
-                {allocation.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(3, 7, 11, 0.95)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "12px",
-                  color: "#fff",
-                }}
-                formatter={(value, name) => [`${value ?? 0}%`, String(name)]}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-slate-500">
-            Loading chart…
+      <h2 className="mt-2 text-2xl font-black text-white">
+        Asset Distribution
+      </h2>
+
+      <div className="mt-6 flex items-center justify-center">
+        <div className="relative flex h-52 w-52 items-center justify-center rounded-full bg-[conic-gradient(from_90deg,#00F5A0_0deg,#00D4FF_150deg,#FF7A18_230deg,#8b5cf6_300deg,#00F5A0_360deg)] p-4 shadow-[0_0_55px_rgba(0,245,160,0.22)]">
+          <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018] text-center">
+            <p className="text-sm text-slate-500">Route Ready</p>
+            <p className="text-4xl font-black text-emerald-300">73%</p>
+            <p className="text-xs text-slate-500">ETH + Stable assets</p>
           </div>
-        )}
+        </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap justify-center gap-3">
-        {allocation.map((slice) => (
-          <div
-            key={slice.name}
-            className="flex items-center gap-2 text-xs text-slate-400"
-          >
-            <span
-              className="h-2.5 w-2.5 rounded-full"
-              style={{ backgroundColor: slice.color }}
-            />
-            {slice.name} {slice.value}%
+      <div className="mt-6 space-y-3">
+        {portfolioAssets.map((asset) => (
+          <div key={asset.symbol}>
+            <div className="mb-1 flex items-center justify-between text-sm">
+              <span className="text-slate-300">{asset.symbol}</span>
+              <span className="font-bold text-white">{asset.allocation}%</span>
+            </div>
+
+            <div className="h-2 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400"
+                style={{ width: `${asset.allocation}%` }}
+              />
+            </div>
           </div>
         ))}
       </div>
