@@ -5,7 +5,7 @@ import { getConnectors } from "@wagmi/core";
 import { useConfig } from "wagmi";
 import type { Connector } from "wagmi";
 import { detectBrowserWalletProviders } from "@/lib/wallet/detect-wallet-providers";
-import { WALLET_MENU_ITEMS } from "@/lib/wallet/wallet-menu";
+import { getWalletMenuItems } from "@/lib/wallet/wallet-menu";
 
 export type WalletOption = {
   connectorUid: string;
@@ -21,7 +21,7 @@ function connectorIcon(connector: Connector): string | undefined {
 }
 
 function isWalletAvailable(
-  item: (typeof WALLET_MENU_ITEMS)[number],
+  item: ReturnType<typeof getWalletMenuItems>[number],
   connector: Connector | undefined,
   detectedInstalled: boolean,
 ): boolean {
@@ -48,7 +48,9 @@ export function useWalletOptions(refreshToken = 0): WalletOption[] {
         detectedWallets.map((entry) => [entry.id, entry.installed]),
       );
 
-      const nextOptions = WALLET_MENU_ITEMS.map((item) => {
+      const menuItems = getWalletMenuItems();
+
+      const nextOptions = menuItems.map((item) => {
         const connector = connectors.find(
           (candidate) => candidate.id === item.connectorId,
         );

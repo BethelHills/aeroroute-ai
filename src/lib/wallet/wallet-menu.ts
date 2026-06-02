@@ -1,7 +1,10 @@
+import { isWalletConnectConfigured } from "@/lib/wallet/walletconnect-config";
+
 export type WalletMenuId =
   | "metaMask"
   | "coinbase"
   | "browser"
+  | "walletConnect"
   | "rabby"
   | "okx"
   | "brave"
@@ -17,6 +20,13 @@ export type WalletMenuItem = {
   /** `connector` = always enabled when wagmi connector exists; `detected` = requires provider flag. */
   availability: WalletAvailabilityMode;
   unavailableLabel?: string;
+};
+
+const WALLETCONNECT_MENU_ITEM: WalletMenuItem = {
+  id: "walletConnect",
+  connectorId: "walletConnect",
+  name: "WalletConnect",
+  availability: "connector",
 };
 
 /** Fixed wallet picker order — every entry maps to a real wagmi connector. */
@@ -37,7 +47,8 @@ export const WALLET_MENU_ITEMS: readonly WalletMenuItem[] = [
     id: "browser",
     connectorId: "browser-wallet",
     name: "Browser Wallet",
-    availability: "connector",
+    availability: "detected",
+    unavailableLabel: "Install a supported wallet extension",
   },
   {
     id: "rabby",
@@ -70,6 +81,16 @@ export const WALLET_MENU_ITEMS: readonly WalletMenuItem[] = [
     availability: "detected",
   },
 ];
+
+/** Menu order with optional WalletConnect after Browser Wallet when configured. */
+export function getWalletMenuItems(): readonly WalletMenuItem[] {
+  if (!isWalletConnectConfigured()) {
+    return WALLET_MENU_ITEMS;
+  }
+
+  const [metaMask, coinbase, browser, ...extensionWallets] = WALLET_MENU_ITEMS;
+  return [metaMask, coinbase, browser, WALLETCONNECT_MENU_ITEM, ...extensionWallets];
+}
 
 export const DETECTED_WALLET_IDS = WALLET_MENU_ITEMS.filter(
   (item) => item.availability === "detected",

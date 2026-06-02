@@ -15,6 +15,12 @@ export type DetectedWalletProvider = {
   installed: boolean;
 };
 
+function findBrowserWalletProvider(
+  window?: EthereumWindow,
+): ExtendedWalletProvider | undefined {
+  return getEthereumProviders(window)[0];
+}
+
 function findRabbyProvider(
   window?: EthereumWindow,
 ): ExtendedWalletProvider | undefined {
@@ -77,6 +83,8 @@ export function findDetectedWalletProvider(
       return findTrustProvider(window);
     case "coin98":
       return findCoin98Provider(window);
+    case "browser":
+      return findBrowserWalletProvider(window);
     default:
       return undefined;
   }
@@ -113,7 +121,7 @@ export function findWalletProviderById(
   walletId: WalletMenuId,
 ): ExtendedWalletProvider | undefined {
   if (walletId === "browser") {
-    return window?.ethereum;
+    return findBrowserWalletProvider(window);
   }
 
   return findDetectedWalletProvider(window, walletId);
