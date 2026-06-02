@@ -8,7 +8,6 @@ import {
   AerorouteChatBootstrap,
   AEROROUTE_DEFAULT_PROMPT,
 } from "@/components/agent-chat/aeroroute-chat-bootstrap";
-import { WalletSelect } from "@/components/control-bar/wallet-select";
 import { SwitchToBasePrompt } from "@/components/wallet/switch-to-base-prompt";
 import { cn } from "@/lib/utils";
 import { useAomiRuntime } from "@aomi-labs/react";
@@ -161,17 +160,10 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
               <p className="text-sm text-slate-500">Live Aomi · Aerodrome on Base</p>
             </div>
           </div>
-          <div className="flex w-full min-w-0 flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
-            <WalletSelect
-              connectLabel="Select Wallet"
-              menuId="aeroroute-chat-header-wallet-menu"
-              className="w-full sm:w-auto"
-            />
-            <div className="flex w-fit items-center gap-2 self-start rounded-2xl border border-white/10 bg-black/20 px-4 py-2 text-sm text-slate-300 sm:self-auto">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
-              {aomiApiKey ? "Aomi ready" : "Set Aomi API key"}
-              <ChevronDown size={15} />
-            </div>
+          <div className="flex w-fit items-center gap-2 self-start rounded-2xl border border-white/10 bg-black/20 px-4 py-2 text-sm text-slate-300 sm:self-auto">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
+            {aomiApiKey ? "Aomi ready" : "Set Aomi API key"}
+            <ChevronDown size={15} />
           </div>
         </div>
 
