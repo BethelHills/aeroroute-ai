@@ -3,13 +3,13 @@
 import "@/components/wallet/walletconnect-modal.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, type Config } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import {
   AomiAuthAdapterProvider,
   DISCONNECTED_AUTH_ADAPTER,
 } from "@/lib/aomi-auth-adapter/context";
 import { WagmiAuthAdapterBridge } from "@/components/providers/wagmi-auth-adapter-bridge";
-import { getWagmiConfig } from "@/lib/wallet/wagmi-config";
+import { wagmiConfig } from "@/lib/wallet/wagmi-config";
 
 type WalletProvidersProps = {
   children: ReactNode;
@@ -38,14 +38,14 @@ function getQueryClient() {
 }
 
 export function WalletProviders({ children }: WalletProvidersProps) {
-  const [wagmiConfig, setWagmiConfig] = useState<Config | null>(null);
+  const [mounted, setMounted] = useState(false);
   const [queryClient] = useState(getQueryClient);
 
   useEffect(() => {
-    setWagmiConfig(getWagmiConfig());
+    setMounted(true);
   }, []);
 
-  if (!wagmiConfig) {
+  if (!mounted) {
     return (
       <AomiAuthAdapterProvider value={DISCONNECTED_AUTH_ADAPTER}>
         {children}
