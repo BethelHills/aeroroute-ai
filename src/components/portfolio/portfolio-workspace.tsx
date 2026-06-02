@@ -7,17 +7,17 @@ import { AllocationCard } from "@/components/portfolio/allocation-card";
 import { AssetTable } from "@/components/portfolio/asset-table";
 import { PortfolioSummary } from "@/components/portfolio/portfolio-summary";
 import { usePortfolioView } from "@/components/portfolio/use-portfolio-view";
-import type { PortfolioActivity } from "@/lib/portfolio-data";
+import type { RouteActivity } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
 
-const activityTone: Record<PortfolioActivity["tone"], string> = {
-  emerald: "border-emerald-400/25 bg-emerald-400/10 text-emerald-300",
-  cyan: "border-cyan-400/25 bg-cyan-400/10 text-cyan-300",
-  orange: "border-orange-400/25 bg-orange-400/10 text-orange-300",
+const statusStyles: Record<RouteActivity["status"], string> = {
+  Completed: "border-emerald-400/25 bg-emerald-400/10 text-emerald-300",
+  Simulated: "border-cyan-400/25 bg-cyan-400/10 text-cyan-300",
+  Staged: "border-orange-400/25 bg-orange-400/10 text-orange-300",
 };
 
 export function PortfolioWorkspace() {
-  const { view, displayAddress, balancesLoading } = usePortfolioView();
+  const { state, displayAddress, balancesLoading } = usePortfolioView();
 
   return (
     <div className="relative z-10 min-w-0 overflow-x-hidden text-white">
@@ -47,21 +47,19 @@ export function PortfolioWorkspace() {
 
         <div className="space-y-6">
           <PortfolioSummary
-            view={view}
+            state={state}
             displayAddress={displayAddress}
             balancesLoading={balancesLoading}
           />
 
           <div>
-            <h2 className="mb-4 text-lg font-black text-white">
-              Token balances
-            </h2>
-            <AssetTable balances={view.balances} />
+            <h2 className="mb-4 text-lg font-black text-white">Assets</h2>
+            <AssetTable assets={state.assets} />
           </div>
 
           <div className="grid min-w-0 gap-6 xl:grid-cols-[1fr_360px]">
             <div className="min-w-0 space-y-6">
-              <AllocationCard allocation={view.allocation} />
+              <AllocationCard assets={state.assets} />
 
               <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">
                 <div className="mb-5 flex items-center gap-3">
@@ -79,36 +77,37 @@ export function PortfolioWorkspace() {
                 </div>
 
                 <div className="space-y-3">
-                  {view.activity.map((item) => (
+                  {state.activity.map((item) => (
                     <div
-                      key={item.id}
+                      key={`${item.pair}-${item.time}`}
                       className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="min-w-0">
-                        <p className="font-bold text-white">{item.title}</p>
+                        <p className="font-bold text-white">{item.pair}</p>
                         <p className="mt-1 text-sm text-slate-500">
-                          {item.detail}
+                          {item.action}
                         </p>
                       </div>
-                      <span
-                        className={cn(
-                          "w-fit shrink-0 rounded-full border px-3 py-1 text-xs font-bold",
-                          activityTone[item.tone],
-                        )}
-                      >
-                        {item.time}
-                      </span>
+                      <div className="flex shrink-0 flex-wrap items-center gap-2">
+                        <span
+                          className={cn(
+                            "rounded-full border px-3 py-1 text-xs font-bold",
+                            statusStyles[item.status],
+                          )}
+                        >
+                          {item.status}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          {item.time}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <AiPortfolioInsights
-              routeOpportunities={view.routeOpportunities}
-              suggestedSwaps={view.suggestedSwaps}
-              liquidityAlerts={view.liquidityAlerts}
-            />
+            <AiPortfolioInsights />
           </div>
         </div>
       </section>

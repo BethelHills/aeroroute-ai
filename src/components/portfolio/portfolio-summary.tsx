@@ -1,19 +1,20 @@
-import { Network, TrendingUp, Wallet } from "lucide-react";
-import type { PortfolioView } from "@/lib/portfolio-data";
+import { Network, ShieldCheck, TrendingUp, Wallet, Zap } from "lucide-react";
+import type { PortfolioState } from "@/lib/portfolio-data";
 import { cn } from "@/lib/utils";
 
 type PortfolioSummaryProps = {
-  view: PortfolioView;
+  state: PortfolioState;
   displayAddress: string;
   balancesLoading?: boolean;
 };
 
 export function PortfolioSummary({
-  view,
+  state,
   displayAddress,
   balancesLoading,
 }: PortfolioSummaryProps) {
-  const isConnected = view.mode === "connected";
+  const isConnected = state.mode === "connected";
+  const { summary } = state;
 
   return (
     <div className="space-y-4">
@@ -40,7 +41,7 @@ export function PortfolioSummary({
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
               Wallet summary
             </p>
-            <p className="font-black text-white">{view.modeLabel}</p>
+            <p className="font-black text-white">{state.modeLabel}</p>
             <p className="mt-1 truncate font-mono text-sm text-slate-400">
               {displayAddress}
             </p>
@@ -50,7 +51,7 @@ export function PortfolioSummary({
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-bold text-slate-300">
             <Network size={14} />
-            {view.chainLabel}
+            {state.chainLabel}
           </span>
           {balancesLoading ? (
             <span className="rounded-xl border border-orange-400/25 bg-orange-400/10 px-3 py-2 text-xs font-bold text-orange-200">
@@ -60,19 +61,33 @@ export function PortfolioSummary({
         </div>
       </div>
 
-      <p className="text-sm text-slate-500">{view.statusNote}</p>
+      <p className="text-sm text-slate-500">{state.statusNote}</p>
 
       <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
         <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-500">
           Total portfolio value
         </p>
         <p className="mt-3 text-4xl font-black tracking-tight text-white md:text-5xl">
-          {view.totalValue}
+          {summary.totalValue}
         </p>
-        <p className="mt-3 flex items-center gap-2 text-sm font-bold text-emerald-300">
-          <TrendingUp size={16} />
-          {view.totalChange}
+        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <span className="flex items-center gap-2 font-bold text-emerald-300">
+            <TrendingUp size={16} />
+            {summary.dailyChange}
+          </span>
+          <span className="font-bold text-emerald-300">{summary.dailyPercent}</span>
         </p>
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <span className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-300">
+            <Zap size={14} />
+            Route readiness · {summary.routeReadiness}
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-bold text-slate-300">
+            <ShieldCheck size={14} />
+            Risk · {summary.riskLevel}
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -7,14 +7,15 @@ import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 import {
   BASE_AERO_ADDRESS,
   BASE_USDC_ADDRESS,
-  getConnectedPortfolioView,
-  getDemoPortfolioView,
+  DEMO_WALLET_ADDRESS,
+  getConnectedPortfolioState,
+  getDemoPortfolioState,
   type LiveBalanceInput,
-  type PortfolioView,
+  type PortfolioState,
 } from "@/lib/portfolio-data";
 
 export function usePortfolioView(): {
-  view: PortfolioView;
+  state: PortfolioState;
   displayAddress: string;
   isConnected: boolean;
   balancesLoading: boolean;
@@ -61,16 +62,16 @@ export function usePortfolioView(): {
     aeroBalance.data,
   ]);
 
-  const view = useMemo(() => {
+  const state = useMemo(() => {
     if (!isConnected || !address) {
-      return getDemoPortfolioView();
+      return getDemoPortfolioState();
     }
-    return getConnectedPortfolioView(address, chainId, live);
+    return getConnectedPortfolioState(address, chainId, live);
   }, [isConnected, address, chainId, live]);
 
   const displayAddress = isConnected
     ? formatAddress(address) ?? address
-    : view.address;
+    : DEMO_WALLET_ADDRESS;
 
-  return { view, displayAddress, isConnected, balancesLoading };
+  return { state, displayAddress, isConnected, balancesLoading };
 }

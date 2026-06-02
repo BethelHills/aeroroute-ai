@@ -9,10 +9,10 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import type { AllocationSlice } from "@/lib/portfolio-data";
+import { assetsToAllocation, type PortfolioAsset } from "@/lib/portfolio-data";
 
 type AllocationCardProps = {
-  allocation: AllocationSlice[];
+  assets: PortfolioAsset[];
 };
 
 function useIsClient() {
@@ -23,8 +23,9 @@ function useIsClient() {
   );
 }
 
-export function AllocationCard({ allocation }: AllocationCardProps) {
+export function AllocationCard({ assets }: AllocationCardProps) {
   const mounted = useIsClient();
+  const allocation = assetsToAllocation(assets);
 
   return (
     <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">

@@ -3,14 +3,9 @@ import { ArrowRight, Bot, Route, Sparkles } from "lucide-react";
 import {
   PORTFOLIO_AGENT_CHAT_HREF,
   PORTFOLIO_ROUTE_OPTIMIZER_HREF,
+  portfolioInsights,
   type PortfolioInsight,
 } from "@/lib/portfolio-data";
-
-type AiPortfolioInsightsProps = {
-  routeOpportunities: PortfolioInsight[];
-  suggestedSwaps: PortfolioInsight[];
-  liquidityAlerts: PortfolioInsight[];
-};
 
 function InsightGroup({
   title,
@@ -40,11 +35,7 @@ function InsightGroup({
   );
 }
 
-export function AiPortfolioInsights({
-  routeOpportunities,
-  suggestedSwaps,
-  liquidityAlerts,
-}: AiPortfolioInsightsProps) {
+export function AiPortfolioInsights() {
   return (
     <div className="space-y-6">
       <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl sm:p-6">
@@ -63,10 +54,16 @@ export function AiPortfolioInsights({
         <div className="space-y-6">
           <InsightGroup
             title="Best route opportunities"
-            items={routeOpportunities}
+            items={portfolioInsights.routeOpportunities}
           />
-          <InsightGroup title="Suggested swaps" items={suggestedSwaps} />
-          <InsightGroup title="Liquidity alerts" items={liquidityAlerts} />
+          <InsightGroup
+            title="Suggested swaps"
+            items={portfolioInsights.suggestedSwaps}
+          />
+          <InsightGroup
+            title="Liquidity alerts"
+            items={portfolioInsights.liquidityAlerts}
+          />
         </div>
       </div>
 
