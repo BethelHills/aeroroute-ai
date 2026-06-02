@@ -1,12 +1,8 @@
 import { createConfig, http } from "wagmi";
-import {
-  coinbaseWallet,
-  injected,
-  metaMask,
-  walletConnect,
-} from "wagmi/connectors";
+import { coinbaseWallet, metaMask, walletConnect } from "wagmi/connectors";
 import { base } from "viem/chains";
 import { getWalletConnectProjectId } from "@/lib/wallet/para-config";
+import { WALLETCONNECT_FEATURED_WALLET_IDS } from "@/lib/wallet/walletconnect-featured-wallets";
 
 const projectId = getWalletConnectProjectId();
 const hasWalletConnect = Boolean(projectId);
@@ -20,12 +16,6 @@ export const wagmiConfig = createConfig({
   connectors: [
     metaMask({ dappMetadata: { name: "AeroRoute AI" } }),
     coinbaseWallet({ appName: "AeroRoute AI", preference: "all" }),
-    injected({ target: "rabby" }),
-    injected({ target: "braveWallet" }),
-    injected({ target: "rainbow" }),
-    injected({ target: "okxWallet" }),
-    injected({ target: "trustWallet" }),
-    injected({ target: "phantom" }),
     ...(hasWalletConnect
       ? [
           walletConnect({
@@ -38,6 +28,9 @@ export const wagmiConfig = createConfig({
               icons: [],
             },
             qrModalOptions: {
+              explorerRecommendedWalletIds: [
+                ...WALLETCONNECT_FEATURED_WALLET_IDS,
+              ],
               themeMode: "dark",
               themeVariables: {
                 "--wcm-z-index": "50000",

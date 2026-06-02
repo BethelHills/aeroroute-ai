@@ -198,7 +198,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
                           </span>
                         ) : option.id === "walletConnect" ? (
                           <span className="block text-xs text-slate-500">
-                            Mobile &amp; desktop apps
+                            Rabby, Rainbow, OKX, Phantom &amp; more
                           </span>
                         ) : null}
                       </span>
