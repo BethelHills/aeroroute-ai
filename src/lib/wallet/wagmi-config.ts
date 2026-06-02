@@ -37,6 +37,14 @@ export const wagmiConfig = createConfig({
               url: "https://aeroroute.ai",
               icons: [],
             },
+            qrModalOptions: {
+              themeMode: "dark",
+              themeVariables: {
+                "--wcm-z-index": "50000",
+                "--wcm-accent-color": "#ffffff",
+                "--wcm-background-color": "#061018",
+              },
+            },
           }),
         ]
       : []),

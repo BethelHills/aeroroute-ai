@@ -125,10 +125,16 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
     if (!option.available) return;
 
     setConnectError(null);
+    setOpen(false);
     setIsConnecting(true);
+
+    // Let the portaled wallet menu unmount before WalletConnect opens its QR modal.
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => resolve());
+    });
+
     try {
       await connectWalletOption(wagmiConfig, option);
-      setOpen(false);
     } catch (error) {
       const message =
         error instanceof Error

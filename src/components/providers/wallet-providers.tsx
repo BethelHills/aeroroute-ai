@@ -1,5 +1,6 @@
 "use client";
 
+import "@/components/wallet/walletconnect-modal.css";
 import { useEffect, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";

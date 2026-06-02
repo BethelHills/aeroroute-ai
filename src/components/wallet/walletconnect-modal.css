@@ -1,0 +1,9 @@
+/* Reown AppKit / WalletConnect modal must sit above portaled wallet picker (z-index 10000). */
+w3m-modal {
+  z-index: 50000 !important;
+}
+
+w3m-modal wui-qr-code {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
