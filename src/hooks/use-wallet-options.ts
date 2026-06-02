@@ -1,11 +1,18 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 import type { EIP6963ProviderDetail } from "mipd";
 import { useConfig } from "wagmi";
 import { getEip6963Store } from "@/lib/wallet/eip6963-store";
 
 export type WalletOption =
+  | {
+      kind: "connector";
+      id: string;
+      name: string;
+      icon?: string;
+      connectorUid: string;
+    }
   | {
       kind: "eip6963";
       id: string;
@@ -18,12 +25,6 @@ export type WalletOption =
       id: string;
       name: string;
       target: NamedWalletTarget;
-    }
-  | {
-      kind: "walletConnect";
-      id: string;
-      name: string;
-      connectorId: string;
     };
 
 export type NamedWalletTarget =
@@ -36,44 +37,34 @@ export type NamedWalletTarget =
   | "trustWallet"
   | "phantom";
 
-const NAMED_WALLET_CANDIDATES: ReadonlyArray<{
-  target: NamedWalletTarget;
+/** Always listed so users can pick a wallet even before EIP-6963 announces. */
+const FALLBACK_WALLETS: ReadonlyArray<{
+  id: string;
   name: string;
+  target: NamedWalletTarget;
 }> = [
-  { target: "metaMask", name: "MetaMask" },
-  { target: "coinbaseWallet", name: "Coinbase Wallet" },
-  { target: "rabby", name: "Rabby" },
-  { target: "braveWallet", name: "Brave Wallet" },
-  { target: "rainbow", name: "Rainbow" },
-  { target: "okxWallet", name: "OKX Wallet" },
-  { target: "trustWallet", name: "Trust Wallet" },
-  { target: "phantom", name: "Phantom" },
+  { id: "fallback-metaMask", name: "MetaMask", target: "metaMask" },
+  {
+    id: "fallback-coinbaseWallet",
+    name: "Coinbase Wallet",
+    target: "coinbaseWallet",
+  },
+  { id: "fallback-rabby", name: "Rabby", target: "rabby" },
+  { id: "fallback-braveWallet", name: "Brave Wallet", target: "braveWallet" },
+  { id: "fallback-rainbow", name: "Rainbow", target: "rainbow" },
+  { id: "fallback-okxWallet", name: "OKX Wallet", target: "okxWallet" },
+  { id: "fallback-trustWallet", name: "Trust Wallet", target: "trustWallet" },
+  { id: "fallback-phantom", name: "Phantom", target: "phantom" },
 ];
 
-function flagForTarget(target: NamedWalletTarget): string {
-  return `is${target[0].toUpperCase()}${target.slice(1)}`;
+function normalizeName(name: string): string {
+  return name.trim().toLowerCase();
 }
 
-function isNamedWalletAvailable(target: NamedWalletTarget): boolean {
-  if (typeof window === "undefined") return false;
-
-  const ethereum = window.ethereum as
-    | (Record<string, unknown> & {
-        providers?: Array<Record<string, unknown>>;
-      })
-    | undefined;
-
-  if (!ethereum) return false;
-
-  const flag = flagForTarget(target);
-  if (ethereum[flag] === true) return true;
-
-  const providers = ethereum.providers;
-  if (Array.isArray(providers)) {
-    return providers.some((provider) => provider[flag] === true);
-  }
-
-  return false;
+function formatConnectorLabel(id: string, name: string): string {
+  if (id === "injected") return "";
+  if (normalizeName(name) === "injected") return "";
+  return name;
 }
 
 function subscribeEip6963(onChange: () => void) {
@@ -87,51 +78,17 @@ function getEip6963Providers(): EIP6963ProviderDetail[] {
   return [...providers];
 }
 
-function buildEip6963Options(
-  providers: EIP6963ProviderDetail[],
-): WalletOption[] {
-  return providers.map((detail) => ({
-    kind: "eip6963" as const,
-    id: detail.info.uuid,
-    name: detail.info.name,
-    icon: detail.info.icon,
-    detail,
-  }));
-}
-
-function buildNamedOptions(existingRdns: Set<string>): WalletOption[] {
-  return NAMED_WALLET_CANDIDATES.filter(({ target, name }) => {
-    if (!isNamedWalletAvailable(target)) return false;
-    const rdnsKey = target.toLowerCase();
-    if (existingRdns.has(rdnsKey)) return false;
+function dedupeOptions(options: WalletOption[]): WalletOption[] {
+  const seen = new Set<string>();
+  return options.filter((option) => {
+    const key = normalizeName(option.name);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
     return true;
-  }).map(({ target, name }) => ({
-    kind: "named" as const,
-    id: `named-${target}`,
-    name,
-    target,
-  }));
+  });
 }
 
-function buildWalletConnectOption(
-  connectors: ReturnType<typeof useConfig>["connectors"],
-): WalletOption | null {
-  const connector = connectors.find(
-    (item) =>
-      item.id === "walletConnect" ||
-      item.type === "walletConnect" ||
-      item.name === "WalletConnect",
-  );
-  if (!connector) return null;
-  return {
-    kind: "walletConnect",
-    id: "wallet-connect",
-    name: "WalletConnect",
-    connectorId: connector.id,
-  };
-}
-
-export function useWalletOptions(): WalletOption[] {
+export function useWalletOptions(refreshToken = 0): WalletOption[] {
   const { connectors } = useConfig();
   const eip6963Providers = useSyncExternalStore(
     subscribeEip6963,
@@ -139,39 +96,56 @@ export function useWalletOptions(): WalletOption[] {
     () => [],
   );
 
+  useEffect(() => {
+    getEip6963Store()?.reset();
+  }, [refreshToken]);
+
   return useMemo(() => {
-    const eip6963Options = buildEip6963Options(eip6963Providers);
-    const rdnsSet = new Set(
-      eip6963Providers.map((p) => p.info.rdns.toLowerCase()),
-    );
-    const namedOptions = buildNamedOptions(rdnsSet);
-    const walletConnect = buildWalletConnectOption(connectors);
-
-    const merged: WalletOption[] = [
-      ...eip6963Options,
-      ...namedOptions,
-      ...(walletConnect ? [walletConnect] : []),
-    ];
-
-    if (
-      merged.length === 0 &&
-      typeof window !== "undefined" &&
-      window.ethereum
-    ) {
-      merged.push({
-        kind: "named",
-        id: "named-browser-ethereum",
-        name: "Browser Wallet",
-        target: "metaMask",
+    const connectorOptions: Extract<WalletOption, { kind: "connector" }>[] = [];
+    for (const connector of connectors) {
+      const label = formatConnectorLabel(connector.id, connector.name);
+      if (!label) continue;
+      connectorOptions.push({
+        kind: "connector",
+        id: connector.id,
+        name: label,
+        icon: typeof connector.icon === "string" ? connector.icon : undefined,
+        connectorUid: connector.uid,
       });
     }
 
-    const seen = new Set<string>();
-    return merged.filter((option) => {
-      const key = `${option.kind}:${option.id}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const eip6963Options: WalletOption[] = eip6963Providers.map((detail) => ({
+      kind: "eip6963" as const,
+      id: detail.info.uuid,
+      name: detail.info.name,
+      icon: detail.info.icon,
+      detail,
+    }));
+
+    const existingNames = new Set(
+      [...connectorOptions, ...eip6963Options].map((o) => normalizeName(o.name)),
+    );
+
+    const fallbackOptions: WalletOption[] = FALLBACK_WALLETS.filter(
+      (wallet) => !existingNames.has(normalizeName(wallet.name)),
+    ).map((wallet) => ({
+      kind: "named" as const,
+      id: wallet.id,
+      name: wallet.name,
+      target: wallet.target,
+    }));
+
+    const merged = dedupeOptions([
+      ...eip6963Options,
+      ...connectorOptions,
+      ...fallbackOptions,
+    ]);
+
+    return merged.length > 0 ? merged : FALLBACK_WALLETS.map((wallet) => ({
+      kind: "named" as const,
+      id: wallet.id,
+      name: wallet.name,
+      target: wallet.target,
+    }));
   }, [connectors, eip6963Providers]);
 }

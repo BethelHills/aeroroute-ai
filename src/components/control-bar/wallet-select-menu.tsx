@@ -24,11 +24,16 @@ type WalletSelectMenuProps = WalletSelectProps & {
 };
 
 function WalletOptionIcon({ option }: { option: WalletOption }) {
-  if (option.kind === "eip6963" && option.icon) {
+  const icon =
+    option.kind === "connector" || option.kind === "eip6963"
+      ? option.icon
+      : undefined;
+
+  if (icon) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- EIP-6963 data-URI icons from wallets
+      // eslint-disable-next-line @next/next/no-img-element -- wallet brand icons (EIP-6963 / wagmi)
       <img
-        src={option.icon}
+        src={icon}
         alt=""
         className="size-8 shrink-0 rounded-lg object-contain"
       />
@@ -50,7 +55,8 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   const adapter = useAomiAuthAdapter();
   const identity = adapter.identity;
   const wagmiConfig = useConfig();
-  const walletOptions = useWalletOptions();
+  const [refreshToken, setRefreshToken] = useState(0);
+  const walletOptions = useWalletOptions(refreshToken);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
@@ -62,6 +68,10 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
     if (!open) return;
     setConnectError(null);
     getEip6963Store()?.reset();
+    const timer = window.setTimeout(() => {
+      setRefreshToken((value) => value + 1);
+    }, 150);
+    return () => window.clearTimeout(timer);
   }, [open]);
 
   useLayoutEffect(() => {
@@ -116,7 +126,6 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
     );
   }
 
-  const isBooting = identity.status === "booting";
   const canOpenMenu = !identity.isConnected;
 
   const handlePick = async (option: WalletOption) => {
@@ -173,22 +182,8 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
               <p className="shrink-0 border-b border-white/10 px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Choose a wallet
               </p>
-              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
-                {isBooting ? (
-                  <p className="px-2.5 py-3 text-sm text-slate-400">
-                    Preparing wallet options…
-                  </p>
-                ) : walletOptions.length === 0 ? (
-                  <p className="px-2.5 py-3 text-sm leading-relaxed text-slate-400">
-                    No wallets detected. Install a browser extension (MetaMask,
-                    Rabby, Coinbase Wallet, etc.) or add{" "}
-                    <code className="text-emerald-300">
-                      NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
-                    </code>{" "}
-                    for WalletConnect.
-                  </p>
-                ) : (
-                  walletOptions.map((option) => (
+              <div className="min-h-[12rem] min-w-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
+                {walletOptions.map((option) => (
                     <button
                       key={`${option.kind}-${option.id}`}
                       type="button"
@@ -200,15 +195,15 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
                       <WalletOptionIcon option={option} />
                       <span className="min-w-0 flex-1">
                         <span className="block font-semibold">{option.name}</span>
-                        {option.kind === "walletConnect" ? (
+                        {option.kind === "connector" &&
+                        option.id === "walletConnect" ? (
                           <span className="block text-xs text-slate-500">
                             Mobile &amp; desktop apps
                           </span>
                         ) : null}
                       </span>
                     </button>
-                  ))
-                )}
+                  ))}
               </div>
               {connectError ? (
                 <p className="shrink-0 border-t border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-200">
