@@ -10,26 +10,37 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDownIcon, WalletIcon } from "lucide-react";
-import { useConnect, useConfig } from "wagmi";
+import { useConfig } from "wagmi";
 import { cn } from "@aomi-labs/react";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
-import { DEFAULT_CHAIN_ID } from "@/lib/wallet/para-config";
+import { connectWalletOption } from "@/lib/wallet/connect-wallet-option";
+import { getEip6963Store } from "@/lib/wallet/eip6963-store";
+import { useWalletOptions, type WalletOption } from "@/hooks/use-wallet-options";
 import { ConnectButton } from "./connect-button";
 import type { WalletSelectProps } from "./wallet-select";
-
-function connectorLabel(name: string, id: string): string {
-  if (id === "injected" || name === "Injected") {
-    return "Browser Wallet";
-  }
-  if (id === "walletConnect" || name === "WalletConnect") {
-    return "WalletConnect";
-  }
-  return name;
-}
 
 type WalletSelectMenuProps = WalletSelectProps & {
   menuId?: string;
 };
+
+function WalletOptionIcon({ option }: { option: WalletOption }) {
+  if (option.kind === "eip6963" && option.icon) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- EIP-6963 data-URI icons from wallets
+      <img
+        src={option.icon}
+        alt=""
+        className="size-8 shrink-0 rounded-lg object-contain"
+      />
+    );
+  }
+
+  return (
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15 text-emerald-300">
+      <WalletIcon className="size-4" />
+    </span>
+  );
+}
 
 export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   className,
@@ -38,15 +49,20 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
 }) => {
   const adapter = useAomiAuthAdapter();
   const identity = adapter.identity;
-  const { connectAsync, isPending } = useConnect();
-  const { connectors: configConnectors } = useConfig();
-  const { connectors: hookConnectors } = useConnect();
-  const connectors =
-    hookConnectors.length > 0 ? hookConnectors : configConnectors;
+  const wagmiConfig = useConfig();
+  const walletOptions = useWalletOptions();
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectError, setConnectError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setConnectError(null);
+    getEip6963Store()?.reset();
+  }, [open]);
 
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
@@ -55,7 +71,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
       const rect = triggerRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      const menuWidth = Math.max(rect.width, 220);
+      const menuWidth = Math.min(320, Math.max(rect.width, 260));
       const left = Math.max(
         12,
         Math.min(rect.left, window.innerWidth - menuWidth - 12),
@@ -66,6 +82,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
         left,
         bottom: window.innerHeight - rect.top + 10,
         width: menuWidth,
+        maxHeight: "min(70vh, 420px)",
         zIndex: 10000,
       });
     };
@@ -102,15 +119,25 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   const isBooting = identity.status === "booting";
   const canOpenMenu = !identity.isConnected;
 
-  const handlePick = async (connector: (typeof connectors)[number]) => {
+  const handlePick = async (option: WalletOption) => {
+    setConnectError(null);
+    setIsConnecting(true);
     try {
-      await connectAsync({
-        connector,
-        chainId: DEFAULT_CHAIN_ID,
-      });
+      await connectWalletOption(
+        wagmiConfig,
+        option,
+        wagmiConfig.connectors,
+      );
       setOpen(false);
     } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Could not connect wallet. Try another option.";
+      setConnectError(message);
       console.error("Wallet connection failed:", error);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -141,48 +168,53 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
               role="menu"
               aria-label="Choose a wallet"
               style={menuStyle}
-              className="aui-wallet-select-menu fixed z-[10000] rounded-xl border border-white/15 bg-[#061018] p-1.5 text-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.55)]"
+              className="aui-wallet-select-menu fixed z-[10000] flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#061018] text-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.55)]"
             >
-              <p className="px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <p className="shrink-0 border-b border-white/10 px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 Choose a wallet
               </p>
-              {isBooting ? (
-                <p className="px-2.5 py-2 text-sm text-slate-400">
-                  Preparing wallet options…
-                </p>
-              ) : connectors.length === 0 ? (
-                <p className="px-2.5 py-2 text-sm text-slate-400">
-                  No wallet found. Install MetaMask or another browser wallet,
-                  or set{" "}
-                  <code className="text-emerald-300">NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code>{" "}
-                  for WalletConnect.
-                </p>
-              ) : (
-                connectors.map((connector) => (
-                  <button
-                    key={connector.uid}
-                    type="button"
-                    role="menuitem"
-                    disabled={isPending}
-                    onClick={() => void handlePick(connector)}
-                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-wait disabled:opacity-60"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-400/15 text-emerald-300">
-                      <WalletIcon className="size-4" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold">
-                        {connectorLabel(connector.name, connector.id)}
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
+                {isBooting ? (
+                  <p className="px-2.5 py-3 text-sm text-slate-400">
+                    Preparing wallet options…
+                  </p>
+                ) : walletOptions.length === 0 ? (
+                  <p className="px-2.5 py-3 text-sm leading-relaxed text-slate-400">
+                    No wallets detected. Install a browser extension (MetaMask,
+                    Rabby, Coinbase Wallet, etc.) or add{" "}
+                    <code className="text-emerald-300">
+                      NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+                    </code>{" "}
+                    for WalletConnect.
+                  </p>
+                ) : (
+                  walletOptions.map((option) => (
+                    <button
+                      key={`${option.kind}-${option.id}`}
+                      type="button"
+                      role="menuitem"
+                      disabled={isConnecting}
+                      onClick={() => void handlePick(option)}
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-wait disabled:opacity-60"
+                    >
+                      <WalletOptionIcon option={option} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-semibold">{option.name}</span>
+                        {option.kind === "walletConnect" ? (
+                          <span className="block text-xs text-slate-500">
+                            Mobile &amp; desktop apps
+                          </span>
+                        ) : null}
                       </span>
-                      {!connector.ready ? (
-                        <span className="block text-xs text-slate-500">
-                          Tap to connect
-                        </span>
-                      ) : null}
-                    </span>
-                  </button>
-                ))
-              )}
+                    </button>
+                  ))
+                )}
+              </div>
+              {connectError ? (
+                <p className="shrink-0 border-t border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-200">
+                  {connectError}
+                </p>
+              ) : null}
             </div>
           </>,
           document.body,
@@ -194,7 +226,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
       <button
         ref={triggerRef}
         type="button"
-        disabled={!canOpenMenu || isPending}
+        disabled={!canOpenMenu || isConnecting}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
@@ -203,7 +235,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
       >
         <WalletIcon className="size-4 shrink-0 opacity-90" />
         <span className="max-md:max-w-[5.5rem] max-md:truncate">
-          {isPending ? "Connecting…" : connectLabel}
+          {isConnecting ? "Connecting…" : connectLabel}
         </span>
         <ChevronDownIcon
           className={cn(
