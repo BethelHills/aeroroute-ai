@@ -123,7 +123,7 @@ function TokenButton({
         aria-label={`Change ${label} token, currently ${token.symbol}`}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <SwapTokenIcon token={token} size="sm" />
+          <SwapTokenIcon key={token.symbol} token={token} size="sm" />
           <div className="min-w-0">
             <p className="font-black text-white">{token.symbol}</p>
             <p className="text-xs text-slate-500">{token.name}</p>

@@ -2,39 +2,8 @@
 
 import { useState } from "react";
 import type { SwapToken } from "@/lib/swap-tokens";
+import { getSwapTokenIconUrls } from "@/lib/swap-token-icons";
 import { cn } from "@/lib/utils";
-
-const CRYPTO_ICON_CDN =
-  "https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color";
-
-/** Maps swap symbols to cryptocurrency-icons slugs (lowercase). */
-const SYMBOL_ICON_SLUG: Record<string, string> = {
-  ETH: "eth",
-  WETH: "weth",
-  cbBTC: "btc",
-  WBTC: "wbtc",
-  USDC: "usdc",
-  USDT: "usdt",
-  USDbC: "usdc",
-  DAI: "dai",
-  LINK: "link",
-  UNI: "uni",
-  OP: "op",
-};
-
-/** Symbols that need a custom logo URL (not in cryptocurrency-icons). */
-const CUSTOM_ICON_URL: Record<string, string> = {
-  AERO: "https://assets.coingecko.com/coins/images/31745/small/symbol.png",
-};
-
-export function getSwapTokenIconUrl(symbol: string): string | undefined {
-  if (CUSTOM_ICON_URL[symbol]) {
-    return CUSTOM_ICON_URL[symbol];
-  }
-  const slug = SYMBOL_ICON_SLUG[symbol];
-  if (!slug) return undefined;
-  return `${CRYPTO_ICON_CDN}/${slug}.svg`;
-}
 
 type SwapTokenIconProps = {
   token: Pick<SwapToken, "symbol" | "color">;
@@ -47,11 +16,14 @@ export function SwapTokenIcon({
   size = "md",
   className,
 }: SwapTokenIconProps) {
-  const [failed, setFailed] = useState(false);
-  const iconUrl = getSwapTokenIconUrl(token.symbol);
-  const dim = size === "sm" ? "h-11 w-11 text-sm" : "h-12 w-12 text-sm";
+  const urls = getSwapTokenIconUrls(token.symbol);
+  const [urlIndex, setUrlIndex] = useState(0);
 
-  if (!iconUrl || failed) {
+  const dim = size === "sm" ? "h-11 w-11 text-sm" : "h-12 w-12 text-sm";
+  const px = size === "sm" ? 44 : 48;
+  const currentUrl = urls[urlIndex];
+
+  if (!currentUrl) {
     return (
       <span
         className={cn(
@@ -77,13 +49,23 @@ export function SwapTokenIcon({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={iconUrl}
+        key={`${token.symbol}-${urlIndex}`}
+        src={currentUrl}
         alt=""
-        width={size === "sm" ? 44 : 48}
-        height={size === "sm" ? 44 : 48}
+        width={px}
+        height={px}
+        loading="lazy"
+        decoding="async"
         className="h-full w-full object-cover"
-        onError={() => setFailed(true)}
+        onError={() => {
+          setUrlIndex((index) => index + 1);
+        }}
       />
     </span>
   );
+}
+
+/** @deprecated Use getSwapTokenIconUrls from @/lib/swap-token-icons */
+export function getSwapTokenIconUrl(symbol: string): string | undefined {
+  return getSwapTokenIconUrls(symbol)[0];
 }

@@ -109,7 +109,7 @@ function TokenSelect({ label, token, onSelect }: TokenSelectProps) {
         aria-label={`Change ${label} token, currently ${token.symbol}`}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <SwapTokenIcon token={token} size="md" />
+          <SwapTokenIcon key={token.symbol} token={token} size="md" />
           <div className="min-w-0">
             <p className="text-lg font-black text-white">{token.symbol}</p>
             <p className="text-xs text-slate-500">{token.name}</p>
