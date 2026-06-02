@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAssistantApi } from "@assistant-ui/react";
-import { useAomiRuntime, useControl, useUser } from "@aomi-labs/react";
+import { useAomiRuntime, useControl } from "@aomi-labs/react";
 
 export const AEROROUTE_DEFAULT_PROMPT =
   "Find best Aerodrome route for swapping 1 ETH to USDC";
@@ -12,13 +12,11 @@ type AerorouteChatBootstrapProps = {
   initialPrompt?: string;
   /** Send the initial prompt when the thread is empty (first load). */
   autoSend?: boolean;
-  chainId?: number;
 };
 
 export function AerorouteChatBootstrap({
   initialPrompt: initialPromptProp,
   autoSend = true,
-  chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 8453),
 }: AerorouteChatBootstrapProps) {
   const searchParams = useSearchParams();
   const promptFromUrl = searchParams.get("prompt")?.trim();
@@ -29,7 +27,6 @@ export function AerorouteChatBootstrap({
   const { sendMessage, getMessages, threadViewKey } = useAomiRuntime();
   const { getAvailableModels, getAuthorizedApps, syncCurrentThreadControl } =
     useControl();
-  const { setUser } = useUser();
   const hasAutoSentRef = useRef(false);
   const lastPromptRef = useRef(initialPrompt);
 
@@ -37,11 +34,6 @@ export function AerorouteChatBootstrap({
     void getAvailableModels();
     void getAuthorizedApps();
   }, [getAvailableModels, getAuthorizedApps]);
-
-  useEffect(() => {
-    if (!Number.isFinite(chainId)) return;
-    setUser({ chain_id: chainId });
-  }, [chainId, setUser]);
 
   useEffect(() => {
     let cancelled = false;

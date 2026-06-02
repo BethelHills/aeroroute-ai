@@ -43,6 +43,7 @@ import { AppSelect } from "@/components/control-bar/app-select";
 import { ApiKeyInput } from "@/components/control-bar/api-key-input";
 import { NetworkSelect } from "@/components/control-bar/network-select";
 import { WalletSelect } from "@/components/control-bar/wallet-select";
+import { SwitchToBasePrompt } from "@/components/wallet/switch-to-base-prompt";
 import { SecretGate } from "@/components/control-bar/secret-gate";
 import { PaymentRequiredGate } from "@/components/control-bar/payment-required-gate";
 import {
@@ -214,6 +215,7 @@ const Composer: FC = () => {
   return (
     <div className="aui-composer-wrapper bg-background mx-auto flex w-full max-w-[var(--thread-max-width)] shrink-0 flex-col gap-4 overflow-visible px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-3 md:pb-6">
       <ThreadScrollToBottom />
+      <SwitchToBasePrompt className="border-border/40 bg-muted/20 dark:border-orange-400/30 dark:bg-orange-400/10" />
       <ComposerPrimitive.Root className="aui-composer-root rounded-4xl bg-muted/20 text-card-foreground border-border/40 relative flex w-full min-w-0 flex-col border px-1 pt-2">
         <ComposerPrimitive.Input
           placeholder="Send a message..."

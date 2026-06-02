@@ -4,6 +4,7 @@ import { Network } from "lucide-react";
 import { cn, getChainInfo } from "@aomi-labs/react";
 import { ConnectButton } from "@/components/control-bar/connect-button";
 import { NetworkSelect } from "@/components/control-bar/network-select";
+import { SwitchToBasePrompt } from "@/components/wallet/switch-to-base-prompt";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
 const DEFAULT_CHAIN_ID = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? 8453);
@@ -39,27 +40,30 @@ export function WalletStatusButtons({
   );
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-2 sm:gap-3", className)}>
-      <ConnectButton connectLabel="Connect Wallet" className={connectClass} />
+    <div className={cn("flex flex-col items-end gap-2 sm:items-stretch", className)}>
+      <SwitchToBasePrompt variant="compact" className="w-full max-w-md sm:max-w-lg" />
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <ConnectButton connectLabel="Connect Wallet" className={connectClass} />
 
-      {identity.isConnected ? (
-        <NetworkSelect
-          showChainId
-          className={cn(
-            chainClass,
-            "text-[#041014] hover:bg-gradient-to-r hover:from-emerald-400 hover:to-cyan-400 hover:text-[#041014]",
-          )}
-        />
-      ) : (
-        <div
-          className={cn(chainClass, "inline-flex items-center gap-2")}
-          aria-label={`Network ${chainName} ${DEFAULT_CHAIN_ID}`}
-        >
-          <Network size={isHero ? 17 : 16} className="shrink-0" />
-          <span>{chainName}</span>
-          <span className="opacity-80">{DEFAULT_CHAIN_ID}</span>
-        </div>
-      )}
+        {identity.isConnected ? (
+          <NetworkSelect
+            showChainId
+            className={cn(
+              chainClass,
+              "text-[#041014] hover:bg-gradient-to-r hover:from-emerald-400 hover:to-cyan-400 hover:text-[#041014]",
+            )}
+          />
+        ) : (
+          <div
+            className={cn(chainClass, "inline-flex items-center gap-2")}
+            aria-label={`Network ${chainName} ${DEFAULT_CHAIN_ID}`}
+          >
+            <Network size={isHero ? 17 : 16} className="shrink-0" />
+            <span>{chainName}</span>
+            <span className="opacity-80">{DEFAULT_CHAIN_ID}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

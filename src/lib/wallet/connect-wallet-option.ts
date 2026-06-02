@@ -1,6 +1,7 @@
 import { connect, getConnectors } from "@wagmi/core";
 import type { Config } from "wagmi";
 import { DEFAULT_CHAIN_ID } from "@/lib/wallet/para-config";
+import { offerSwitchToBase } from "@/lib/wallet/switch-to-base";
 import type { WalletOption } from "@/hooks/use-wallet-options";
 
 export async function connectWalletOption(
@@ -23,4 +24,6 @@ export async function connectWalletOption(
     connector,
     chainId: DEFAULT_CHAIN_ID,
   });
+
+  await offerSwitchToBase(config);
 }

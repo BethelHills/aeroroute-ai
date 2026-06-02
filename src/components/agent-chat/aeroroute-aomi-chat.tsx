@@ -9,6 +9,7 @@ import {
   AEROROUTE_DEFAULT_PROMPT,
 } from "@/components/agent-chat/aeroroute-chat-bootstrap";
 import { WalletSelect } from "@/components/control-bar/wallet-select";
+import { SwitchToBasePrompt } from "@/components/wallet/switch-to-base-prompt";
 import { cn } from "@/lib/utils";
 import { useAomiRuntime } from "@aomi-labs/react";
 import {
@@ -172,6 +173,10 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
               <ChevronDown size={15} />
             </div>
           </div>
+        </div>
+
+        <div className="shrink-0 border-b border-white/10 px-4 py-3 sm:px-5">
+          <SwitchToBasePrompt variant="compact" />
         </div>
 
         <div className="aeroroute-aomi-thread dark relative min-h-0 min-w-0 flex-1 overflow-hidden">

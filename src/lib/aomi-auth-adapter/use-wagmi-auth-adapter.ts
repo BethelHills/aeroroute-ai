@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import {
   useAccount,
+  useConfig,
   useConnect,
   useDisconnect,
   useSwitchChain,
@@ -11,6 +12,7 @@ import {
   AEROROUTE_EVM_CHAINS,
   DEFAULT_CHAIN_ID,
 } from "@/lib/wallet/para-config";
+import { offerSwitchToBase } from "@/lib/wallet/switch-to-base";
 import {
   AOMI_AUTH_BOOTING_IDENTITY,
   AOMI_AUTH_DISCONNECTED_IDENTITY,
@@ -18,6 +20,7 @@ import {
 import type { AomiAuthAdapter, AomiAuthIdentity } from "./types";
 
 export function useWagmiAuthAdapter(): AomiAuthAdapter {
+  const config = useConfig();
   const {
     address,
     chainId,
@@ -42,7 +45,7 @@ export function useWagmiAuthAdapter(): AomiAuthAdapter {
       status: "connected",
       isConnected: true,
       address,
-      chainId: chainId ?? DEFAULT_CHAIN_ID,
+      chainId,
       authMethod: "wagmi",
       walletKind: "eoa",
     };
@@ -58,7 +61,8 @@ export function useWagmiAuthAdapter(): AomiAuthAdapter {
       connector,
       chainId: DEFAULT_CHAIN_ID,
     });
-  }, [connectAsync, connectors]);
+    await offerSwitchToBase(config);
+  }, [config, connectAsync, connectors]);
 
   const disconnect = useCallback(async () => {
     await disconnectAsync();
