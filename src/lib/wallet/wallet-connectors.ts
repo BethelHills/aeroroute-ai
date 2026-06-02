@@ -1,6 +1,6 @@
 import { coinbaseWallet, injected, metaMask } from "wagmi/connectors";
 import type { InjectedParameters } from "wagmi/connectors";
-import { findWalletProviderById } from "@/lib/wallet/detect-wallet-providers";
+import { findDetectedWalletProvider } from "@/lib/wallet/detect-wallet-providers";
 import type { EthereumWindow } from "@/lib/wallet/ethereum-provider";
 import type { WalletMenuId } from "@/lib/wallet/wallet-menu";
 
@@ -9,17 +9,15 @@ type InjectedTargetObject = Extract<
   { id: string; name: string }
 >;
 
-function injectedTarget(
-  walletId: WalletMenuId,
+function detectedWalletTarget(
+  walletId: Extract<WalletMenuId, "rabby" | "okx" | "brave" | "trust" | "coin98">,
   name: string,
 ): InjectedTargetObject {
-  const id = walletId === "browser" ? "browser-wallet" : walletId;
-
   return {
-    id,
+    id: walletId,
     name,
     provider(window) {
-      const provider = findWalletProviderById(
+      const provider = findDetectedWalletProvider(
         window as EthereumWindow | undefined,
         walletId,
       );
@@ -32,15 +30,27 @@ function injectedTarget(
   };
 }
 
+const browserWalletTarget: InjectedTargetObject = {
+  id: "browser-wallet",
+  name: "Browser Wallet",
+  provider(window) {
+    return window?.ethereum as InjectedTargetObject["provider"] extends (
+      ...args: never[]
+    ) => infer R
+      ? R
+      : never;
+  },
+};
+
 export const evmWalletConnectors = [
   metaMask({ dappMetadata: { name: "AeroRoute AI" } }),
   coinbaseWallet({
     appName: "AeroRoute AI",
   }),
-  injected({ target: injectedTarget("rabby", "Rabby") }),
-  injected({ target: injectedTarget("okx", "OKX Wallet") }),
-  injected({ target: injectedTarget("brave", "Brave Wallet") }),
-  injected({ target: injectedTarget("trust", "Trust Wallet") }),
-  injected({ target: injectedTarget("coin98", "Coin98") }),
-  injected({ target: injectedTarget("browser", "Browser Wallet") }),
+  injected({ target: browserWalletTarget }),
+  injected({ target: detectedWalletTarget("rabby", "Rabby") }),
+  injected({ target: detectedWalletTarget("okx", "OKX Wallet") }),
+  injected({ target: detectedWalletTarget("brave", "Brave Wallet") }),
+  injected({ target: detectedWalletTarget("trust", "Trust Wallet") }),
+  injected({ target: detectedWalletTarget("coin98", "Coin98") }),
 ];

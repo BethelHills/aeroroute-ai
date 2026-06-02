@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { getConnectors } from "@wagmi/core";
 import { useConfig } from "wagmi";
 import type { Connector } from "wagmi";
-import {
-  detectWalletProviders,
-  logDetectedWalletProviders,
-} from "@/lib/wallet/detect-wallet-providers";
+import { detectBrowserWalletProviders } from "@/lib/wallet/detect-wallet-providers";
 import { WALLET_MENU_ITEMS } from "@/lib/wallet/wallet-menu";
 
 export type WalletOption = {
@@ -23,6 +20,16 @@ function connectorIcon(connector: Connector): string | undefined {
   return typeof connector.icon === "string" ? connector.icon : undefined;
 }
 
+function isWalletAvailable(
+  item: (typeof WALLET_MENU_ITEMS)[number],
+  connector: Connector | undefined,
+  detectedInstalled: boolean,
+): boolean {
+  if (!connector) return false;
+  if (item.availability === "connector") return true;
+  return detectedInstalled;
+}
+
 export function useWalletOptions(refreshToken = 0): WalletOption[] {
   const config = useConfig();
   const [options, setOptions] = useState<WalletOption[]>([]);
@@ -30,26 +37,29 @@ export function useWalletOptions(refreshToken = 0): WalletOption[] {
   useEffect(() => {
     let cancelled = false;
 
-    async function loadOptions() {
-      logDetectedWalletProviders();
-      const detected = detectWalletProviders();
+    function loadOptions() {
       const connectors = getConnectors(config);
+      console.log("[wallet] connectors", connectors);
+
+      const detectedWallets = detectBrowserWalletProviders();
+      console.log("[wallet] detected browser wallets", detectedWallets);
+
       const installedById = new Map(
-        detected.map((item) => [item.id, item.installed]),
+        detectedWallets.map((entry) => [entry.id, entry.installed]),
       );
 
       const nextOptions = WALLET_MENU_ITEMS.map((item) => {
         const connector = connectors.find(
           (candidate) => candidate.id === item.connectorId,
         );
-        const installed = installedById.get(item.id) ?? false;
+        const detectedInstalled = installedById.get(item.id) ?? false;
 
         return {
           connectorUid: connector?.uid ?? `${item.connectorId}-missing`,
           id: item.id,
           name: item.name,
           icon: connector ? connectorIcon(connector) : undefined,
-          available: installed && Boolean(connector),
+          available: isWalletAvailable(item, connector, detectedInstalled),
           unavailableLabel: item.unavailableLabel ?? "Not Installed",
         };
       });
@@ -58,7 +68,7 @@ export function useWalletOptions(refreshToken = 0): WalletOption[] {
       setOptions(nextOptions);
     }
 
-    void loadOptions();
+    loadOptions();
 
     return () => {
       cancelled = true;

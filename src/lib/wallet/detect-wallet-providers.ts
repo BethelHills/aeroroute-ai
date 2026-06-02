@@ -1,10 +1,10 @@
 import {
   getEthereumProviders,
-  isNamedWalletProvider,
   type EthereumWindow,
   type ExtendedWalletProvider,
 } from "@/lib/wallet/ethereum-provider";
 import {
+  DETECTED_WALLET_IDS,
   WALLET_MENU_ITEMS,
   type WalletMenuId,
 } from "@/lib/wallet/wallet-menu";
@@ -14,17 +14,6 @@ export type DetectedWalletProvider = {
   name: string;
   installed: boolean;
 };
-
-function findMetaMaskProvider(
-  window?: EthereumWindow,
-): ExtendedWalletProvider | undefined {
-  return getEthereumProviders(window).find(
-    (provider) =>
-      Boolean(provider.isMetaMask) &&
-      !provider.isRabby &&
-      !provider.isBraveWallet,
-  );
-}
 
 function findRabbyProvider(
   window?: EthereumWindow,
@@ -73,35 +62,11 @@ function findCoin98Provider(
   );
 }
 
-function findCoinbaseProvider(
-  window?: EthereumWindow,
-): ExtendedWalletProvider | undefined {
-  if (window?.coinbaseWalletExtension) {
-    return window.coinbaseWalletExtension;
-  }
-
-  return getEthereumProviders(window).find((provider) =>
-    Boolean(provider.isCoinbaseWallet),
-  );
-}
-
-function findBrowserWalletProvider(
-  window?: EthereumWindow,
-): ExtendedWalletProvider | undefined {
-  return getEthereumProviders(window).find(
-    (provider) => !isNamedWalletProvider(provider),
-  );
-}
-
-export function findWalletProviderById(
+export function findDetectedWalletProvider(
   window: EthereumWindow | undefined,
   walletId: WalletMenuId,
 ): ExtendedWalletProvider | undefined {
   switch (walletId) {
-    case "metaMask":
-      return findMetaMaskProvider(window);
-    case "coinbase":
-      return findCoinbaseProvider(window);
     case "rabby":
       return findRabbyProvider(window);
     case "okx":
@@ -112,19 +77,20 @@ export function findWalletProviderById(
       return findTrustProvider(window);
     case "coin98":
       return findCoin98Provider(window);
-    case "browser":
-      return findBrowserWalletProvider(window);
+    default:
+      return undefined;
   }
 }
 
-function isWalletInstalled(
+function isDetectedWalletInstalled(
   window: EthereumWindow | undefined,
   walletId: WalletMenuId,
 ): boolean {
-  return Boolean(findWalletProviderById(window, walletId));
+  return Boolean(findDetectedWalletProvider(window, walletId));
 }
 
-export function detectWalletProviders(
+/** Provider-flag detection for extension wallets only (not MetaMask/Coinbase/Browser). */
+export function detectBrowserWalletProviders(
   window?: EthereumWindow,
 ): DetectedWalletProvider[] {
   const targetWindow =
@@ -132,17 +98,23 @@ export function detectWalletProviders(
       ? (globalThis.window as EthereumWindow)
       : window;
 
-  return WALLET_MENU_ITEMS.map((item) => ({
-    id: item.id,
-    name: item.name,
-    installed: isWalletInstalled(targetWindow, item.id),
-  }));
+  return DETECTED_WALLET_IDS.map((walletId) => {
+    const item = WALLET_MENU_ITEMS.find((entry) => entry.id === walletId);
+    return {
+      id: walletId,
+      name: item?.name ?? walletId,
+      installed: isDetectedWalletInstalled(targetWindow, walletId),
+    };
+  });
 }
 
-export function logDetectedWalletProviders(window?: EthereumWindow): void {
-  const providers = detectWalletProviders(window).map(({ name, installed }) => ({
-    name,
-    installed,
-  }));
-  console.log("[wallet] detected providers", providers);
+export function findWalletProviderById(
+  window: EthereumWindow | undefined,
+  walletId: WalletMenuId,
+): ExtendedWalletProvider | undefined {
+  if (walletId === "browser") {
+    return window?.ethereum;
+  }
+
+  return findDetectedWalletProvider(window, walletId);
 }
