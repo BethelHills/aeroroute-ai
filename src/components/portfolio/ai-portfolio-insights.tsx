@@ -1,11 +1,35 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Cpu, Route } from "lucide-react";
-import { recentRouteActivity } from "@/lib/portfolio-data";
+import type { PortfolioViewData } from "@/lib/portfolio-data";
+import { PORTFOLIO_AGENT_PROMPT } from "@/lib/portfolio-data";
 
-export function AiPortfolioInsights() {
-  const prompt = encodeURIComponent(
-    "Analyze my Base wallet and suggest the best Aerodrome route opportunities"
-  );
+type AiPortfolioInsightsProps = {
+  portfolio: PortfolioViewData;
+};
+
+export function AiPortfolioInsights({ portfolio }: AiPortfolioInsightsProps) {
+  const prompt = encodeURIComponent(PORTFOLIO_AGENT_PROMPT);
+  const eth = portfolio.assets.find((asset) => asset.symbol === "ETH");
+  const usdc = portfolio.assets.find((asset) => asset.symbol === "USDC");
+
+  const insights =
+    portfolio.dataMode === "Live"
+      ? [
+          eth?.isLive
+            ? `ETH balance on Base: ${eth.balance} (${eth.value}).`
+            : "Connect on Base to read ETH balance.",
+          usdc?.isLive
+            ? `USDC balance on Base: ${usdc.balance} for stable routing.`
+            : "USDC balance unavailable.",
+          "AERO exposure reflects Aerodrome protocol context on Base.",
+          "Recommended next action: simulate ETH → USDC on Aerodrome.",
+        ]
+      : [
+          "ETH balance is high enough for efficient ETH → USDC route testing.",
+          "Stable allocation supports low-risk route simulation.",
+          "AERO exposure gives useful protocol-aligned portfolio context.",
+          "Recommended next action: simulate ETH → USDC on Aerodrome.",
+        ];
 
   return (
     <div className="space-y-6">
@@ -26,12 +50,7 @@ export function AiPortfolioInsights() {
         </div>
 
         <div className="space-y-3">
-          {[
-            "ETH balance is high enough for efficient ETH → USDC route testing.",
-            "Stable allocation supports low-risk route simulation.",
-            "AERO exposure gives useful protocol-aligned portfolio context.",
-            "Recommended next action: simulate ETH → USDC on Aerodrome.",
-          ].map((item) => (
+          {insights.map((item) => (
             <div key={item} className="flex gap-3 text-sm text-slate-300">
               <CheckCircle2 size={17} className="mt-1 shrink-0 text-emerald-300" />
               <span>{item}</span>
@@ -68,7 +87,7 @@ export function AiPortfolioInsights() {
         </h2>
 
         <div className="mt-5 space-y-3">
-          {recentRouteActivity.map((activity) => (
+          {portfolio.activity.map((activity) => (
             <div
               key={`${activity.pair}-${activity.time}`}
               className="rounded-2xl border border-white/10 bg-black/20 p-4"

@@ -8,9 +8,17 @@ export const PORTFOLIO_AGENT_CHAT_HREF = `/agent-chat?prompt=${encodeURIComponen
 export const PORTFOLIO_ROUTE_OPTIMIZER_HREF = "/route-optimizer";
 
 export const BASE_USDC_ADDRESS =
-  "0x833589fCD6eDb6E08f4c7C32D4f71b54aDaA29" as const;
+  "0x833589fCD6eDb6E08f4c7C32D4f71b54bDA02913" as const;
 export const BASE_AERO_ADDRESS =
-  "0x940181a94A35A4569e4529A3CD4bE3316c0D0C2" as const;
+  "0x940181a94A35A4569E4529A3CDfB74e38FD98631" as const;
+
+export const PORTFOLIO_MOCK_PRICES = {
+  ETH: 3182.45,
+  USDC: 1,
+  AERO: 1.3,
+} as const;
+
+export type PortfolioDataMode = "Live" | "Demo";
 
 export type PortfolioAsset = {
   symbol: string;
@@ -20,7 +28,28 @@ export type PortfolioAsset = {
   change: string;
   allocation: number;
   routeUse: string;
+  isLive?: boolean;
+  /** @deprecated Use isLive */
   live?: boolean;
+};
+
+export type PortfolioViewAsset = PortfolioAsset;
+
+export type PortfolioSummaryView = {
+  totalValue: string;
+  dailyChange: string;
+  dailyPercent: string;
+  routeReadiness: string;
+  riskLevel: string;
+};
+
+export type PortfolioViewData = {
+  dataMode: PortfolioDataMode;
+  isLoading: boolean;
+  readFailed: boolean;
+  assets: PortfolioViewAsset[];
+  summary: PortfolioSummaryView;
+  activity: RouteActivity[];
 };
 
 export type RouteActivity = {
@@ -228,6 +257,7 @@ function applyLiveBalance(
     ...asset,
     balance: formatBalanceAmount(raw, decimals, asset.symbol),
     value: "—",
+    isLive: true,
     live: true,
   };
 }
@@ -248,6 +278,172 @@ export function mergeLiveBalances(
         return asset;
     }
   });
+}
+
+function formatBalanceDisplay(
+  raw: bigint,
+  decimals: number,
+  symbol: string,
+): string {
+  const num = Number(formatUnits(raw, decimals));
+  if (!Number.isFinite(num)) {
+    return "0";
+  }
+  const maxFractionDigits =
+    symbol === "USDC" ? 2 : symbol === "AERO" ? 4 : 4;
+  return num.toLocaleString(undefined, {
+    maximumFractionDigits: maxFractionDigits,
+    minimumFractionDigits: 0,
+  });
+}
+
+function formatUsd(value: number): string {
+  return value.toLocaleString(undefined, {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  });
+}
+
+function parseUsdValue(value: string): number {
+  const parsed = Number(value.replace(/[$,]/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function computeAllocations(
+  assets: PortfolioViewAsset[],
+): PortfolioViewAsset[] {
+  const values = assets.map((asset) => parseUsdValue(asset.value));
+  const total = values.reduce((sum, value) => sum + value, 0);
+
+  if (total <= 0) {
+    return assets.map((asset) => ({ ...asset, allocation: 0 }));
+  }
+
+  const withAlloc = assets.map((asset, index) => ({
+    ...asset,
+    allocation: Math.round((values[index]! / total) * 100),
+  }));
+
+  const sumAlloc = withAlloc.reduce((sum, asset) => sum + asset.allocation, 0);
+  if (sumAlloc !== 100 && withAlloc.length > 0) {
+    const last = withAlloc.length - 1;
+    withAlloc[last] = {
+      ...withAlloc[last]!,
+      allocation: withAlloc[last]!.allocation + (100 - sumAlloc),
+    };
+  }
+
+  return withAlloc;
+}
+
+function deriveRouteReadiness(assets: PortfolioViewAsset[]): string {
+  const eth = assets.find((asset) => asset.symbol === "ETH");
+  const usdc = assets.find((asset) => asset.symbol === "USDC");
+  const ethUsd = eth ? parseUsdValue(eth.value) : 0;
+  const usdcUsd = usdc ? parseUsdValue(usdc.value) : 0;
+
+  if (ethUsd >= 100 || usdcUsd >= 500) {
+    return "High";
+  }
+  if (ethUsd > 0 || usdcUsd > 0) {
+    return "Medium";
+  }
+  return "Low";
+}
+
+export function buildDemoPortfolioView(): PortfolioViewData {
+  return {
+    dataMode: "Demo",
+    isLoading: false,
+    readFailed: false,
+    assets: portfolioAssets,
+    summary: { ...portfolioSummary },
+    activity: recentRouteActivity,
+  };
+}
+
+export type BuildLivePortfolioInput = {
+  eth: bigint;
+  ethDecimals: number;
+  usdc: bigint;
+  usdcDecimals: number;
+  aero: bigint;
+  aeroDecimals: number;
+  isLoading?: boolean;
+  readFailed?: boolean;
+};
+
+export function buildLivePortfolioView(
+  input: BuildLivePortfolioInput,
+): PortfolioViewData {
+  const loadingLabel = "…";
+
+  const ethAmount = Number(formatUnits(input.eth, input.ethDecimals));
+  const usdcAmount = Number(formatUnits(input.usdc, input.usdcDecimals));
+  const aeroAmount = Number(formatUnits(input.aero, input.aeroDecimals));
+
+  const ethValue = ethAmount * PORTFOLIO_MOCK_PRICES.ETH;
+  const usdcValue = usdcAmount * PORTFOLIO_MOCK_PRICES.USDC;
+  const aeroValue = aeroAmount * PORTFOLIO_MOCK_PRICES.AERO;
+
+  const assets = portfolioAssets.map((asset) => {
+    if (asset.symbol === "ETH") {
+      return {
+        ...asset,
+        balance: input.isLoading
+          ? loadingLabel
+          : formatBalanceDisplay(input.eth, input.ethDecimals, "ETH"),
+        value: input.isLoading ? loadingLabel : formatUsd(ethValue),
+        isLive: true,
+      };
+    }
+    if (asset.symbol === "USDC") {
+      return {
+        ...asset,
+        balance: input.isLoading
+          ? loadingLabel
+          : formatBalanceDisplay(input.usdc, input.usdcDecimals, "USDC"),
+        value: input.isLoading ? loadingLabel : formatUsd(usdcValue),
+        isLive: true,
+      };
+    }
+    if (asset.symbol === "AERO") {
+      return {
+        ...asset,
+        balance: input.isLoading
+          ? loadingLabel
+          : formatBalanceDisplay(input.aero, input.aeroDecimals, "AERO"),
+        value: input.isLoading ? loadingLabel : formatUsd(aeroValue),
+        isLive: true,
+      };
+    }
+    return { ...asset, isLive: false };
+  });
+
+  const allocated = computeAllocations(assets);
+  const mockOnlyUsd = allocated
+    .filter((asset) => !asset.isLive)
+    .reduce((sum, asset) => sum + parseUsdValue(asset.value), 0);
+  const liveUsd = ethValue + usdcValue + aeroValue;
+  const totalUsd = input.isLoading ? 0 : liveUsd + mockOnlyUsd;
+
+  return {
+    dataMode: "Live",
+    isLoading: Boolean(input.isLoading),
+    readFailed: Boolean(input.readFailed),
+    assets: allocated,
+    summary: {
+      totalValue: input.isLoading ? loadingLabel : formatUsd(totalUsd),
+      dailyChange: portfolioSummary.dailyChange,
+      dailyPercent: portfolioSummary.dailyPercent,
+      routeReadiness: input.isLoading
+        ? "…"
+        : deriveRouteReadiness(allocated),
+      riskLevel: portfolioSummary.riskLevel,
+    },
+    activity: recentRouteActivity,
+  };
 }
 
 export function getDemoPortfolioState(): PortfolioState {

@@ -2,13 +2,14 @@
 
 import { useSyncExternalStore } from "react";
 import { Sparkles } from "lucide-react";
-import { useAccount } from "wagmi";
 import { AiPortfolioInsights } from "@/components/portfolio/ai-portfolio-insights";
 import { AllocationCard } from "@/components/portfolio/allocation-card";
 import { AssetTable } from "@/components/portfolio/asset-table";
 import { PortfolioDataNotice } from "@/components/portfolio/portfolio-data-notice";
 import { PortfolioSummary } from "@/components/portfolio/portfolio-summary";
 import { PortfolioWalletHeader } from "@/components/portfolio/portfolio-wallet-header";
+import { usePortfolioBalances } from "@/hooks/use-portfolio-balances";
+import { buildDemoPortfolioView, type PortfolioViewData } from "@/lib/portfolio-data";
 
 function useIsClient() {
   return useSyncExternalStore(
@@ -20,13 +21,13 @@ function useIsClient() {
 
 type PortfolioWorkspaceLayoutProps = {
   walletReady: boolean;
-  isConnected: boolean;
+  portfolio: PortfolioViewData;
   walletAddress?: string;
 };
 
 function PortfolioWorkspaceLayout({
   walletReady,
-  isConnected,
+  portfolio,
   walletAddress,
 }: PortfolioWorkspaceLayoutProps) {
   return (
@@ -56,24 +57,23 @@ function PortfolioWorkspaceLayout({
         </header>
 
         <PortfolioDataNotice
-          isConnected={isConnected}
+          dataMode={portfolio.dataMode}
           walletAddress={walletAddress}
+          isLoading={portfolio.isLoading}
+          readFailed={portfolio.readFailed}
           className="mb-6"
         />
 
-        <PortfolioSummary isConnected={isConnected} />
+        <PortfolioSummary portfolio={portfolio} />
 
         <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(0,360px)]">
           <div className="min-w-0 space-y-6">
-            <AssetTable
-              isConnected={isConnected}
-              showMockBadge={isConnected}
-            />
+            <AssetTable portfolio={portfolio} />
           </div>
 
           <div className="min-w-0 space-y-6">
-            <AllocationCard />
-            <AiPortfolioInsights />
+            <AllocationCard portfolio={portfolio} />
+            <AiPortfolioInsights portfolio={portfolio} />
           </div>
         </div>
       </section>
@@ -81,29 +81,30 @@ function PortfolioWorkspaceLayout({
   );
 }
 
-function PortfolioWorkspaceWithWallet() {
-  const { address, isConnected } = useAccount();
+function PortfolioWorkspaceWithBalances() {
+  const balances = usePortfolioBalances(true);
 
   return (
     <PortfolioWorkspaceLayout
       walletReady
-      isConnected={isConnected}
-      walletAddress={address}
+      portfolio={balances.portfolio}
+      walletAddress={balances.address}
     />
   );
 }
 
 export function PortfolioWorkspace() {
   const mounted = useIsClient();
+  const demoPortfolio = buildDemoPortfolioView();
 
   if (!mounted) {
     return (
       <PortfolioWorkspaceLayout
         walletReady={false}
-        isConnected={false}
+        portfolio={demoPortfolio}
       />
     );
   }
 
-  return <PortfolioWorkspaceWithWallet />;
+  return <PortfolioWorkspaceWithBalances />;
 }

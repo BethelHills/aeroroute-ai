@@ -1,16 +1,21 @@
 "use client";
 
 import { cn, formatAddress } from "@aomi-labs/react";
+import type { PortfolioDataMode } from "@/lib/portfolio-data";
 
 type PortfolioDataNoticeProps = {
-  isConnected: boolean;
+  dataMode: PortfolioDataMode;
   walletAddress?: string;
+  isLoading?: boolean;
+  readFailed?: boolean;
   className?: string;
 };
 
 export function PortfolioDataNotice({
-  isConnected,
+  dataMode,
   walletAddress,
+  isLoading = false,
+  readFailed = false,
   className,
 }: PortfolioDataNoticeProps) {
   const truncated =
@@ -20,7 +25,7 @@ export function PortfolioDataNotice({
         ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
         : null;
 
-  if (!isConnected) {
+  if (dataMode === "Demo") {
     return (
       <div
         className={cn(
@@ -31,8 +36,7 @@ export function PortfolioDataNotice({
         <span className="font-semibold text-slate-300">Demo portfolio data</span>
         <span className="text-slate-500">
           {" "}
-          — connect a wallet to personalize this view. Balances shown are mock
-          until live indexing is enabled.
+          — connect a wallet on Base to load live ETH, USDC, and AERO balances.
         </span>
       </div>
     );
@@ -52,11 +56,15 @@ export function PortfolioDataNotice({
         ) : null}
         <span className="text-slate-500">
           {" "}
-          — token balances below are mock until live balances are wired.
+          — ETH, USDC, and AERO balances are on-chain.
+          {isLoading ? " Loading…" : ""}
+          {readFailed
+            ? " Some token reads failed; affected balances show as 0."
+            : " DAI and USDbC rows remain demo until indexed."}
         </span>
       </p>
-      <span className="inline-flex w-fit shrink-0 items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amber-200">
-        Mock balances
+      <span className="inline-flex w-fit shrink-0 items-center rounded-full border border-emerald-400/35 bg-emerald-400/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-emerald-200">
+        Live wallet data
       </span>
     </div>
   );
