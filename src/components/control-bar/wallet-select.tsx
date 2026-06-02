@@ -23,7 +23,7 @@ function WalletSelectPlaceholder({
       className={cn(
         "aui-wallet-select inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap text-sm font-medium",
         "rounded-3xl px-4 py-2.5",
-        "bg-primary text-primary-foreground",
+        "bg-primary text-[#041014]",
         "opacity-70",
         className,
       )}

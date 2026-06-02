@@ -129,6 +129,16 @@
 
 .aeroroute-aomi-thread.dark .aui-composer-wallet-select {
   z-index: 1;
+  color: #041014 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-wallet-select:hover {
+  color: #041014 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-wallet-select svg {
+  color: #041014;
+  opacity: 1;
 }
 
 .aeroroute-aomi-thread.dark .aui-edit-composer-root {

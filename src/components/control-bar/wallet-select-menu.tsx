@@ -153,7 +153,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
   const buttonClass = cn(
     "aui-wallet-select inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap text-sm font-medium",
     "rounded-3xl px-4 py-2.5",
-    "bg-primary text-primary-foreground",
+    "bg-primary text-[#041014]",
     "hover:bg-primary/90",
     "transition-colors",
     "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
