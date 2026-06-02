@@ -19,12 +19,15 @@ export type NetworkSelectProps = {
   chains?: readonly Chain[];
   /** Append numeric chain id next to the network label (e.g. Base 8453). */
   showChainId?: boolean;
+  /** Center icon + label in the trigger (matches Connect Wallet pill layout). */
+  centerLabel?: boolean;
 };
 
 export const NetworkSelect: FC<NetworkSelectProps> = ({
   className,
   chains,
   showChainId = false,
+  centerLabel = false,
 }) => {
   const adapter = useAomiAuthAdapter();
   const { chainId, isConnected } = adapter.identity;
@@ -42,7 +45,8 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger render={<Button variant="ghost" role="combobox" aria-expanded={open} disabled={isPending || !switchChain} className={cn(
-                      "h-8 w-auto min-w-0 justify-between gap-px rounded-full px-0.5 text-xs md:min-w-[80px] md:gap-1.5 md:px-3",
+                      "h-8 w-auto min-w-0 gap-px rounded-full px-0.5 text-xs md:min-w-[80px] md:gap-1.5 md:px-3",
+                      centerLabel ? "justify-center" : "justify-between",
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       (isPending || !switchChain) && "cursor-not-allowed opacity-50",
                       className,

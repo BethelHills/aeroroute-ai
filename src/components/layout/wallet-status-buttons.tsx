@@ -51,6 +51,7 @@ export function WalletStatusButtons({
         {identity.isConnected ? (
           <NetworkSelect
             showChainId
+            centerLabel
             className={cn(
               chainClass,
               "w-full min-w-0 sm:w-auto",
@@ -59,7 +60,10 @@ export function WalletStatusButtons({
           />
         ) : (
           <div
-            className={cn(chainClass, "inline-flex w-full min-w-0 items-center gap-2 sm:w-auto")}
+            className={cn(
+              chainClass,
+              "inline-flex w-full min-w-0 items-center justify-center gap-2 sm:w-auto",
+            )}
             aria-label={`Network ${chainName} ${DEFAULT_CHAIN_ID}`}
           >
             <Network size={isHero ? 17 : 16} className="shrink-0" />
