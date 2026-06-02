@@ -1,4 +1,4 @@
-import { connect, disconnect, getConnectors } from "@wagmi/core";
+import { connect, getConnectors } from "@wagmi/core";
 import type { Config } from "wagmi";
 import { DEFAULT_CHAIN_ID } from "@/lib/wallet/para-config";
 import type { WalletOption } from "@/hooks/use-wallet-options";
@@ -17,14 +17,6 @@ export async function connectWalletOption(
 
   if (!connector) {
     throw new Error(`${option.name} is not available in this browser.`);
-  }
-
-  if (connector.type === "walletConnect") {
-    try {
-      await disconnect(config, { connector });
-    } catch {
-      // Ignore — clears stale pairing sessions before opening a fresh QR modal.
-    }
   }
 
   await connect(config, {

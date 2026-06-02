@@ -50,7 +50,7 @@ const presets = [
 
 const integrations = [
   ["Aomi Backend", "https://api.aomi.dev", "Active"],
-  ["WalletConnect", "Project ID configured", "Active"],
+  ["Browser Wallets", "MetaMask, Coinbase, Rabby, OKX, and more", "Active"],
   ["Base Network", "Chain ID 8453", "Active"],
   ["OpenRouter BYOK", "Optional model provider", "Pending"],
 ] as const;

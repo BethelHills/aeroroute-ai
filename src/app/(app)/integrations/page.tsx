@@ -9,7 +9,7 @@ export default function IntegrationsPage() {
       badge="Connections"
       title="App"
       titleAccent="Integrations"
-      description="Manage Aomi, WalletConnect, OpenRouter, and other runtime integrations."
+      description="Manage Aomi, browser wallet connectors, OpenRouter, and other runtime integrations."
       icon={PieChart}
     />
   );

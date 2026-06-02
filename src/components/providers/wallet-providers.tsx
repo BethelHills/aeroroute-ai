@@ -1,7 +1,6 @@
 "use client";
 
-import "@/components/wallet/walletconnect-modal.css";
-import { useEffect, useState, type ReactNode } from "react";
+import { useSyncExternalStore, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import {
@@ -37,13 +36,17 @@ function getQueryClient() {
   return browserQueryClient;
 }
 
-export function WalletProviders({ children }: WalletProvidersProps) {
-  const [mounted, setMounted] = useState(false);
-  const [queryClient] = useState(getQueryClient);
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function WalletProviders({ children }: WalletProvidersProps) {
+  const mounted = useIsClient();
+  const [queryClient] = useState(getQueryClient);
 
   if (!mounted) {
     return (

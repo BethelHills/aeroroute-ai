@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { getConnectors } from "@wagmi/core";
 import { useConfig } from "wagmi";
 import type { Connector } from "wagmi";
+import {
+  detectWalletProviders,
+  logDetectedWalletProviders,
+} from "@/lib/wallet/detect-wallet-providers";
+import { WALLET_MENU_ITEMS } from "@/lib/wallet/wallet-menu";
 
 export type WalletOption = {
   connectorUid: string;
@@ -11,39 +16,11 @@ export type WalletOption = {
   name: string;
   icon?: string;
   available: boolean;
+  unavailableLabel: string;
 };
 
 function connectorIcon(connector: Connector): string | undefined {
   return typeof connector.icon === "string" ? connector.icon : undefined;
-}
-
-async function isConnectorAvailable(connector: Connector): Promise<boolean> {
-  if (connector.type === "walletConnect") {
-    return true;
-  }
-
-  if (typeof connector.getProvider !== "function") {
-    return false;
-  }
-
-  try {
-    const provider = await connector.getProvider();
-    return Boolean(provider);
-  } catch {
-    return false;
-  }
-}
-
-function logConnectors(connectors: readonly Connector[]) {
-  console.log(
-    "[wallet] getConnectors()",
-    connectors.map((connector) => ({
-      id: connector.id,
-      name: connector.name,
-      type: connector.type,
-      uid: connector.uid,
-    })),
-  );
 }
 
 export function useWalletOptions(refreshToken = 0): WalletOption[] {
@@ -54,27 +31,31 @@ export function useWalletOptions(refreshToken = 0): WalletOption[] {
     let cancelled = false;
 
     async function loadOptions() {
+      logDetectedWalletProviders();
+      const detected = detectWalletProviders();
       const connectors = getConnectors(config);
-      logConnectors(connectors);
-
-      const probed = await Promise.all(
-        connectors.map(async (connector) => ({
-          connectorUid: connector.uid,
-          id: connector.id,
-          name: connector.name,
-          icon: connectorIcon(connector),
-          available: await isConnectorAvailable(connector),
-        })),
+      const installedById = new Map(
+        detected.map((item) => [item.id, item.installed]),
       );
 
-      if (cancelled) return;
+      const nextOptions = WALLET_MENU_ITEMS.map((item) => {
+        const connector = connectors.find(
+          (candidate) => candidate.id === item.connectorId,
+        );
+        const installed = installedById.get(item.id) ?? false;
 
-      probed.sort((a, b) => {
-        if (a.available === b.available) return a.name.localeCompare(b.name);
-        return a.available ? -1 : 1;
+        return {
+          connectorUid: connector?.uid ?? `${item.connectorId}-missing`,
+          id: item.id,
+          name: item.name,
+          icon: connector ? connectorIcon(connector) : undefined,
+          available: installed && Boolean(connector),
+          unavailableLabel: item.unavailableLabel ?? "Not Installed",
+        };
       });
 
-      setOptions(probed);
+      if (cancelled) return;
+      setOptions(nextOptions);
     }
 
     void loadOptions();

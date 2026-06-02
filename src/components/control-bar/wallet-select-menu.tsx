@@ -14,10 +14,6 @@ import { useConfig } from "wagmi";
 import { cn } from "@aomi-labs/react";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 import { connectWalletOption } from "@/lib/wallet/connect-wallet-option";
-import {
-  formatWalletConnectError,
-  isWalletConnectUserDismissedError,
-} from "@/lib/wallet/wallet-connect-errors";
 import { useWalletOptions, type WalletOption } from "@/hooks/use-wallet-options";
 import { ConnectButton } from "./connect-button";
 import type { WalletSelectProps } from "./wallet-select";
@@ -129,25 +125,6 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
 
     setConnectError(null);
     setOpen(false);
-
-    const isWalletConnect = option.id === "walletConnect";
-
-    if (isWalletConnect) {
-      void (async () => {
-        await new Promise<void>((resolve) => {
-          requestAnimationFrame(() => resolve());
-        });
-        await connectWalletOption(wagmiConfig, option);
-      })().catch((error) => {
-        if (isWalletConnectUserDismissedError(error)) {
-          return;
-        }
-        setConnectError(formatWalletConnectError(error));
-        console.error("WalletConnect failed:", error);
-      });
-      return;
-    }
-
     setIsConnecting(true);
 
     await new Promise<void>((resolve) => {
@@ -203,33 +180,29 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
               </p>
               <div className="min-h-[12rem] min-w-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
                 {walletOptions.map((option) => (
-                    <button
-                      key={option.connectorUid}
-                      type="button"
-                      role="menuitem"
-                      disabled={isConnecting || !option.available}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        void handlePick(option);
-                      }}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <WalletOptionIcon option={option} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-semibold">{option.name}</span>
-                        {!option.available ? (
-                          <span className="block text-xs text-slate-500">
-                            Not Installed
-                          </span>
-                        ) : option.id === "walletConnect" ? (
-                          <span className="block text-xs text-slate-500">
-                            Rabby, Rainbow, OKX, Phantom &amp; more
-                          </span>
-                        ) : null}
-                      </span>
-                    </button>
-                  ))}
+                  <button
+                    key={option.connectorUid}
+                    type="button"
+                    role="menuitem"
+                    disabled={isConnecting || !option.available}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      void handlePick(option);
+                    }}
+                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <WalletOptionIcon option={option} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">{option.name}</span>
+                      {!option.available ? (
+                        <span className="block text-xs text-slate-500">
+                          {option.unavailableLabel}
+                        </span>
+                      ) : null}
+                    </span>
+                  </button>
+                ))}
               </div>
               {connectError ? (
                 <p className="shrink-0 border-t border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-200">
