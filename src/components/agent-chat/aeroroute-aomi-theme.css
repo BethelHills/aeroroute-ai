@@ -7,6 +7,9 @@
 .aeroroute-aomi-chat.dark,
 .aeroroute-aomi-thread.dark {
   color-scheme: dark;
+  --thread-max-width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   --background: transparent;
   --foreground: #e2e8f0;
   --card: rgb(255 255 255 / 0.04);
@@ -71,14 +74,38 @@
   border-color: rgb(0 245 160 / 0.35) !important;
 }
 
+.aeroroute-aomi-thread.dark .aui-thread-viewport {
+  overflow-x: hidden !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-user-message-root,
+.aeroroute-aomi-thread.dark .aui-assistant-message-root {
+  max-width: 100% !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-user-message-content-wrapper {
+  max-width: 90%;
+}
+
 .aeroroute-aomi-thread.dark .aui-user-message-content {
   background-color: rgb(255 255 255 / 0.1) !important;
   color: #f1f5f9 !important;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .aeroroute-aomi-thread.dark .aui-assistant-message-content,
 .aeroroute-aomi-thread.dark .aui-assistant-payment-required-message {
   color: #cbd5e1 !important;
+  max-width: 90%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-root,
+.aeroroute-aomi-thread.dark .aui-composer-wrapper {
+  max-width: 100%;
 }
 
 .aeroroute-aomi-thread.dark .aui-edit-composer-root {

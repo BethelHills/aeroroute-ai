@@ -41,7 +41,7 @@ export function ProtocolCategoryFilter({
                 key={category}
                 type="button"
                 onClick={() => onCategoryChange(category)}
-                className={`rounded-xl border px-4 py-2 text-sm font-bold transition ${
+                className={`min-h-10 rounded-xl border px-4 py-2 text-sm font-bold transition ${
                   isActive
                     ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
                     : "border-white/10 bg-black/20 text-slate-400 hover:border-emerald-400/30 hover:text-white"

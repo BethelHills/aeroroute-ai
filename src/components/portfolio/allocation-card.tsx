@@ -12,10 +12,10 @@ export function AllocationCard() {
       </h2>
 
       <div className="mt-6 flex items-center justify-center">
-        <div className="relative flex h-52 w-52 items-center justify-center rounded-full bg-[conic-gradient(from_90deg,#00F5A0_0deg,#00D4FF_150deg,#FF7A18_230deg,#8b5cf6_300deg,#00F5A0_360deg)] p-4 shadow-[0_0_55px_rgba(0,245,160,0.22)]">
+        <div className="relative flex h-36 w-36 max-w-[min(100%,12rem)] items-center justify-center rounded-full bg-[conic-gradient(from_90deg,#00F5A0_0deg,#00D4FF_150deg,#FF7A18_230deg,#8b5cf6_300deg,#00F5A0_360deg)] p-3 shadow-[0_0_55px_rgba(0,245,160,0.22)] sm:h-44 sm:w-44 sm:p-4 md:h-52 md:w-52">
           <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018] text-center">
-            <p className="text-sm text-slate-500">Route Ready</p>
-            <p className="text-4xl font-black text-emerald-300">73%</p>
+            <p className="text-xs text-slate-500 sm:text-sm">Route Ready</p>
+            <p className="text-2xl font-black text-emerald-300 sm:text-3xl md:text-4xl">73%</p>
             <p className="text-xs text-slate-500">ETH + Stable assets</p>
           </div>
         </div>

@@ -132,7 +132,7 @@ function SelectButton({ value }: { value: string }) {
   return (
     <button
       type="button"
-      className="inline-flex min-w-[160px] items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold text-slate-200"
+      className="inline-flex w-full min-w-0 items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold text-slate-200 sm:w-auto sm:min-w-[160px]"
     >
       {value}
       <ChevronDown size={16} className="text-slate-500" />
@@ -237,7 +237,7 @@ export default function AeroRouteSettingsPreview() {
             </Panel>
 
             <Panel icon={Bot} eyebrow="Agent" title="Route Agent Behavior">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {presets.map((preset) => (
                   <PresetCard
                     key={preset.name}

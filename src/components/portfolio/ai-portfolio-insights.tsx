@@ -39,10 +39,10 @@ export function AiPortfolioInsights() {
           ))}
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 flex flex-col gap-3 sm:grid sm:grid-cols-2">
           <Link
             href="/route-optimizer"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014]"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014]"
           >
             Open Optimizer
             <Route size={16} />
@@ -50,7 +50,7 @@ export function AiPortfolioInsights() {
 
           <Link
             href={`/agent-chat?prompt=${prompt}`}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200"
           >
             Ask Agent
             <ArrowRight size={16} />

@@ -17,14 +17,23 @@ type SidebarProps = {
 function NavLinks({
   collapsed,
   onNavigate,
+  showCollapseToggle,
 }: {
   collapsed: boolean;
   onNavigate?: () => void;
+  showCollapseToggle: boolean;
 }) {
   const pathname = usePathname();
 
+  const isMobileDrawer = !showCollapseToggle;
+
   return (
-    <nav className="flex flex-1 flex-col gap-1 px-2 py-4">
+    <nav
+      className={cn(
+        "flex flex-1 flex-col gap-1 px-2 py-4",
+        isMobileDrawer && "gap-2 px-3 py-5",
+      )}
+    >
       {APP_NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         const active =
@@ -37,14 +46,17 @@ function NavLinks({
             onClick={onNavigate}
             title={collapsed ? item.label : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-bold transition",
+              "flex min-h-11 items-center gap-3 rounded-xl border font-bold transition",
+              isMobileDrawer
+                ? "px-4 py-3.5 text-base"
+                : "px-3 py-2.5 text-sm",
               active
                 ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-200"
                 : "border-transparent text-slate-400 hover:border-white/10 hover:bg-white/[0.04] hover:text-white",
-              collapsed && "justify-center px-2",
+              collapsed && !isMobileDrawer && "justify-center px-2",
             )}
           >
-            <Icon size={18} className="shrink-0" />
+            <Icon size={isMobileDrawer ? 20 : 18} className="shrink-0" />
             {!collapsed && <span className="truncate">{item.label}</span>}
           </Link>
         );
@@ -94,7 +106,11 @@ function SidebarPanel({
           )}
         </div>
       )}
-      <NavLinks collapsed={collapsed} onNavigate={onNavigate} />
+      <NavLinks
+        collapsed={collapsed}
+        onNavigate={onNavigate}
+        showCollapseToggle={showCollapseToggle}
+      />
     </div>
   );
 }
@@ -118,6 +134,7 @@ export function Sidebar({
           collapsed={collapsed}
           onCollapsedChange={onCollapsedChange}
           showCollapseToggle
+          showLogo
         />
       </aside>
 
@@ -136,11 +153,17 @@ export function Sidebar({
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex items-center justify-end border-b border-white/10 px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4">
+          <Logo
+            priority
+            href="/dashboard"
+            alt="AeroRoute AI"
+            className="h-auto w-[130px]"
+          />
           <button
             type="button"
             onClick={onMobileClose}
-            className="rounded-lg border border-white/10 p-2 text-slate-400 hover:text-white"
+            className="shrink-0 rounded-lg border border-white/10 p-2.5 text-slate-400 hover:text-white"
             aria-label="Close menu"
           >
             <X size={18} />

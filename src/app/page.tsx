@@ -17,7 +17,7 @@ export default function AeroRouteLandingPage() {
       <Hero />
       <TrustedBy />
       <Features />
-      <section className="relative z-10 mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[0.55fr_1fr] lg:px-8">
+      <section className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[0.55fr_1fr] lg:px-8">
         <AiInsights />
         <AnalyticsPreview />
       </section>

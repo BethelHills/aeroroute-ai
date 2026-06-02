@@ -32,8 +32,8 @@ export function ProtocolsWorkspace() {
   }, [activeCategory, search]);
 
   return (
-    <div className="relative z-10 min-w-0 overflow-hidden text-white">
-      <section className="mx-auto max-w-7xl px-5 py-8 lg:px-8">
+    <div className="relative z-10 w-full min-w-0 overflow-x-hidden text-white">
+      <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
@@ -54,7 +54,9 @@ export function ProtocolsWorkspace() {
             </p>
           </div>
 
-          <WalletStatusButtons variant="hero" />
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <WalletStatusButtons variant="hero" className="w-full sm:w-auto [&_button]:w-full sm:[&_button]:w-auto" />
+          </div>
         </header>
 
         <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -73,7 +75,7 @@ export function ProtocolsWorkspace() {
         />
 
         {filteredProtocols.length > 0 ? (
-          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filteredProtocols.map((protocol) => (
               <ProtocolCard key={protocol.id} protocol={protocol} />
             ))}

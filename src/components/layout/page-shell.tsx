@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export const appPageSectionClass =
-  "relative z-10 mx-auto w-full max-w-[1400px] overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
+  "relative z-10 mx-auto w-full max-w-7xl overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
 
 type AppPageRootProps = {
   children: ReactNode;
@@ -63,13 +63,17 @@ export function PageTitleBlock({
   titleActions,
 }: PageTitleBlockProps) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 w-full">
       {badge}
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="min-w-0 flex-1 text-3xl font-black leading-tight tracking-[-0.05em] sm:text-4xl md:text-5xl lg:text-6xl">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="min-w-0 text-3xl font-black leading-tight tracking-[-0.05em] sm:text-4xl md:text-5xl lg:text-6xl">
           {title}
         </h1>
-        {titleActions ? <div className="shrink-0">{titleActions}</div> : null}
+        {titleActions ? (
+          <div className="flex w-full min-w-0 shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end [&_button]:w-full sm:[&_button]:w-auto">
+            {titleActions}
+          </div>
+        ) : null}
       </div>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400 sm:mt-4 sm:text-base">
         {description}
@@ -88,7 +92,7 @@ export function PageActions({ children, className }: PageActionsProps) {
   return (
     <div
       className={cn(
-        "flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3 [&_button]:w-full sm:[&_button]:w-auto",
+        "flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3 [&_button]:w-full sm:[&_button]:w-auto [&_a]:w-full sm:[&_a]:w-auto",
         className,
       )}
     >

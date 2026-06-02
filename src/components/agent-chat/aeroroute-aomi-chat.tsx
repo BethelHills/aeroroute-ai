@@ -147,8 +147,8 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,360px)]">
-      <div className="flex min-h-[min(70vh,720px)] max-h-[calc(100svh-12rem)] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl">
+    <div className="grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-[1fr_minmax(0,360px)]">
+      <div className="flex min-h-[min(56vh,520px)] max-h-[min(72vh,calc(100svh-11rem))] flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl sm:min-h-[min(64vh,640px)] sm:max-h-[min(75vh,calc(100svh-12rem))] lg:min-h-[min(70vh,720px)]">
         <div className="flex shrink-0 flex-col gap-4 border-b border-white/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-[#031014] shadow-[0_0_35px_rgba(0,245,160,0.25)]">
@@ -166,7 +166,7 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
           </div>
         </div>
 
-        <div className="aeroroute-aomi-thread dark relative min-h-0 flex-1">
+        <div className="aeroroute-aomi-thread dark relative min-h-0 min-w-0 flex-1 overflow-hidden">
           <Suspense fallback={null}>
             <AerorouteChatBootstrap />
           </Suspense>

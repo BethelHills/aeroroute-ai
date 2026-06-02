@@ -1,9 +1,11 @@
 import {
   Bot,
   History,
+  Layers,
   LayoutDashboard,
   Route,
   Settings,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -17,6 +19,8 @@ export const APP_NAV_ITEMS: AppNavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Route Optimizer", href: "/route-optimizer", icon: Route },
   { label: "Agent Chat", href: "/agent-chat", icon: Bot },
+  { label: "Protocols", href: "/protocols", icon: Layers },
+  { label: "Portfolio", href: "/portfolio", icon: Wallet },
   { label: "History", href: "/history", icon: History },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

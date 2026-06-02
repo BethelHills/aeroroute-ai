@@ -210,7 +210,7 @@ function SwapPanel() {
         <div>
           <label className="mb-2 block text-sm text-slate-500">Amount</label>
           <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
-            <input value="1.0000" readOnly className="w-full bg-transparent text-3xl font-black text-white outline-none" />
+            <input value="1.0000" readOnly className="w-full min-w-0 bg-transparent text-2xl font-black text-white outline-none sm:text-3xl" />
             <p className="mt-1 text-sm text-slate-500">≈ $3,182.45</p>
           </div>
         </div>
@@ -372,7 +372,7 @@ export default function AeroRouteDashboardPreview() {
           {metrics.map((metric) => <MetricCard key={metric.label} metric={metric} />)}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,390px)_1fr]">
+        <div className="grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,390px)_1fr]">
           <div className="min-w-0 space-y-6">
             <SwapPanel />
             <AiRecommendation />

@@ -23,7 +23,7 @@ function HeroDashboard() {
       className="relative rounded-[2rem] border border-emerald-400/30 bg-[#071015]/90 p-5 shadow-[0_0_90px_rgba(0,245,160,0.18)] backdrop-blur-xl lg:rotate-[-3deg]"
     >
       <div className="absolute -inset-8 -z-10 rounded-full bg-emerald-500/10 blur-3xl" />
-      <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
+      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,220px)_1fr]">
         <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5">
           <p className="mb-5 text-sm font-semibold text-slate-300">Swap</p>
           <div className="space-y-4">
@@ -114,8 +114,8 @@ function HeroDashboard() {
 export function Hero() {
   return (
     <>
-      <nav className="relative z-10 mx-auto flex max-w-[1400px] items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
-        <Logo priority className="h-auto w-[130px] sm:w-[170px] lg:w-[220px]" href="/" />
+      <nav className="relative z-10 mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-3 px-4 py-6 sm:px-6 lg:px-8">
+        <Logo priority className="h-auto w-[130px] shrink-0 md:w-[170px] lg:w-[220px]" href="/" />
         <div className="hidden items-center gap-8 text-sm text-slate-300 lg:flex">
           {navLinks.map((item) => (
             <a key={item} href="#" className="hover:text-emerald-300">{item}</a>
@@ -130,7 +130,7 @@ export function Hero() {
         </div>
       </nav>
 
-      <section className="relative z-10 mx-auto grid max-w-[1400px] items-center gap-12 px-4 sm:px-6 lg:px-8 pb-16 pt-12 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:pb-20 lg:pt-20">
+      <section className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-4 pb-16 pt-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:pb-20 lg:pt-20">
         <Glow className="left-20 top-40 h-80 w-80 bg-emerald-500/25" />
         <Glow className="right-20 top-32 h-96 w-96 bg-orange-500/15" />
         <div>
@@ -138,7 +138,7 @@ export function Hero() {
             <Sparkles size={14} />
             AI-powered · Aerodrome Route Optimizer
           </div>
-          <h1 className="max-w-2xl text-5xl font-black leading-[0.95] tracking-[-0.06em] md:text-7xl">
+          <h1 className="max-w-2xl text-4xl font-black leading-[0.95] tracking-[-0.06em] sm:text-5xl md:text-7xl">
             Find the smartest swap route on <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-orange-300 bg-clip-text text-transparent">Base in seconds.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-slate-400">

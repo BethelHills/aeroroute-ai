@@ -2,7 +2,7 @@ import { steps } from "@/lib/landing-data";
 
 export function HowItWorks() {
   return (
-    <section className="relative z-10 mx-auto w-full max-w-[1400px] px-4 py-16 sm:px-6 lg:px-8">
+    <section className="relative z-10 mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl">
         <p className="mb-8 text-center text-xs font-bold uppercase tracking-[0.25em] text-emerald-300">How it works</p>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">

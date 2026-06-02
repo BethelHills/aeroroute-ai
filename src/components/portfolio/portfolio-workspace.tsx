@@ -39,11 +39,8 @@ function PortfolioWorkspaceView({
   isConnected: boolean;
 }) {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#03070b] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,245,160,0.15),transparent_32%),radial-gradient(circle_at_top_right,rgba(255,122,24,0.12),transparent_34%),linear-gradient(180deg,#03070b_0%,#061018_55%,#03070b_100%)]" />
-      <div className="fixed inset-0 opacity-[0.2] [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:72px_72px]" />
-
-      <section className="relative z-10 mx-auto max-w-7xl px-5 py-8 lg:px-8">
+    <div className="w-full min-w-0 overflow-x-hidden text-white">
+      <section className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <header className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">
@@ -64,18 +61,18 @@ function PortfolioWorkspaceView({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3">
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl sm:w-auto"
             >
               <Wallet size={17} />
-              {displayAddress}
+              <span className="truncate">{displayAddress}</span>
             </button>
 
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014] sm:w-auto"
             >
               <Network size={17} />
               {isConnected ? "Connected" : "Demo Mode"}
@@ -85,18 +82,18 @@ function PortfolioWorkspaceView({
 
         <PortfolioSummary />
 
-        <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_360px]">
-          <div className="space-y-6">
+        <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(0,360px)]">
+          <div className="min-w-0 space-y-6">
             <AssetTable />
           </div>
 
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <AllocationCard />
             <AiPortfolioInsights />
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

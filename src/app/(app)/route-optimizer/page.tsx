@@ -143,7 +143,7 @@ function SwapForm() {
         <div>
           <label className="mb-2 block text-sm text-slate-500">Amount</label>
           <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
-            <input value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full bg-transparent text-4xl font-black text-white outline-none" />
+            <input value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full min-w-0 bg-transparent text-2xl font-black text-white outline-none sm:text-4xl" />
             <div className="mt-3 flex items-center justify-between text-sm text-slate-500">
               <span>≈ $3,182.45</span>
               <div className="flex gap-2">
@@ -182,10 +182,10 @@ function BestRoute() {
           <div className="mt-5"><RoutePath path={best.path} /></div>
         </div>
 
-        <div className="mx-auto flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-2 shadow-[0_0_60px_rgba(0,245,160,0.25)] sm:mx-0 sm:h-40 sm:w-40 sm:p-3">
+        <div className="mx-auto flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-[conic-gradient(from_180deg,#00F5A0_0deg,#22d3ee_260deg,rgba(255,255,255,0.08)_260deg)] p-2 shadow-[0_0_60px_rgba(0,245,160,0.25)] sm:mx-0 sm:h-32 sm:w-32 md:h-40 md:w-40 sm:p-3">
           <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#061018]">
             <p className="text-xs text-slate-500">Score</p>
-            <p className="text-4xl font-black text-emerald-300 sm:text-5xl">98</p>
+            <p className="text-3xl font-black text-emerald-300 sm:text-4xl md:text-5xl">98</p>
             <p className="text-xs text-emerald-300">Excellent</p>
           </div>
         </div>
@@ -350,15 +350,15 @@ export default function AeroRouteOptimizerPreview() {
           />
         </AppPageHeader>
 
-        <div className="grid w-full grid-cols-1 gap-6 xl:grid-cols-[minmax(0,420px)_1fr]">
-          <div className="min-w-0 space-y-6">
+        <div className="flex w-full min-w-0 flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,420px)_1fr]">
+          <div className="order-1 min-w-0 space-y-6">
             <SwapForm />
             <div className="hidden space-y-6 xl:block">
               <AiSummary />
               <TransactionPreview />
             </div>
           </div>
-          <div className="min-w-0 space-y-6">
+          <div className="order-2 min-w-0 space-y-6">
             <BestRoute />
             <RouteComparison />
             <div className="space-y-6 xl:hidden">

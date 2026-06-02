@@ -12,8 +12,8 @@ export function AssetTable() {
         </h2>
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-white/10 md:block">
-        <div className="grid grid-cols-6 bg-black/30 px-4 py-3 text-sm text-slate-500">
+      <div className="hidden overflow-x-auto rounded-2xl border border-white/10 lg:block">
+        <div className="grid min-w-[640px] grid-cols-6 bg-black/30 px-4 py-3 text-sm text-slate-500">
           <span>Asset</span>
           <span>Balance</span>
           <span>Value</span>
@@ -25,7 +25,7 @@ export function AssetTable() {
         {portfolioAssets.map((asset) => (
           <div
             key={asset.symbol}
-            className="grid grid-cols-6 border-t border-white/10 px-4 py-4 text-sm"
+            className="grid min-w-[640px] grid-cols-6 border-t border-white/10 px-4 py-4 text-sm"
           >
             <div>
               <p className="font-black text-white">{asset.symbol}</p>
@@ -48,7 +48,7 @@ export function AssetTable() {
         ))}
       </div>
 
-      <div className="space-y-4 md:hidden">
+      <div className="space-y-4 lg:hidden">
         {portfolioAssets.map((asset) => (
           <div
             key={asset.symbol}

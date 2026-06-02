@@ -90,10 +90,10 @@ export function ProtocolCard({ protocol }: ProtocolCardProps) {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 flex flex-col gap-3 sm:grid sm:grid-cols-2">
           <Link
             href={`/agent-chat?prompt=${agentPrompt}`}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200 transition hover:bg-emerald-400/15"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-200 transition hover:bg-emerald-400/15"
           >
             Analyze
             <ArrowRight size={16} />
@@ -101,7 +101,7 @@ export function ProtocolCard({ protocol }: ProtocolCardProps) {
 
           <Link
             href="/route-optimizer"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014] transition hover:scale-[1.01]"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-3 text-sm font-black text-[#041014] transition hover:scale-[1.01] sm:hover:scale-[1.01]"
           >
             Route
             <ArrowRight size={16} />

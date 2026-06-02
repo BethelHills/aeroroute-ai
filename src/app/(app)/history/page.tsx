@@ -173,7 +173,7 @@ function HistoryCard({ item }: { item: (typeof history)[number] }) {
           </div>
         </div>
 
-        <div className="grid w-full grid-cols-2 gap-4 text-sm sm:grid-cols-3 lg:grid-cols-6 lg:text-right">
+        <div className="grid w-full grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-6 lg:gap-4 lg:text-right">
           <MiniStat label="Amount" value={item.amount} />
           <MiniStat label="Output" value={item.output} />
           <MiniStat label="Impact" value={item.impact} accent />
@@ -184,8 +184,8 @@ function HistoryCard({ item }: { item: (typeof history)[number] }) {
       </div>
 
       <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500">
-          <span className="min-w-0 truncate font-mono">{item.hash}</span>
+        <div className="flex min-w-0 max-w-full items-center gap-2 text-sm text-slate-500">
+          <span className="min-w-0 max-w-[min(100%,14rem)] truncate font-mono break-all sm:max-w-none">{item.hash}</span>
           <button className="rounded-lg border border-white/10 p-1.5 hover:text-white"><Copy size={14} /></button>
         </div>
         <button className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-bold text-slate-300 hover:border-emerald-400/40 hover:text-white">
@@ -211,13 +211,13 @@ function FilterBar({ filter, setFilter }: { filter: string; setFilter: (value: s
   return (
     <div className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 lg:w-[360px]">
+        <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 lg:max-w-sm lg:flex-1">
           <Search size={18} className="text-slate-500" />
           <span className="text-sm text-slate-500">Search routes, pairs, hashes...</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {filters.map((item) => (
-            <button key={item} onClick={() => setFilter(item)} className={`rounded-xl border px-4 py-2 text-sm font-bold capitalize transition ${filter === item ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300" : "border-white/10 bg-black/20 text-slate-400 hover:text-white"}`}>
+            <button key={item} onClick={() => setFilter(item)} className={`min-h-10 rounded-xl border px-4 py-2 text-sm font-bold capitalize transition ${filter === item ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300" : "border-white/10 bg-black/20 text-slate-400 hover:text-white"}`}>
               {item}
             </button>
           ))}
