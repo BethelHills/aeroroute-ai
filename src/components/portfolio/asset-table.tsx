@@ -12,7 +12,7 @@ export function AssetTable() {
         </h2>
       </div>
 
-      <div className="hidden overflow-x-auto rounded-2xl border border-white/10 lg:block">
+      <div className="hidden overflow-x-auto rounded-2xl border border-white/10 xl:block">
         <div className="grid min-w-[640px] grid-cols-6 bg-black/30 px-4 py-3 text-sm text-slate-500">
           <span>Asset</span>
           <span>Balance</span>
@@ -48,7 +48,7 @@ export function AssetTable() {
         ))}
       </div>
 
-      <div className="space-y-4 lg:hidden">
+      <div className="space-y-4 xl:hidden">
         {portfolioAssets.map((asset) => (
           <div
             key={asset.symbol}

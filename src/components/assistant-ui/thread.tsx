@@ -79,7 +79,7 @@ export const Thread: FC = () => {
         >
           <SecretGate />
           <PaymentRequiredGate />
-          <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex min-h-0 flex-1 flex-col overflow-x-auto overflow-y-scroll px-2 [scrollbar-gutter:stable_both-edges]">
+          <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-scroll px-2 [scrollbar-gutter:stable_both-edges]">
             <ThreadPrimitive.If empty>
               <ThreadWelcome />
             </ThreadPrimitive.If>
@@ -241,8 +241,8 @@ const ComposerAction: FC = () => {
   const hideNetwork = controlBarProps.hideNetwork ?? false;
 
   const gridCols = hideWallet
-    ? "grid-cols-[minmax(0,1fr)_auto]"
-    : "grid-cols-[auto_minmax(0,1fr)_auto]";
+    ? "grid-cols-[minmax(0,1fr)_auto] max-md:grid-cols-1"
+    : "grid-cols-[auto_minmax(0,1fr)_auto] max-md:grid-cols-1";
 
   return (
     <div
@@ -255,12 +255,12 @@ const ComposerAction: FC = () => {
         <WalletSelect
           connectLabel="Select Wallet"
           menuId="aeroroute-chat-composer-wallet-menu"
-          className="aui-composer-wallet-select max-md:h-9 max-md:px-3 max-md:py-2 max-md:text-xs"
+          className="aui-composer-wallet-select max-md:h-9 max-md:w-full max-md:justify-center max-md:px-3 max-md:py-2 max-md:text-xs"
         />
       )}
 
       {composerControl.enabled ? (
-        <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] md:gap-2">
+        <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] max-md:w-full md:gap-2">
           {!hideNetwork && <NetworkSelect />}
           {!hideModel && (
             <span className="aui-composer-control-model hidden shrink-0 md:inline-flex">
@@ -278,7 +278,7 @@ const ComposerAction: FC = () => {
         <div className="min-w-0" />
       )}
 
-      <div className="aui-composer-send-row flex shrink-0 justify-end">
+      <div className="aui-composer-send-row flex shrink-0 justify-end max-md:w-full max-md:justify-end">
         <ThreadPrimitive.If running={false}>
           <ComposerPrimitive.Send asChild>
             <Button
@@ -497,7 +497,7 @@ const UserMessage: FC = () => {
                   )}
                 </div>
                 {!isEmpty && (
-                  <div className="aui-user-action-bar-wrapper absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 pr-2">
+                  <div className="aui-user-action-bar-wrapper absolute left-0 top-1/2 hidden -translate-x-full -translate-y-1/2 pr-2 sm:block">
                     <UserActionBar />
                   </div>
                 )}

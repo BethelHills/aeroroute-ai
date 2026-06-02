@@ -121,6 +121,9 @@
 
 .aeroroute-aomi-thread.dark .aui-composer-wallet-select,
 .aeroroute-aomi-thread.dark .aui-composer-connect {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -175,10 +178,18 @@
 
 .aeroroute-aomi-thread.dark .aui-assistant-route-results {
   max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .aeroroute-aomi-thread.dark .aui-assistant-route-results table {
   color: #cbd5e1;
+}
+
+@media (max-width: 767px) {
+  .aeroroute-aomi-thread.dark .aui-composer-action-wrapper {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }
 
 .aeroroute-aomi-chat.dark [data-radix-popper-content-wrapper] [role="dialog"],

@@ -27,8 +27,10 @@ function MetricRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-3 text-sm">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-right font-medium text-slate-100">{value}</span>
+      <span className="shrink-0 text-slate-500">{label}</span>
+      <span className="min-w-0 max-w-[65%] break-words text-right font-medium text-slate-100">
+        {value}
+      </span>
     </div>
   );
 }

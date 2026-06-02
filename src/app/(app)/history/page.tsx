@@ -185,7 +185,7 @@ function HistoryCard({ item }: { item: (typeof history)[number] }) {
 
       <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 max-w-full items-center gap-2 text-sm text-slate-500">
-          <span className="min-w-0 max-w-[min(100%,14rem)] truncate font-mono break-all sm:max-w-none">{item.hash}</span>
+          <span className="min-w-0 flex-1 truncate font-mono text-xs sm:text-sm">{item.hash}</span>
           <button className="rounded-lg border border-white/10 p-1.5 hover:text-white"><Copy size={14} /></button>
         </div>
         <button className="inline-flex w-fit items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-bold text-slate-300 hover:border-emerald-400/40 hover:text-white">

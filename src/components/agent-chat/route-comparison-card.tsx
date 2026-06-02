@@ -24,7 +24,7 @@ export function RouteComparisonCard({
     <section
       id={id}
       className={cn(
-        "rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl sm:p-5",
+        "max-w-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl sm:p-5",
         className,
       )}
     >
@@ -47,8 +47,8 @@ export function RouteComparisonCard({
         ) : null}
       </div>
 
-      <div className="hidden overflow-x-auto md:block">
-        <table className="min-w-full border-separate border-spacing-0 text-left text-sm">
+      <div className="hidden max-w-full overflow-x-auto md:block">
+        <table className="w-full min-w-0 border-separate border-spacing-0 text-left text-sm">
           <thead>
             <tr className="text-xs uppercase tracking-[0.16em] text-slate-500">
               <th className="border-b border-white/10 px-3 py-3 font-semibold">
@@ -88,7 +88,7 @@ export function RouteComparisonCard({
                     </span>
                   </div>
                 </td>
-                <td className="border-b border-white/5 px-3 py-3 text-slate-300">
+                <td className="max-w-[10rem] break-words border-b border-white/5 px-3 py-3 text-slate-300 xl:max-w-none">
                   {route.routePath}
                 </td>
                 <td className="border-b border-white/5 px-3 py-3 text-slate-200">
@@ -125,9 +125,9 @@ export function RouteComparisonCard({
               </span>
             </div>
             <dl className="grid grid-cols-2 gap-2 text-xs text-slate-400">
-              <div>
+              <div className="col-span-2 min-w-0">
                 <dt className="uppercase tracking-wide">Path</dt>
-                <dd className="mt-0.5 text-slate-200">{route.routePath}</dd>
+                <dd className="mt-0.5 break-words text-slate-200">{route.routePath}</dd>
               </div>
               <div>
                 <dt className="uppercase tracking-wide">Output</dt>

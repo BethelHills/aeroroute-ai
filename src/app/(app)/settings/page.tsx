@@ -196,7 +196,7 @@ export default function AeroRouteSettingsPreview() {
                 <WalletStatusButtons />
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014]"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014] sm:w-auto"
                 >
                   <Save size={17} /> Save Settings
                 </button>

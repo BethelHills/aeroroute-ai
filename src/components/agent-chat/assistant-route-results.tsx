@@ -93,7 +93,7 @@ export function AssistantRouteResults() {
   }
 
   return (
-    <div className="aui-assistant-route-results mx-auto mt-3 w-full max-w-[var(--thread-max-width)] px-3">
+    <div className="aui-assistant-route-results mx-auto mt-3 w-full min-w-0 max-w-[var(--thread-max-width)] overflow-hidden px-2 sm:px-3">
       <div className="mb-4">
         <RouteResultCardIconBadge />
       </div>

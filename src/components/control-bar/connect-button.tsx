@@ -82,7 +82,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({
         !adapter.canConnect
       }
     >
-      <span className="max-w-[180px] truncate max-md:max-w-[4.75rem]">{primaryLabel}</span>
+      <span className="max-w-[min(100%,10rem)] truncate sm:max-w-[180px]">{primaryLabel}</span>
       {identity.isConnected && secondaryLabel && (
         <span className="hidden opacity-50 sm:inline">{secondaryLabel}</span>
       )}

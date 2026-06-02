@@ -40,27 +40,31 @@ export function WalletStatusButtons({
   );
 
   return (
-    <div className={cn("flex flex-col items-end gap-2 sm:items-stretch", className)}>
+    <div className={cn("flex w-full flex-col items-stretch gap-2 sm:items-end", className)}>
       <SwitchToBasePrompt variant="compact" className="w-full max-w-md sm:max-w-lg" />
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <ConnectButton connectLabel="Connect Wallet" className={connectClass} />
+      <div className="flex w-full flex-wrap items-stretch gap-2 sm:items-center sm:gap-3">
+        <ConnectButton
+          connectLabel="Connect Wallet"
+          className={cn(connectClass, "w-full sm:w-auto")}
+        />
 
         {identity.isConnected ? (
           <NetworkSelect
             showChainId
             className={cn(
               chainClass,
+              "w-full min-w-0 sm:w-auto",
               "text-[#041014] hover:bg-gradient-to-r hover:from-emerald-400 hover:to-cyan-400 hover:text-[#041014]",
             )}
           />
         ) : (
           <div
-            className={cn(chainClass, "inline-flex items-center gap-2")}
+            className={cn(chainClass, "inline-flex w-full min-w-0 items-center gap-2 sm:w-auto")}
             aria-label={`Network ${chainName} ${DEFAULT_CHAIN_ID}`}
           >
             <Network size={isHero ? 17 : 16} className="shrink-0" />
-            <span>{chainName}</span>
-            <span className="opacity-80">{DEFAULT_CHAIN_ID}</span>
+            <span className="min-w-0 truncate">{chainName}</span>
+            <span className="shrink-0 opacity-80">{DEFAULT_CHAIN_ID}</span>
           </div>
         )}
       </div>

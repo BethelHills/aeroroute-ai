@@ -17,7 +17,7 @@ type LogoProps = {
 };
 
 export function Logo({
-  className = "h-auto w-[130px] md:w-[170px] lg:w-[220px]",
+  className = "h-auto w-[100px] sm:w-[130px] md:w-[170px] lg:w-[220px]",
   linkClassName,
   priority = false,
   href = "/",
@@ -32,7 +32,7 @@ export function Logo({
       alt={alt}
       width={width}
       height={height}
-      sizes="(max-width: 768px) 130px, (max-width: 1024px) 170px, 220px"
+      sizes="(max-width: 640px) 100px, (max-width: 768px) 130px, (max-width: 1024px) 170px, 220px"
       className={cn("block h-auto w-auto max-w-full object-contain object-left", className)}
       priority={priority}
     />

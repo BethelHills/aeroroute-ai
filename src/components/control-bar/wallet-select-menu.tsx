@@ -73,7 +73,11 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
       const rect = triggerRef.current?.getBoundingClientRect();
       if (!rect) return;
 
-      const menuWidth = Math.min(320, Math.max(rect.width, 260));
+      const menuWidth = Math.min(
+        320,
+        window.innerWidth - 24,
+        Math.max(rect.width, 260),
+      );
       const left = Math.max(
         12,
         Math.min(rect.left, window.innerWidth - menuWidth - 12),

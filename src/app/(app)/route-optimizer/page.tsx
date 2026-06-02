@@ -411,7 +411,7 @@ function MiniChart() {
         </div>
         <Gauge className="shrink-0 text-emerald-300" />
       </div>
-      <svg viewBox="0 0 520 190" className="h-44 w-full min-w-0">
+      <svg viewBox="0 0 520 190" className="h-44 w-full min-w-0" preserveAspectRatio="xMidYMid meet">
         <defs><linearGradient id="routeOptArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#00F5A0" stopOpacity="0.45" /><stop offset="100%" stopColor="#00F5A0" stopOpacity="0" /></linearGradient></defs>
         <path d="M0 145 C45 115 70 160 115 102 C160 50 190 118 245 88 C300 56 330 135 380 92 C430 48 470 62 520 28 L520 190 L0 190 Z" fill="url(#routeOptArea)" />
         <path d="M0 145 C45 115 70 160 115 102 C160 50 190 118 245 88 C300 56 330 135 380 92 C430 48 470 62 520 28" fill="none" stroke="#00F5A0" strokeWidth="4" />

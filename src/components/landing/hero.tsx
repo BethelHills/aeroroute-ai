@@ -20,7 +20,7 @@ function HeroDashboard() {
       initial={{ opacity: 0, y: 30, rotateX: 8 }}
       animate={{ opacity: 1, y: 0, rotateX: 0 }}
       transition={{ duration: 0.8 }}
-      className="relative rounded-[2rem] border border-emerald-400/30 bg-[#071015]/90 p-5 shadow-[0_0_90px_rgba(0,245,160,0.18)] backdrop-blur-xl lg:rotate-[-3deg]"
+      className="relative max-lg:rotate-0 rounded-[2rem] border border-emerald-400/30 bg-[#071015]/90 p-5 shadow-[0_0_90px_rgba(0,245,160,0.18)] backdrop-blur-xl lg:rotate-[-3deg]"
     >
       <div className="absolute -inset-8 -z-10 rounded-full bg-emerald-500/10 blur-3xl" />
       <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,220px)_1fr]">
@@ -79,7 +79,7 @@ function HeroDashboard() {
           <div className="grid gap-4 md:grid-cols-[1fr_220px]">
             <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
               <p className="mb-3 text-sm font-semibold">Liquidity Depth</p>
-              <svg viewBox="0 0 500 170" className="h-36 w-full">
+              <svg viewBox="0 0 500 170" className="h-36 w-full min-w-0" preserveAspectRatio="xMidYMid meet">
                 <defs>
                   <linearGradient id="aeroArea" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0%" stopColor="#00F5A0" stopOpacity="0.5" />
@@ -115,7 +115,7 @@ export function Hero() {
   return (
     <>
       <nav className="relative z-10 mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-3 px-4 py-6 sm:px-6 lg:px-8">
-        <Logo priority className="h-auto w-[130px] shrink-0 md:w-[170px] lg:w-[220px]" href="/" />
+        <Logo priority className="h-auto w-[100px] max-w-[calc(100vw-9rem)] shrink-0 sm:w-[130px] md:w-[170px] lg:w-[220px]" href="/" />
         <div className="hidden items-center gap-8 text-sm text-slate-300 lg:flex">
           {navLinks.map((item) => (
             <a key={item} href="#" className="hover:text-emerald-300">{item}</a>
@@ -123,7 +123,7 @@ export function Hero() {
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden rounded-xl border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-sm text-blue-100 sm:inline-flex">Built on Base</span>
-          <a href="/dashboard" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-bold text-[#041014] shadow-[0_0_30px_rgba(0,245,160,0.25)]">
+          <a href="/dashboard" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-2.5 text-xs font-bold text-[#041014] shadow-[0_0_30px_rgba(0,245,160,0.25)] sm:px-5 sm:py-3 sm:text-sm">
             Launch App
             <ArrowRight size={17} />
           </a>

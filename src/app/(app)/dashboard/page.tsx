@@ -451,7 +451,7 @@ function AnalyticsPanel() {
         </div>
         <LineChart className="shrink-0 text-orange-300" />
       </div>
-      <svg viewBox="0 0 700 260" className="h-48 w-full min-w-0 sm:h-64" preserveAspectRatio="none">
+      <svg viewBox="0 0 700 260" className="h-48 w-full min-w-0 sm:h-64" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="depthArea" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="#00F5A0" stopOpacity="0.45" />
