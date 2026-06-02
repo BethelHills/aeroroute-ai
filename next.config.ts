@@ -7,6 +7,10 @@ const aomiProxyTarget = (
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
+  env: {
+    // Expose deployment host to the client bundle so WalletConnect metadata matches on Vercel.
+    NEXT_PUBLIC_VERCEL_URL: process.env.VERCEL_URL ?? "",
+  },
   async rewrites() {
     return [
       {
