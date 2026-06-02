@@ -14,6 +14,10 @@ import { useConfig } from "wagmi";
 import { cn } from "@aomi-labs/react";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 import { connectWalletOption } from "@/lib/wallet/connect-wallet-option";
+import {
+  formatWalletConnectError,
+  isWalletConnectUserDismissedError,
+} from "@/lib/wallet/wallet-connect-errors";
 import { useWalletOptions, type WalletOption } from "@/hooks/use-wallet-options";
 import { ConnectButton } from "./connect-button";
 import type { WalletSelectProps } from "./wallet-select";
@@ -60,7 +64,6 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
 
   useEffect(() => {
     if (!open) return;
-    setConnectError(null);
     const timer = window.setTimeout(() => {
       setRefreshToken((value) => value + 1);
     }, 150);
@@ -130,21 +133,17 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
     const isWalletConnect = option.id === "walletConnect";
 
     if (isWalletConnect) {
-      // WalletConnect opens its own modal; don't keep the trigger in "Connecting…"
-      // for the entire pairing session.
       void (async () => {
         await new Promise<void>((resolve) => {
           requestAnimationFrame(() => resolve());
         });
         await connectWalletOption(wagmiConfig, option);
       })().catch((error) => {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Could not connect wallet. Try another option.";
-        setConnectError(message);
-        setOpen(true);
-        console.error("Wallet connection failed:", error);
+        if (isWalletConnectUserDismissedError(error)) {
+          return;
+        }
+        setConnectError(formatWalletConnectError(error));
+        console.error("WalletConnect failed:", error);
       });
       return;
     }
@@ -209,7 +208,11 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
                       type="button"
                       role="menuitem"
                       disabled={isConnecting || !option.available}
-                      onClick={() => void handlePick(option)}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        void handlePick(option);
+                      }}
                       className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-sm text-white transition hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <WalletOptionIcon option={option} />

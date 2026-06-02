@@ -17,6 +17,7 @@ function buildConnectors(appOrigin: string) {
           walletConnect({
             projectId,
             showQrModal: true,
+            isNewChainsStale: false,
             metadata: {
               name: "AeroRoute AI",
               description: "Smart swap routes on Base",
