@@ -16,6 +16,7 @@ import {
 import { Thread } from "@/components/assistant-ui/thread";
 import { ThreadListSidebar } from "@/components/assistant-ui/threadlist-sidebar";
 import { NotificationToaster } from "@/components/ui/notification";
+import { AomiAuthUserSync } from "@/components/providers/aomi-auth-user-sync";
 import { RuntimeTxHandler } from "@/components/runtime-tx-handler";
 import {
   SidebarInset,
@@ -127,6 +128,7 @@ const Root: FC<RootProps> = ({
             {children}
           </SidebarInset>
           <NotificationToaster />
+          <AomiAuthUserSync />
           <RuntimeTxHandler />
         </div>
       </SidebarProvider>

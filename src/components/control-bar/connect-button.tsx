@@ -72,7 +72,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({
         "hover:bg-primary/90",
         "transition-colors",
         "focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-        "disabled:pointer-events-none disabled:opacity-50",
+        "cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       aria-label={ariaLabel}

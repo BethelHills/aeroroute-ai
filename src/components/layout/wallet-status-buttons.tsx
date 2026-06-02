@@ -25,7 +25,7 @@ export function WalletStatusButtons({
   const chainName = chainInfo?.ticker ?? chainInfo?.name ?? "Base";
 
   const connectClass = cn(
-    "shadow-none focus-visible:ring-emerald-400/40",
+    "cursor-pointer shadow-none focus-visible:ring-emerald-400/40",
     isHero
       ? "h-auto min-h-0 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl hover:bg-white/[0.06] hover:text-white"
       : "h-auto min-h-0 rounded-xl border border-white/10 bg-white/[0.035] px-3 py-2 text-xs font-bold text-slate-200 hover:bg-white/[0.06] md:px-4 md:text-sm",
