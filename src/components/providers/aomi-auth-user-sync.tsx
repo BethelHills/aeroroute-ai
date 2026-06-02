@@ -3,9 +3,10 @@
 import { useEffect } from "react";
 import { useUser } from "@aomi-labs/react";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
+import { DEFAULT_CHAIN_ID } from "@/lib/wallet/para-config";
 
 /**
- * Syncs Para wallet identity into Aomi runtime user state.
+ * Syncs wagmi wallet identity into Aomi runtime user state.
  * Mount only inside `AomiRuntimeProvider` (e.g. AomiFrame).
  */
 export function AomiAuthUserSync() {
@@ -17,14 +18,16 @@ export function AomiAuthUserSync() {
     setUser({
       address: identity.address ?? undefined,
       walletKind: identity.walletKind ?? undefined,
-      chainId: identity.chainId ?? undefined,
+      chainId: identity.isConnected
+        ? (identity.chainId ?? DEFAULT_CHAIN_ID)
+        : undefined,
       isConnected: identity.isConnected,
       svmAddress: identity.svmAddress ?? undefined,
       walletProvider: identity.isConnected
         ? (identity.walletProvider ?? null)
         : null,
       authMethod: identity.isConnected
-        ? (identity.authMethod ?? null)
+        ? (identity.authMethod ?? "wagmi")
         : null,
       sponsored: identity.isConnected ? (identity.sponsored ?? null) : null,
       sponsorProvider: identity.isConnected
