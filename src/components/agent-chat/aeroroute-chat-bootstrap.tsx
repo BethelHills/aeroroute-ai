@@ -74,6 +74,7 @@ export function AerorouteChatBootstrap({
   }, [
     api,
     autoSend,
+    getMessages,
     initialPrompt,
     sendMessage,
     syncCurrentThreadControl,

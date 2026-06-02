@@ -128,15 +128,3 @@
     @apply font-sans;
   }
 }
-
-/* Aomi thread inside AeroRoute dark cards */
-.aeroroute-aomi-thread.dark {
-  --background: #061018;
-  --foreground: #e2e8f0;
-  --muted: rgb(255 255 255 / 0.06);
-  --muted-foreground: #94a3b8;
-  --card: rgb(255 255 255 / 0.04);
-  --border: rgb(255 255 255 / 0.1);
-  --primary: #00f5a0;
-  --primary-foreground: #031014;
-}

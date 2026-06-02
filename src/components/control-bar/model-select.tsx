@@ -24,7 +24,7 @@ import {
   AUTO_MODE_LABEL,
   resolveAutoModel,
 } from "./model-metadata";
-import { AutoModeIcon, getVendorIcon } from "@/components/icons";
+import { AutoModeIcon, getVendorIcon, renderIcon } from "@/components/icons";
 
 export type ModelSelectProps = {
   className?: string;
@@ -105,18 +105,14 @@ export const ModelSelect: FC<ModelSelectProps> = ({
                       isProcessing && "cursor-not-allowed opacity-50",
                       className,
                     )} />}><div className="flex items-center gap-px md:gap-1.5">
-                      {(() => {
-                        if (isAuto) {
-                          return <AutoModeIcon className="h-3 w-3 shrink-0 opacity-60" />;
-                        }
-                        if (selectedModel) {
-                          const vendor = getVendorForModel(selectedModel);
-                          const VIcon = getVendorIcon(vendor.id);
-                          if (VIcon)
-                            return <VIcon className="h-3 w-3 shrink-0 opacity-60" />;
-                        }
-                        return null;
-                      })()}
+                      {isAuto ? (
+                        <AutoModeIcon className="h-3 w-3 shrink-0 opacity-60" />
+                      ) : selectedModel ? (
+                        renderIcon(
+                          getVendorIcon(getVendorForModel(selectedModel).id),
+                          { className: "h-3 w-3 shrink-0 opacity-60" },
+                        )
+                      ) : null}
                       <span className="truncate">{triggerLabel}</span>
                     </div><ChevronDownIcon className="ml-0 h-3 w-3 shrink-0 opacity-50 md:ml-2" /></PopoverTrigger>
       <PopoverContent
@@ -161,7 +157,6 @@ export const ModelSelect: FC<ModelSelectProps> = ({
 
             {/* Vendor-grouped models */}
             {groups.map((group) => {
-              const VendorIcon = getVendorIcon(group.vendor.id);
               return (
                 <CommandGroup
                   key={group.vendor.id}
@@ -182,9 +177,9 @@ export const ModelSelect: FC<ModelSelectProps> = ({
                             "bg-muted text-muted-foreground",
                           )}
                         >
-                          {VendorIcon ? (
-                            <VendorIcon className="h-3.5 w-3.5" />
-                          ) : (
+                          {renderIcon(getVendorIcon(group.vendor.id), {
+                            className: "h-3.5 w-3.5",
+                          }) ?? (
                             <span className="text-[10px] font-medium">
                               {group.vendor.abbr}
                             </span>

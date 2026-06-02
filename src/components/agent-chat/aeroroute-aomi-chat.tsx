@@ -1,6 +1,7 @@
 "use client";
 
 import "@/components/default.css";
+import "@/components/agent-chat/aeroroute-aomi-theme.css";
 import { AomiFrame } from "@/components/aomi-frame";
 import {
   AerorouteChatBootstrap,
@@ -164,7 +165,7 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
           </div>
         </div>
 
-        <div className="dark aeroroute-aomi-thread relative min-h-0 flex-1 [&_.aui-root]:!bg-transparent [&_.aui-thread-root]:!bg-transparent">
+        <div className="aeroroute-aomi-thread dark relative min-h-0 flex-1">
           <AerorouteChatBootstrap />
           <AomiFrame.Composer
             withControl
@@ -200,17 +201,16 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
 
 export function AerorouteAomiChat({ aomiApiKey, className }: AerorouteAomiChatProps) {
   return (
-    <AomiFrame.Root
-      showSidebar={false}
-      walletPosition={null}
-      height="auto"
-      className={cn(
-        "!h-auto !min-h-0 !rounded-none !border-0 !bg-transparent !shadow-none dark:!bg-transparent",
-        className,
-      )}
-      clientOptions={aomiApiKey ? { apiKey: aomiApiKey } : undefined}
-    >
-      <AerorouteChatShell aomiApiKey={aomiApiKey} />
-    </AomiFrame.Root>
+    <div className={cn("aeroroute-aomi-chat dark", className)}>
+      <AomiFrame.Root
+        showSidebar={false}
+        walletPosition={null}
+        height="auto"
+        className="dark !h-auto !min-h-0 !rounded-none !border-0 !bg-transparent !shadow-none"
+        clientOptions={aomiApiKey ? { apiKey: aomiApiKey } : undefined}
+      >
+        <AerorouteChatShell aomiApiKey={aomiApiKey} />
+      </AomiFrame.Root>
+    </div>
   );
 }

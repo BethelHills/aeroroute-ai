@@ -1,6 +1,6 @@
 "use client";
 
-import { PropsWithChildren, useEffect, useState, type FC } from "react";
+import { PropsWithChildren, useEffect, useMemo, useState, type FC } from "react";
 import Image from "next/image";
 import { XIcon, PlusIcon, FileText } from "lucide-react";
 import {
@@ -27,23 +27,17 @@ import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button
 import { cn } from "@aomi-labs/react";
 
 const useFileSrc = (file: File | undefined) => {
-  const [src, setSrc] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (!file) {
-      setSrc(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(file);
-    setSrc(objectUrl);
-
-    return () => {
-      URL.revokeObjectURL(objectUrl);
-    };
+  const objectSrc = useMemo(() => {
+    if (!file) return undefined;
+    return URL.createObjectURL(file);
   }, [file]);
 
-  return src;
+  useEffect(() => {
+    if (!objectSrc) return;
+    return () => URL.revokeObjectURL(objectSrc);
+  }, [objectSrc]);
+
+  return objectSrc;
 };
 
 const useAttachmentSrc = () => {

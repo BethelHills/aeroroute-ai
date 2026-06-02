@@ -1,0 +1,134 @@
+/**
+ * AeroRoute Agent Chat — force Aomi assistant-ui to use the page dark surface
+ * instead of the default light (white) Aomi frame theme.
+ */
+
+.aeroroute-aomi-chat,
+.aeroroute-aomi-chat.dark,
+.aeroroute-aomi-thread.dark {
+  color-scheme: dark;
+  --background: transparent;
+  --foreground: #e2e8f0;
+  --card: rgb(255 255 255 / 0.04);
+  --card-foreground: #f1f5f9;
+  --popover: #061018;
+  --popover-foreground: #e2e8f0;
+  --primary: #00f5a0;
+  --primary-foreground: #031014;
+  --secondary: rgb(255 255 255 / 0.06);
+  --secondary-foreground: #e2e8f0;
+  --muted: rgb(255 255 255 / 0.06);
+  --muted-foreground: #94a3b8;
+  --accent: rgb(255 255 255 / 0.08);
+  --accent-foreground: #f1f5f9;
+  --destructive: #f87171;
+  --border: rgb(255 255 255 / 0.1);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: #00f5a0;
+  --aomi-welcome-title: #f1f5f9;
+  --aomi-welcome-subtitle: #94a3b8;
+}
+
+.aeroroute-aomi-thread.dark .aui-root,
+.aeroroute-aomi-thread.dark .aui-thread-root,
+.aeroroute-aomi-thread.dark .aui-thread-viewport,
+.aeroroute-aomi-thread.dark .aui-composer-wrapper,
+.aeroroute-aomi-thread.dark [data-slot="sidebar-inset"] {
+  background-color: transparent !important;
+  color: var(--foreground);
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-root {
+  background-color: rgb(0 0 0 / 0.25) !important;
+  border-color: rgb(255 255 255 / 0.1) !important;
+  color: #f1f5f9;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-input,
+.aeroroute-aomi-thread.dark .aui-edit-composer-input {
+  color: #f1f5f9 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-input::placeholder,
+.aeroroute-aomi-thread.dark .aui-edit-composer-input::placeholder {
+  color: #64748b !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-thread-welcome-message-motion-1,
+.aeroroute-aomi-thread.dark .aui-thread-welcome-message-motion-2 {
+  color: #f1f5f9 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-thread-welcome-suggestion {
+  border-color: rgb(255 255 255 / 0.1) !important;
+  background-color: rgb(255 255 255 / 0.04) !important;
+  color: #e2e8f0 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-thread-welcome-suggestion:hover,
+.aeroroute-aomi-thread.dark .aui-thread-welcome-suggestion[data-highlighted] {
+  background-color: rgb(255 255 255 / 0.08) !important;
+  border-color: rgb(0 245 160 / 0.35) !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-user-message-content {
+  background-color: rgb(255 255 255 / 0.1) !important;
+  color: #f1f5f9 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-assistant-message-content,
+.aeroroute-aomi-thread.dark .aui-assistant-payment-required-message {
+  color: #cbd5e1 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-edit-composer-root {
+  background-color: rgb(0 0 0 / 0.3) !important;
+  border-color: rgb(255 255 255 / 0.1) !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-assistant-action-bar-root[data-floating] {
+  background-color: #061018 !important;
+  border-color: rgb(255 255 255 / 0.1) !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-thread-scroll-to-bottom {
+  background-color: #061018 !important;
+  border-color: rgb(255 255 255 / 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-assistant-message-skeleton-line,
+.aeroroute-aomi-thread.dark .aui-user-message-skeleton-bubble {
+  background-color: rgb(255 255 255 / 0.08) !important;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-action-wrapper button {
+  color: #94a3b8;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-action-wrapper button:hover {
+  color: #f1f5f9;
+}
+
+/* Markdown in assistant messages */
+.aeroroute-aomi-thread.dark .aui-assistant-message-content a {
+  color: #34d399;
+}
+
+.aeroroute-aomi-thread.dark .aui-assistant-message-content code {
+  background-color: rgb(0 0 0 / 0.35);
+  color: #a7f3d0;
+}
+
+.aeroroute-aomi-thread.dark .aui-message-error-root {
+  background-color: rgb(248 113 113 / 0.12) !important;
+  border-color: rgb(248 113 113 / 0.35) !important;
+  color: #fecaca !important;
+}
+
+.aeroroute-aomi-chat.dark [data-radix-popper-content-wrapper] [role="dialog"],
+.aeroroute-aomi-chat.dark [data-slot="popover-content"] {
+  background-color: #061018 !important;
+  color: #e2e8f0 !important;
+  border-color: rgb(255 255 255 / 0.1) !important;
+}

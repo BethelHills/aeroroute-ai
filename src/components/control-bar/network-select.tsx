@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getChainIcon } from "@/components/icons";
+import { getChainIcon, renderIcon } from "@/components/icons";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
 export type NetworkSelectProps = {
@@ -35,7 +35,6 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
 
   const currentChain = getChainInfo(chainId);
   const displayName = currentChain?.ticker ?? "Network";
-  const CurrentChainIcon = chainId ? getChainIcon(chainId) : undefined;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,8 +43,9 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       (isPending || !switchChain) && "cursor-not-allowed opacity-50",
                       className,
-                    )} />}>{CurrentChainIcon && (
-                      <CurrentChainIcon className="h-3 w-3 shrink-0 opacity-60" />
+                    )} />}>{renderIcon(
+                      chainId ? getChainIcon(chainId) : undefined,
+                      { className: "h-3 w-3 shrink-0 opacity-60" },
                     )}<span className="truncate">{displayName}</span><ChevronDownIcon className="ml-1 h-3 w-3 shrink-0 opacity-50" /></PopoverTrigger>
       <PopoverContent
         align="start"
@@ -54,7 +54,6 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
       >
         <div className="flex flex-col gap-0.5">
           {selectableChains.map((chain) => {
-            const ChainIcon = getChainIcon(chain.id);
             const fallbackTicker =
               "nativeCurrency" in chain
                 ? chain.nativeCurrency.symbol
@@ -86,9 +85,7 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
                     chainId === chain.id && "bg-primary/10 text-primary",
                   )}
                 >
-                  {ChainIcon ? (
-                    <ChainIcon className="h-4 w-4" />
-                  ) : (
+                  {renderIcon(getChainIcon(chain.id), { className: "h-4 w-4" }) ?? (
                     <span className="text-[10px] font-medium">
                       {chainTicker.slice(0, 2)}
                     </span>

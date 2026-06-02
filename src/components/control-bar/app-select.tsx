@@ -19,7 +19,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { getAppInfo, groupAppsByCategory } from "./app-metadata";
-import { AllAppsIcon, getAppIcon } from "@/components/icons";
+import { AllAppsIcon, getAppIcon, renderIcon } from "@/components/icons";
 
 export type AppSelectProps = {
   className?: string;
@@ -29,10 +29,7 @@ export type AppSelectProps = {
 /** The "default" app id that means "all apps". */
 const ALL_APPS_ID = "default";
 
-export const AppSelect: FC<AppSelectProps> = ({
-  className,
-  placeholder = "Select App",
-}) => {
+export const AppSelect: FC<AppSelectProps> = ({ className }) => {
   const {
     state,
     getAuthorizedApps,
@@ -48,7 +45,6 @@ export const AppSelect: FC<AppSelectProps> = ({
 
   const selectedApp = getCurrentThreadApp();
   const selectedInfo = getAppInfo(selectedApp);
-  const SelectedAppIcon = getAppIcon(selectedApp);
 
   const apps = state.authorizedApps;
 
@@ -80,9 +76,9 @@ export const AppSelect: FC<AppSelectProps> = ({
                       "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       isProcessing && "cursor-not-allowed opacity-50",
                       className,
-                    )} />}>{SelectedAppIcon && (
-                      <SelectedAppIcon className="h-3 w-3 shrink-0 opacity-60" />
-                    )}<span className="truncate">{selectedInfo.displayName}</span><ChevronDownIcon className="ml-1 h-3 w-3 shrink-0 opacity-50" /></PopoverTrigger>
+                    )} />}>{renderIcon(getAppIcon(selectedApp), {
+                      className: "h-3 w-3 shrink-0 opacity-60",
+                    })}<span className="truncate">{selectedInfo.displayName}</span><ChevronDownIcon className="ml-1 h-3 w-3 shrink-0 opacity-50" /></PopoverTrigger>
       <PopoverContent
         align="start"
         sideOffset={4}
@@ -139,7 +135,6 @@ export const AppSelect: FC<AppSelectProps> = ({
                 heading={group.category.label}
               >
                 {group.apps.map((app) => {
-                  const AppIcon = getAppIcon(app.id);
                   return (
                     <CommandItem
                       key={app.id}
@@ -161,7 +156,8 @@ export const AppSelect: FC<AppSelectProps> = ({
                               "bg-primary/10 text-primary",
                           )}
                         >
-                          {AppIcon ? <AppIcon className="h-4 w-4" /> : app.abbr}
+                          {renderIcon(getAppIcon(app.id), { className: "h-4 w-4" }) ||
+                            app.abbr}
                         </span>
                         <span className="truncate">{app.displayName}</span>
                       </div>
