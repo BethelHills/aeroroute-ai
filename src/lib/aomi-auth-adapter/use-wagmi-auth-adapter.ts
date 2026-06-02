@@ -25,8 +25,7 @@ export function useWagmiAuthAdapter(): AomiAuthAdapter {
     isConnecting,
     isReconnecting,
   } = useAccount();
-  const { connectAsync, connectors, isPending: isConnectPending } =
-    useConnect();
+  const { connectAsync, connectors } = useConnect();
   const { disconnectAsync } = useDisconnect();
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
 
