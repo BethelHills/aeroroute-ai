@@ -3,7 +3,23 @@ w3m-modal {
   z-index: 50000 !important;
 }
 
+wui-qr-code {
+  --local-icon-color: #061018 !important;
+  background: #ffffff !important;
+}
+
 w3m-modal wui-qr-code {
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+w3m-modal wui-qr-code svg rect[fill="#ffffff"],
+w3m-modal wui-qr-code svg rect[stroke="#ffffff"] {
+  fill: #061018 !important;
+  stroke: #061018 !important;
+}
+
+w3m-modal wui-qr-code svg rect[fill="transparent"][stroke="#ffffff"] {
+  fill: transparent !important;
+  stroke: #061018 !important;
 }

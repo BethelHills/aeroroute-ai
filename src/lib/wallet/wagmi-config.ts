@@ -34,7 +34,8 @@ export const wagmiConfig = createConfig({
               themeMode: "dark",
               themeVariables: {
                 "--wcm-z-index": "50000",
-                "--wcm-accent-color": "#ffffff",
+                // QR modules must contrast with the white QR canvas (not white-on-white).
+                "--wcm-accent-color": "#061018",
                 "--wcm-background-color": "#061018",
               },
             },

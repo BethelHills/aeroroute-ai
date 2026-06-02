@@ -126,9 +126,31 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
 
     setConnectError(null);
     setOpen(false);
+
+    const isWalletConnect = option.id === "walletConnect";
+
+    if (isWalletConnect) {
+      // WalletConnect opens its own modal; don't keep the trigger in "Connecting…"
+      // for the entire pairing session.
+      void (async () => {
+        await new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        });
+        await connectWalletOption(wagmiConfig, option);
+      })().catch((error) => {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Could not connect wallet. Try another option.";
+        setConnectError(message);
+        setOpen(true);
+        console.error("Wallet connection failed:", error);
+      });
+      return;
+    }
+
     setIsConnecting(true);
 
-    // Let the portaled wallet menu unmount before WalletConnect opens its QR modal.
     await new Promise<void>((resolve) => {
       requestAnimationFrame(() => resolve());
     });
@@ -141,6 +163,7 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
           ? error.message
           : "Could not connect wallet. Try another option.";
       setConnectError(message);
+      setOpen(true);
       console.error("Wallet connection failed:", error);
     } finally {
       setIsConnecting(false);
