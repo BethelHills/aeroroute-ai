@@ -115,7 +115,7 @@ export function Hero() {
   return (
     <>
       <nav className="relative z-10 mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-3 px-4 py-6 sm:px-6 lg:px-8">
-        <Logo priority className="h-auto w-[100px] max-w-[calc(100vw-9rem)] shrink-0 sm:w-[130px] md:w-[170px] lg:w-[220px]" href="/" />
+        <Logo priority className="h-auto w-[130px] shrink-0 md:w-[170px] lg:w-[220px]" href="/" />
         <div className="hidden items-center gap-8 text-sm text-slate-300 lg:flex">
           {navLinks.map((item) => (
             <a key={item} href="#" className="hover:text-emerald-300">{item}</a>

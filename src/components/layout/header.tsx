@@ -38,7 +38,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             href="/dashboard"
             alt="AeroRoute AI"
             linkClassName="min-w-0 shrink"
-            className="h-auto w-[100px] max-w-[calc(100vw-7rem)] sm:w-[130px] md:w-[170px] lg:w-[220px]"
+            className="h-auto w-[130px] max-w-[calc(100vw-7rem)] md:w-[170px] lg:w-[220px]"
           />
         ) : (
           <p className="min-w-0 truncate text-sm font-black text-white md:text-base">

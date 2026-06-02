@@ -91,7 +91,7 @@ function SidebarPanel({
             <Logo
               priority
               href="/dashboard"
-              className="h-auto w-[100px] sm:w-[130px] md:w-[170px] lg:w-[220px]"
+              className="h-auto w-[130px] md:w-[170px] lg:w-[220px]"
             />
           )}
           {showCollapseToggle && (
@@ -158,7 +158,7 @@ export function Sidebar({
             priority
             href="/dashboard"
             alt="AeroRoute AI"
-            className="h-auto w-[100px]"
+            className="h-auto w-[130px]"
           />
           <button
             type="button"
