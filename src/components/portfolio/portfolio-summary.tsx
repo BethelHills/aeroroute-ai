@@ -1,5 +1,10 @@
 import { BarChart3, Gauge, ShieldCheck, Wallet } from "lucide-react";
 import { portfolioSummary } from "@/lib/portfolio-data";
+import { cn } from "@/lib/utils";
+
+type PortfolioSummaryProps = {
+  isConnected?: boolean;
+};
 
 const cards = [
   {
@@ -28,9 +33,20 @@ const cards = [
   },
 ];
 
-export function PortfolioSummary() {
+export function PortfolioSummary({ isConnected = false }: PortfolioSummaryProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4">
+      {!isConnected ? (
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+          Demo portfolio data
+        </p>
+      ) : null}
+      <div
+        className={cn(
+          "grid gap-4 md:grid-cols-2 xl:grid-cols-4",
+          isConnected && "opacity-100",
+        )}
+      >
       {cards.map((card) => {
         const Icon = card.icon;
 
@@ -49,6 +65,7 @@ export function PortfolioSummary() {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

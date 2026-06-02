@@ -1,12 +1,14 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Network, Sparkles, Wallet } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useAccount } from "wagmi";
 import { AiPortfolioInsights } from "@/components/portfolio/ai-portfolio-insights";
 import { AllocationCard } from "@/components/portfolio/allocation-card";
 import { AssetTable } from "@/components/portfolio/asset-table";
+import { PortfolioDataNotice } from "@/components/portfolio/portfolio-data-notice";
 import { PortfolioSummary } from "@/components/portfolio/portfolio-summary";
+import { PortfolioWalletHeader } from "@/components/portfolio/portfolio-wallet-header";
 
 function useIsClient() {
   return useSyncExternalStore(
@@ -16,28 +18,17 @@ function useIsClient() {
   );
 }
 
-function PortfolioWorkspaceConnected() {
-  const { address, isConnected } = useAccount();
-
-  const displayAddress = address
-    ? `${address.slice(0, 6)}...${address.slice(-4)}`
-    : "Demo Wallet";
-
-  return (
-    <PortfolioWorkspaceView
-      displayAddress={displayAddress}
-      isConnected={isConnected}
-    />
-  );
-}
-
-function PortfolioWorkspaceView({
-  displayAddress,
-  isConnected,
-}: {
-  displayAddress: string;
+type PortfolioWorkspaceLayoutProps = {
+  walletReady: boolean;
   isConnected: boolean;
-}) {
+  walletAddress?: string;
+};
+
+function PortfolioWorkspaceLayout({
+  walletReady,
+  isConnected,
+  walletAddress,
+}: PortfolioWorkspaceLayoutProps) {
   return (
     <div className="w-full min-w-0 overflow-x-hidden text-white">
       <section className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -61,30 +52,23 @@ function PortfolioWorkspaceView({
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3">
-            <button
-              type="button"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-3 text-sm font-bold text-slate-200 backdrop-blur-xl sm:w-auto"
-            >
-              <Wallet size={17} />
-              <span className="truncate">{displayAddress}</span>
-            </button>
-
-            <button
-              type="button"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-3 text-sm font-black text-[#041014] sm:w-auto"
-            >
-              <Network size={17} />
-              {isConnected ? "Connected" : "Demo Mode"}
-            </button>
-          </div>
+          <PortfolioWalletHeader walletReady={walletReady} />
         </header>
 
-        <PortfolioSummary />
+        <PortfolioDataNotice
+          isConnected={isConnected}
+          walletAddress={walletAddress}
+          className="mb-6"
+        />
+
+        <PortfolioSummary isConnected={isConnected} />
 
         <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(0,360px)]">
           <div className="min-w-0 space-y-6">
-            <AssetTable />
+            <AssetTable
+              isConnected={isConnected}
+              showMockBadge={isConnected}
+            />
           </div>
 
           <div className="min-w-0 space-y-6">
@@ -97,17 +81,29 @@ function PortfolioWorkspaceView({
   );
 }
 
+function PortfolioWorkspaceWithWallet() {
+  const { address, isConnected } = useAccount();
+
+  return (
+    <PortfolioWorkspaceLayout
+      walletReady
+      isConnected={isConnected}
+      walletAddress={address}
+    />
+  );
+}
+
 export function PortfolioWorkspace() {
   const mounted = useIsClient();
 
   if (!mounted) {
     return (
-      <PortfolioWorkspaceView
-        displayAddress="Demo Wallet"
+      <PortfolioWorkspaceLayout
+        walletReady={false}
         isConnected={false}
       />
     );
   }
 
-  return <PortfolioWorkspaceConnected />;
+  return <PortfolioWorkspaceWithWallet />;
 }
