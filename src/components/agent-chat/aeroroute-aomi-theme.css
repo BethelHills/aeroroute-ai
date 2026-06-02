@@ -117,8 +117,13 @@
   flex-shrink: 0;
 }
 
+.aeroroute-aomi-thread.dark .aui-composer-wallet-select,
 .aeroroute-aomi-thread.dark .aui-composer-connect {
   white-space: nowrap;
+}
+
+.aeroroute-aomi-thread.dark .aui-composer-wallet-select {
+  z-index: 1;
 }
 
 .aeroroute-aomi-thread.dark .aui-edit-composer-root {

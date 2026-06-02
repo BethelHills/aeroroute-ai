@@ -42,7 +42,7 @@ import { ModelSelect } from "@/components/control-bar/model-select";
 import { AppSelect } from "@/components/control-bar/app-select";
 import { ApiKeyInput } from "@/components/control-bar/api-key-input";
 import { NetworkSelect } from "@/components/control-bar/network-select";
-import { ConnectButton } from "@/components/control-bar/connect-button";
+import { WalletSelect } from "@/components/control-bar/wallet-select";
 import { SecretGate } from "@/components/control-bar/secret-gate";
 import { PaymentRequiredGate } from "@/components/control-bar/payment-required-gate";
 import {
@@ -237,8 +237,24 @@ const ComposerAction: FC = () => {
   const hideWallet = controlBarProps.hideWallet ?? true;
   const hideNetwork = controlBarProps.hideNetwork ?? false;
 
+  const gridCols = hideWallet
+    ? "grid-cols-[minmax(0,1fr)_auto]"
+    : "grid-cols-[auto_minmax(0,1fr)_auto]";
+
   return (
-    <div className="aui-composer-action-wrapper relative mx-1 mb-3 mt-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+    <div
+      className={cn(
+        "aui-composer-action-wrapper relative mx-1 mb-3 mt-2 grid min-w-0 items-center gap-2",
+        gridCols,
+      )}
+    >
+      {!hideWallet && (
+        <WalletSelect
+          connectLabel="Select Wallet"
+          className="aui-composer-wallet-select max-md:h-9 max-md:px-3 max-md:py-2 max-md:text-xs"
+        />
+      )}
+
       {composerControl.enabled ? (
         <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] md:gap-2">
           {!hideNetwork && <NetworkSelect />}
@@ -251,12 +267,6 @@ const ComposerAction: FC = () => {
             <span className="aui-composer-control-app hidden shrink-0 md:inline-flex">
               <AppSelect />
             </span>
-          )}
-          {!hideWallet && (
-            <ConnectButton
-              connectLabel="Connect"
-              className="aui-composer-connect shrink-0 max-md:h-9 max-md:px-3 max-md:py-2 max-md:text-xs [&>span:first-child]:max-md:max-w-[4.75rem]"
-            />
           )}
           {!hideApiKey && <ApiKeyInput />}
         </div>

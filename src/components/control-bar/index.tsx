@@ -69,5 +69,6 @@ export {
   ConnectButton,
   type ConnectButtonProps,
 } from "./connect-button";
+export { WalletSelect, type WalletSelectProps } from "./wallet-select";
 export { NetworkSelect, type NetworkSelectProps } from "./network-select";
 export { SecretInput, type SecretInputProps } from "./secret-input";
