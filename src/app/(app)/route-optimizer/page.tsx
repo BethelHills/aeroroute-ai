@@ -27,13 +27,13 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
+import {
+  nextSwapTokenIndex,
+  SWAP_TOKENS,
+  type SwapToken,
+} from "@/lib/swap-tokens";
 
-const tokens = [
-  { symbol: "ETH", name: "Ethereum", balance: "4.2800", balanceNum: 4.28, color: "from-blue-500 to-violet-500" },
-  { symbol: "USDC", name: "USD Coin", balance: "1,240.00", balanceNum: 1240, color: "from-cyan-500 to-blue-500" },
-  { symbol: "AERO", name: "Aerodrome", balance: "2,918.44", balanceNum: 2918.44, color: "from-red-500 to-blue-500" },
-  { symbol: "DAI", name: "Dai Stablecoin", balance: "845.30", balanceNum: 845.3, color: "from-yellow-400 to-orange-500" },
-];
+const tokens = SWAP_TOKENS;
 
 const routes = [
   {
@@ -88,17 +88,9 @@ function buildAgentHref(from: string, to: string, amount: string) {
   return `/agent-chat?prompt=${encodeURIComponent(prompt)}`;
 }
 
-function nextTokenIndex(current: number, otherIndex: number) {
-  for (let i = 0; i < tokens.length; i++) {
-    const next = (current + 1 + i) % tokens.length;
-    if (next !== otherIndex) return next;
-  }
-  return current;
-}
-
 type TokenSelectProps = {
   label: string;
-  token: (typeof tokens)[number];
+  token: SwapToken;
   onSelect: () => void;
 };
 
@@ -469,12 +461,12 @@ export default function AeroRouteOptimizerPreview() {
   }, [fromIndex, toIndex]);
 
   const handleFromCycle = useCallback(() => {
-    setFromIndex((i) => nextTokenIndex(i, toIndex));
+    setFromIndex((i) => nextSwapTokenIndex(i, toIndex));
     setHasAnalyzed(false);
   }, [toIndex]);
 
   const handleToCycle = useCallback(() => {
-    setToIndex((i) => nextTokenIndex(i, fromIndex));
+    setToIndex((i) => nextSwapTokenIndex(i, fromIndex));
     setHasAnalyzed(false);
   }, [fromIndex]);
 

@@ -31,13 +31,13 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
+import {
+  nextSwapTokenIndex,
+  SWAP_TOKENS,
+  type SwapToken,
+} from "@/lib/swap-tokens";
 
-const tokens = [
-  { symbol: "ETH", name: "Ethereum", balance: "4.2800", balanceNum: 4.28, color: "bg-gradient-to-br from-blue-500 to-violet-500" },
-  { symbol: "USDC", name: "USD Coin", balance: "1,240.00", balanceNum: 1240, color: "bg-gradient-to-br from-cyan-500 to-blue-500" },
-  { symbol: "AERO", name: "Aerodrome", balance: "2,918.44", balanceNum: 2918.44, color: "bg-gradient-to-br from-red-500 to-blue-500" },
-  { symbol: "DAI", name: "Dai Stablecoin", balance: "845.30", balanceNum: 845.3, color: "bg-gradient-to-br from-yellow-400 to-orange-500" },
-];
+const tokens = SWAP_TOKENS;
 
 const ctaLinkClass =
   "inline-flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl px-6 py-4 font-black transition hover:scale-[1.01] hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400/50";
@@ -48,14 +48,6 @@ const ctaButtonClass =
 function buildPrepareSwapHref(from: string, to: string, amount: string) {
   const prompt = `Prepare a wallet-safe swap plan for swapping ${amount} ${from} to ${to} on Base using the best available route. Include Aerodrome if available.`;
   return `/agent-chat?prompt=${encodeURIComponent(prompt)}`;
-}
-
-function nextTokenIndex(current: number, otherIndex: number) {
-  for (let i = 0; i < tokens.length; i++) {
-    const next = (current + 1 + i) % tokens.length;
-    if (next !== otherIndex) return next;
-  }
-  return current;
 }
 
 const routeOptions = [
@@ -113,7 +105,7 @@ function TokenButton({
   label,
   onSelect,
 }: {
-  token: (typeof tokens)[number];
+  token: SwapToken;
   label: string;
   onSelect: () => void;
 }) {
@@ -130,7 +122,7 @@ function TokenButton({
         aria-label={`Change ${label} token, currently ${token.symbol}`}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${token.color} text-sm font-black text-white shadow-[0_0_25px_rgba(0,245,160,0.18)]`}>
+          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${token.color} text-sm font-black text-white shadow-[0_0_25px_rgba(0,245,160,0.18)]`}>
             {token.symbol.slice(0, 1)}
           </span>
           <div className="min-w-0">
@@ -571,12 +563,12 @@ export default function AeroRouteDashboardPreview() {
   }, [fromIndex, toIndex]);
 
   const handleFromCycle = useCallback(() => {
-    setFromIndex((i) => nextTokenIndex(i, toIndex));
+    setFromIndex((i) => nextSwapTokenIndex(i, toIndex));
     setHasAnalyzed(false);
   }, [toIndex]);
 
   const handleToCycle = useCallback(() => {
-    setToIndex((i) => nextTokenIndex(i, fromIndex));
+    setToIndex((i) => nextSwapTokenIndex(i, fromIndex));
     setHasAnalyzed(false);
   }, [fromIndex]);
 
