@@ -228,11 +228,14 @@ export const WalletSelectMenu: FC<WalletSelectMenuProps> = ({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
+        aria-label={
+          isConnecting ? "Connecting wallet" : connectLabel
+        }
         onClick={() => setOpen((value) => !value)}
         className={buttonClass}
       >
         <WalletIcon className="size-4 shrink-0 opacity-90" />
-        <span className="max-md:max-w-[5.5rem] max-md:truncate">
+        <span className="min-w-0 truncate max-md:max-w-[4.25rem]">
           {isConnecting ? "Connecting…" : connectLabel}
         </span>
         <ChevronDownIcon

@@ -96,7 +96,7 @@ export const Thread: FC = () => {
             />
 
             <ThreadPrimitive.If empty={false}>
-              <div className="aui-thread-viewport-spacer min-h-36 grow" />
+              <div className="aui-thread-viewport-spacer min-h-8 grow max-md:min-h-4 md:min-h-36" />
             </ThreadPrimitive.If>
           </ThreadPrimitive.Viewport>
 
@@ -214,13 +214,13 @@ const ThreadSuggestions: FC = () => {
 
 const Composer: FC = () => {
   return (
-    <div className="aui-composer-wrapper bg-background mx-auto flex w-full max-w-[var(--thread-max-width)] shrink-0 flex-col gap-4 overflow-visible px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-3 md:pb-6">
+    <div className="aui-composer-wrapper bg-background mx-auto flex w-full max-w-[var(--thread-max-width)] shrink-0 flex-col gap-4 overflow-visible px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] max-md:gap-2 sm:px-3 md:pb-6">
       <ThreadScrollToBottom />
-      <SwitchToBasePrompt className="border-border/40 bg-muted/20 dark:border-orange-400/30 dark:bg-orange-400/10" />
+      <SwitchToBasePrompt className="aui-composer-switch-base hidden border-border/40 bg-muted/20 dark:border-orange-400/30 dark:bg-orange-400/10 md:flex" />
       <ComposerPrimitive.Root className="aui-composer-root rounded-4xl bg-muted/20 text-card-foreground border-border/40 relative flex w-full min-w-0 flex-col border px-1 pt-2">
         <ComposerPrimitive.Input
           placeholder="Send a message..."
-          className="aui-composer-input text-foreground placeholder:text-muted-foreground/60 ml-2 mt-1 max-h-32 min-h-14 min-w-0 w-full resize-none break-words bg-transparent px-3 pb-2 pt-1.5 text-sm outline-none dark:text-white sm:ml-3 sm:px-3.5"
+          className="aui-composer-input text-foreground placeholder:text-muted-foreground/60 ml-2 mt-1 max-h-32 min-h-10 min-w-0 w-full resize-none break-words bg-transparent px-3 pb-2 pt-1.5 text-sm outline-none dark:text-white max-md:min-h-10 sm:ml-3 sm:min-h-14 sm:px-3.5"
           rows={1}
           autoFocus
           aria-label="Message input"
@@ -241,8 +241,8 @@ const ComposerAction: FC = () => {
   const hideNetwork = controlBarProps.hideNetwork ?? false;
 
   const gridCols = hideWallet
-    ? "grid-cols-[minmax(0,1fr)_auto] max-md:grid-cols-1"
-    : "grid-cols-[auto_minmax(0,1fr)_auto] max-md:grid-cols-1";
+    ? "grid-cols-[minmax(0,1fr)_auto]"
+    : "grid-cols-[auto_minmax(0,1fr)_auto]";
 
   return (
     <div
@@ -255,12 +255,12 @@ const ComposerAction: FC = () => {
         <WalletSelect
           connectLabel="Select Wallet"
           menuId="aeroroute-chat-composer-wallet-menu"
-          className="aui-composer-wallet-select max-md:h-9 max-md:w-full max-md:justify-center max-md:px-3 max-md:py-2 max-md:text-xs"
+          className="aui-composer-wallet-select max-md:h-8 max-md:gap-1 max-md:rounded-full max-md:px-2.5 max-md:py-1.5 max-md:text-xs"
         />
       )}
 
       {composerControl.enabled ? (
-        <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] max-md:w-full md:gap-2">
+        <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] md:gap-2">
           {!hideNetwork && <NetworkSelect />}
           {!hideModel && (
             <span className="aui-composer-control-model hidden shrink-0 md:inline-flex">
@@ -278,7 +278,7 @@ const ComposerAction: FC = () => {
         <div className="min-w-0" />
       )}
 
-      <div className="aui-composer-send-row flex shrink-0 justify-end max-md:w-full max-md:justify-end">
+      <div className="aui-composer-send-row flex shrink-0 justify-end">
         <ThreadPrimitive.If running={false}>
           <ComposerPrimitive.Send asChild>
             <Button

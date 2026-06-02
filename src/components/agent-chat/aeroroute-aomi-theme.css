@@ -198,7 +198,28 @@
 
 @media (max-width: 767px) {
   .aeroroute-aomi-thread.dark .aui-composer-action-wrapper {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .aeroroute-aomi-thread.dark .aui-composer-wallet-select {
+    max-width: min(9.5rem, 38vw);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .aeroroute-aomi-thread.dark .aui-composer-wallet-select span {
+    max-width: 4.25rem;
+  }
+
+  .aeroroute-aomi-thread.dark .aui-composer-root {
+    padding-top: 0.375rem;
+  }
+
+  .aeroroute-aomi-thread.dark .aui-composer-action-wrapper {
+    margin-top: 0.375rem;
+    margin-bottom: 0.5rem;
   }
 }
 
