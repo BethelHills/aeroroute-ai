@@ -251,6 +251,7 @@ const ComposerAction: FC = () => {
       {!hideWallet && (
         <WalletSelect
           connectLabel="Select Wallet"
+          menuId="aeroroute-chat-composer-wallet-menu"
           className="aui-composer-wallet-select max-md:h-9 max-md:px-3 max-md:py-2 max-md:text-xs"
         />
       )}

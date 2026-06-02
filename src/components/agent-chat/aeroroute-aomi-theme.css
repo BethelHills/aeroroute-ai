@@ -104,9 +104,11 @@
 }
 
 .aeroroute-aomi-thread.dark .aui-composer-root,
-.aeroroute-aomi-thread.dark .aui-composer-wrapper {
+.aeroroute-aomi-thread.dark .aui-composer-wrapper,
+.aeroroute-aomi-thread.dark .aui-composer-action-wrapper {
   max-width: 100%;
   width: 100%;
+  overflow: visible !important;
 }
 
 .aeroroute-aomi-thread.dark .aui-composer-action-wrapper {

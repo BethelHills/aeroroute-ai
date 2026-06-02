@@ -8,6 +8,8 @@ import { WalletSelectMenu } from "./wallet-select-menu";
 export type WalletSelectProps = {
   className?: string;
   connectLabel?: string;
+  /** Unique id for the portaled menu (use when multiple pickers on one page). */
+  menuId?: string;
 };
 
 function subscribeNoop() {
