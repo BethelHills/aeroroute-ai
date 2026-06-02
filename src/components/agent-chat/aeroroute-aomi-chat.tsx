@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import "@/components/default.css";
 import "@/components/agent-chat/aeroroute-aomi-theme.css";
 import { AomiFrame } from "@/components/aomi-frame";
@@ -166,7 +167,9 @@ function AerorouteChatShell({ aomiApiKey }: { aomiApiKey?: string }) {
         </div>
 
         <div className="aeroroute-aomi-thread dark relative min-h-0 flex-1">
-          <AerorouteChatBootstrap />
+          <Suspense fallback={null}>
+            <AerorouteChatBootstrap />
+          </Suspense>
           <AomiFrame.Composer
             withControl
             className="flex h-full min-h-0 flex-col"
