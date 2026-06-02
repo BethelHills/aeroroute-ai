@@ -34,7 +34,7 @@ export default function AeroRouteAgentChatPage() {
           />
         </AppPageHeader>
 
-        <AerorouteAomiChat aomiApiKey={aomiApiKey} />
+        <AerorouteAomiChat aomiApiKey={aomiApiKey} className="w-full min-w-0" />
       </AppPageSection>
     </AppPageRoot>
   );

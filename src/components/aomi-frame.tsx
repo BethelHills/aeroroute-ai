@@ -29,6 +29,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { ControlBar, type ControlBarProps } from "@/components/control-bar";
+import { resolveAomiBackendUrl } from "@/lib/aomi-backend-url";
 
 // =============================================================================
 // Composer Control Context - signals Thread to show inline controls
@@ -104,10 +105,7 @@ const Root: FC<RootProps> = ({
   backendUrl,
   clientOptions,
 }) => {
-  const resolvedBackendUrl =
-    backendUrl ??
-    process.env.NEXT_PUBLIC_BACKEND_URL ??
-    "http://localhost:8080";
+  const resolvedBackendUrl = resolveAomiBackendUrl(backendUrl);
   const frameStyle: CSSProperties = { width, height, ...style };
 
   return (

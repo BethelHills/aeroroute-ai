@@ -10,7 +10,8 @@ cp .env.example .env.local
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `NEXT_PUBLIC_BACKEND_URL` | Yes (for Aomi chat) | Aomi API base URL. Use `https://api.aomi.dev` in production, or `http://localhost:8080` when running a local Aomi backend. |
+| `NEXT_PUBLIC_BACKEND_URL` | Yes (for Aomi chat) | Browser-facing Aomi base URL. Use `/api/aomi` (same-origin proxy; recommended) or a full URL (auto-proxied in the browser to avoid CORS). |
+| `AOMI_BACKEND_PROXY_TARGET` | When using `/api/aomi` | Upstream Aomi API for Next.js rewrites (default `https://api.aomi.dev`). |
 | `OPENROUTER_API_KEY` | For OpenRouter-backed models | Server-only secret (`sk-or-...`). Never use the `NEXT_PUBLIC_` prefix. |
 | `NEXT_PUBLIC_CHAIN_ID` | For wallet UI | EVM chain id (e.g. `8453` for Base). |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | For WalletConnect | Project id from [WalletConnect Cloud](https://cloud.walletconnect.com). |

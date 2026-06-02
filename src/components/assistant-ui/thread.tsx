@@ -212,12 +212,12 @@ const ThreadSuggestions: FC = () => {
 
 const Composer: FC = () => {
   return (
-    <div className="aui-composer-wrapper bg-background mx-auto flex w-full max-w-[var(--thread-max-width)] shrink-0 flex-col gap-4 overflow-visible px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pb-6">
+    <div className="aui-composer-wrapper bg-background mx-auto flex w-full max-w-[var(--thread-max-width)] shrink-0 flex-col gap-4 overflow-visible px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-3 md:pb-6">
       <ThreadScrollToBottom />
-      <ComposerPrimitive.Root className="aui-composer-root rounded-4xl bg-muted/20 text-card-foreground border-border/40 relative flex w-full flex-col border px-1 pt-2">
+      <ComposerPrimitive.Root className="aui-composer-root rounded-4xl bg-muted/20 text-card-foreground border-border/40 relative flex w-full min-w-0 flex-col border px-1 pt-2">
         <ComposerPrimitive.Input
           placeholder="Send a message..."
-          className="aui-composer-input text-foreground placeholder:text-muted-foreground/60 ml-3 mt-1 max-h-32 min-h-14 w-full resize-none bg-transparent px-3.5 pb-2 pt-1.5 text-sm outline-none dark:text-white"
+          className="aui-composer-input text-foreground placeholder:text-muted-foreground/60 ml-2 mt-1 max-h-32 min-h-14 min-w-0 w-full resize-none break-words bg-transparent px-3 pb-2 pt-1.5 text-sm outline-none dark:text-white sm:ml-3 sm:px-3.5"
           rows={1}
           autoFocus
           aria-label="Message input"
@@ -238,29 +238,40 @@ const ComposerAction: FC = () => {
   const hideNetwork = controlBarProps.hideNetwork ?? false;
 
   return (
-    <div className="aui-composer-action-wrapper relative mx-1 mb-3 mt-2 flex min-h-[38px] items-center gap-1">
-      {/* Inline controls — horizontally scrollable on mobile */}
-      {composerControl.enabled && (
-        <div className="aui-composer-action-scroll ml-1 flex min-w-0 flex-1 items-center gap-0 overflow-x-auto md:ml-2 md:gap-2">
+    <div className="aui-composer-action-wrapper relative mx-1 mb-3 mt-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+      {composerControl.enabled ? (
+        <div className="aui-composer-action-scroll flex min-w-0 items-center gap-1 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch] md:gap-2">
           {!hideNetwork && <NetworkSelect />}
-          {!hideModel && <ModelSelect />}
-          {!hideApp && <AppSelect />}
-          {!hideWallet && <ConnectButton />}
+          {!hideModel && (
+            <span className="aui-composer-control-model hidden shrink-0 md:inline-flex">
+              <ModelSelect />
+            </span>
+          )}
+          {!hideApp && (
+            <span className="aui-composer-control-app hidden shrink-0 md:inline-flex">
+              <AppSelect />
+            </span>
+          )}
+          {!hideWallet && (
+            <ConnectButton
+              connectLabel="Connect"
+              className="aui-composer-connect shrink-0 max-md:h-9 max-md:px-3 max-md:py-2 max-md:text-xs [&>span:first-child]:max-md:max-w-[4.75rem]"
+            />
+          )}
           {!hideApiKey && <ApiKeyInput />}
         </div>
+      ) : (
+        <div className="min-w-0" />
       )}
 
-      {/* Spacer — only when no inline controls */}
-      {!composerControl.enabled && <div className="flex-1" />}
-
-      <div className="shrink-0">
+      <div className="aui-composer-send-row flex shrink-0 justify-end">
         <ThreadPrimitive.If running={false}>
           <ComposerPrimitive.Send asChild>
             <Button
               type="submit"
               variant="default"
               size="icon"
-              className="aui-composer-send mr-2 size-[38px] shrink-0 rounded-full p-1 md:mr-3 md:size-[34px]"
+              className="aui-composer-send size-[38px] shrink-0 rounded-full p-1 md:size-[34px]"
               aria-label="Send message"
             >
               <ArrowUpIcon className="aui-composer-send-icon size-5" />
@@ -274,7 +285,7 @@ const ComposerAction: FC = () => {
               type="button"
               variant="default"
               size="icon"
-              className="aui-composer-cancel border-muted-foreground/60 hover:bg-primary/75 dark:border-muted-foreground/90 mr-2 size-[38px] shrink-0 rounded-full border md:mr-3 md:size-[34px]"
+              className="aui-composer-cancel border-muted-foreground/60 hover:bg-primary/75 dark:border-muted-foreground/90 size-[38px] shrink-0 rounded-full border md:size-[34px]"
               aria-label="Stop generating"
             >
               <Square className="aui-composer-cancel-icon size-3.5 fill-white dark:fill-black" />
@@ -387,7 +398,7 @@ const AssistantMessage: FC = () => {
                   </div>
                 </div>
               )}{!showFinishedEmptyMessage && !isPaymentRequiredNotice && (
-                <div className="aui-assistant-message-content text-foreground break-words px-3 text-sm leading-5">
+                <div className="aui-assistant-message-content text-foreground max-w-[90%] break-words px-3 text-sm leading-5">
                   {showLoadingDot ? (
                     <AssistantLoadingDot />
                   ) : (
@@ -462,8 +473,8 @@ const UserMessage: FC = () => {
         className="aui-user-message-root animate-in fade-in slide-in-from-bottom-1 mx-auto grid w-full max-w-[var(--thread-max-width)] auto-rows-auto grid-cols-[minmax(72px,1fr)_auto] gap-y-2 px-2 py-4 duration-150 ease-out first:mt-3 last:mb-5 [&:where(>*)]:col-start-2"
         data-role="user"
       >
-        <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
-                <div className="aui-user-message-content bg-muted text-foreground break-words rounded-3xl px-5 py-2.5 text-sm">
+        <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0 max-w-[90%] justify-self-end">
+                <div className="aui-user-message-content bg-muted text-foreground max-w-full break-words rounded-3xl px-5 py-2.5 text-sm">
                   {isEmpty ? (
                     <Skeleton className="aui-user-message-content-skeleton h-4 w-28 rounded-full" />
                   ) : (

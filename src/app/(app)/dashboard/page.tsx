@@ -320,7 +320,7 @@ function SwapPanel({
           type="button"
           onClick={onAnalyze}
           disabled={isAnalyzing || fromIndex === toIndex}
-          className={`${ctaButtonClass} group mt-2 bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014] shadow-[0_0_35px_rgba(0,245,160,0.25)]`}
+          className={`${ctaButtonClass} group mt-2 touch-manipulation bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014] shadow-[0_0_35px_rgba(0,245,160,0.25)]`}
         >
           {isAnalyzing ? (
             <>
@@ -347,7 +347,15 @@ function SwapPanel({
   );
 }
 
-function DashboardAnalysisPlaceholder({ onAnalyze }: { onAnalyze: () => void }) {
+function DashboardAnalysisPlaceholder({
+  onAnalyze,
+  disabled,
+  isAnalyzing,
+}: {
+  onAnalyze: () => void;
+  disabled: boolean;
+  isAnalyzing: boolean;
+}) {
   return (
     <div className={`${cardClass} flex flex-col items-center justify-center py-10 text-center`}>
       <Route className="mb-4 text-emerald-300" size={36} />
@@ -358,10 +366,20 @@ function DashboardAnalysisPlaceholder({ onAnalyze }: { onAnalyze: () => void }) 
       <button
         type="button"
         onClick={onAnalyze}
-        className={`${ctaButtonClass} mt-5 max-w-xs bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014]`}
+        disabled={disabled || isAnalyzing}
+        className={`${ctaButtonClass} mt-5 max-w-xs touch-manipulation bg-gradient-to-r from-emerald-400 to-cyan-400 text-[#041014]`}
       >
-        Analyze Best Route
-        <Zap size={16} />
+        {isAnalyzing ? (
+          <>
+            <Loader2 size={16} className="animate-spin" />
+            Analyzing routes…
+          </>
+        ) : (
+          <>
+            Analyze Best Route
+            <Zap size={16} />
+          </>
+        )}
       </button>
     </div>
   );
@@ -496,7 +514,7 @@ function AiRecommendation({
       </div>
       <Link
         href={agentHref}
-        className={`${ctaLinkClass} mt-6 bg-gradient-to-r from-orange-400 to-amber-300 text-[#130900]`}
+        className={`${ctaLinkClass} mt-6 touch-manipulation bg-gradient-to-r from-orange-400 to-amber-300 text-[#130900]`}
       >
         Prepare Swap Transaction
         <ArrowRight size={18} />
@@ -666,7 +684,11 @@ export default function AeroRouteDashboardPreview() {
                 score={bestScore}
               />
             ) : (
-              <DashboardAnalysisPlaceholder onAnalyze={handleAnalyze} />
+              <DashboardAnalysisPlaceholder
+                onAnalyze={handleAnalyze}
+                disabled={fromIndex === toIndex}
+                isAnalyzing={isAnalyzing}
+              />
             )}
           </div>
 

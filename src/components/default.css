@@ -208,4 +208,13 @@
   .aui-composer-input {
     font-size: 16px;
   }
+
+  .aui-composer-action-wrapper {
+    gap: 0.5rem;
+  }
+
+  .aui-composer-action-scroll {
+    mask-image: linear-gradient(to right, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
+  }
 }
