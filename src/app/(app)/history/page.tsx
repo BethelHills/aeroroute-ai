@@ -322,74 +322,86 @@ function HistoryCard({
   const tokens = item.pair.split(" → ");
   const optimizerHref = pairToOptimizerHref(item.pair);
 
+  const copyButtonClass = `inline-flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 md:w-auto ${interactiveButtonClass}`;
+
   return (
-    <div className="relative min-w-0 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:border-emerald-400/30">
-      <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between xl:gap-8">
-        <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 gap-4">
-            <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${statusStyles(item.status)}`}
-            >
-              <HistoryStatusIcon status={item.status} />
+    <article className="relative min-w-0 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:border-emerald-400/30 md:p-6">
+      <header className="flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="flex min-w-0 w-full gap-4">
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${statusStyles(item.status)}`}
+          >
+            <HistoryStatusIcon status={item.status} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="whitespace-normal break-words text-lg font-black text-white">
+                {item.pair}
+              </h3>
+              <span
+                className={`shrink-0 rounded-full border px-3 py-1 text-xs font-bold capitalize ${statusStyles(item.status)}`}
+              >
+                {item.status}
+              </span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="break-words text-lg font-black text-white">
-                  {item.pair}
-                </h3>
-                <span
-                  className={`shrink-0 rounded-full border px-3 py-1 text-xs font-bold capitalize ${statusStyles(item.status)}`}
-                >
-                  {item.status}
-                </span>
-              </div>
-              <p className="mt-1 break-words text-sm text-slate-500">
-                {item.route} · {item.time}
-              </p>
-              <p className="mt-1 text-xs text-slate-500">{item.action}</p>
-              <div className="mt-4 flex min-w-0 flex-wrap items-center gap-2">
-                {tokens.map((token, index) => (
-                  <React.Fragment key={`${item.id}-${token}-${index}`}>
-                    <span className="max-w-full break-words rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-100">
-                      {token}
-                    </span>
-                    {index < tokens.length - 1 ? (
-                      <ArrowRight
-                        size={14}
-                        className="shrink-0 text-orange-300"
-                      />
-                    ) : null}
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
+            <p className="mt-1 whitespace-normal break-words text-sm text-slate-400">
+              {item.route}
+            </p>
+            <p className="mt-0.5 text-sm text-slate-500">{item.time}</p>
+            <p className="mt-1 whitespace-normal text-xs text-slate-500">
+              {item.action}
+            </p>
           </div>
         </div>
 
-        <div className="grid w-full min-w-0 grid-cols-2 gap-3 text-sm sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 lg:gap-4 xl:max-w-[42rem] xl:shrink-0">
-          <MiniStat label="Amount" value={item.amount} />
-          <MiniStat label="Output" value={item.output} />
-          <MiniStat label="Impact" value={item.impact} accent />
-          <MiniStat label="Gas" value={item.gas} />
-          <MiniStat label="Score" value={`${item.score}`} large />
+        <div className="flex min-w-0 shrink-0 flex-row flex-wrap items-end gap-4 border-t border-white/10 pt-4 md:flex-col md:items-end md:border-0 md:pt-0 lg:min-w-[10rem] lg:flex-row lg:gap-6">
+          <MiniStat
+            label="Score"
+            value={`${item.score}`}
+            large
+            align="end"
+          />
           <MiniStat
             label="Savings"
             value={item.savings}
             accent={item.status !== "failed"}
             danger={item.status === "failed"}
+            align="end"
           />
         </div>
+      </header>
+
+      <div className="mt-4 grid w-full min-w-0 grid-cols-2 gap-4 md:grid-cols-5">
+        <MiniStat label="Amount" value={item.amount} />
+        <MiniStat label="Output" value={item.output} />
+        <MiniStat label="Impact" value={item.impact} accent />
+        <MiniStat label="Gas" value={item.gas} />
+        <MiniStat label="Score" value={`${item.score}`} className="col-span-2 md:col-span-1" />
       </div>
 
-      <div className="relative z-10 mt-5 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4">
-        <div className="flex min-w-0 flex-col gap-2">
-          <span className="min-w-0 truncate font-mono text-xs text-slate-500 sm:text-sm">
-            {item.hash}
-          </span>
+      <div className="mt-4 flex min-w-0 flex-wrap items-center gap-2">
+        {tokens.map((token, index) => (
+          <React.Fragment key={`${item.id}-${token}-${index}`}>
+            <span className="shrink-0 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-100">
+              {token}
+            </span>
+            {index < tokens.length - 1 ? (
+              <ArrowRight size={14} className="shrink-0 text-orange-300" />
+            ) : null}
+          </React.Fragment>
+        ))}
+      </div>
+
+      <footer className="relative z-10 mt-4 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4 md:flex-row md:items-center md:justify-between md:gap-4">
+        <span className="min-w-0 truncate font-mono text-xs text-slate-500 md:max-w-[min(100%,28rem)] md:flex-1 md:text-sm">
+          {item.hash}
+        </span>
+
+        <div className="flex min-w-0 flex-col gap-2 md:shrink-0 md:flex-row md:items-center">
           <button
             type="button"
             onClick={() => onCopyHash(item.hash, copyKey)}
-            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 ${interactiveButtonClass}`}
+            className={`${copyButtonClass} w-full`}
             aria-label={
               isHashCopied ? `Copied hash ${item.hash}` : `Copy hash ${item.hash}`
             }
@@ -406,15 +418,12 @@ function HistoryCard({
               </>
             )}
           </button>
-        </div>
 
-        <Dialog>
-          <DialogTrigger
-            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 ${interactiveButtonClass}`}
-          >
-            View details
-            <ExternalLink size={14} className="shrink-0" />
-          </DialogTrigger>
+          <Dialog>
+            <DialogTrigger className={`${copyButtonClass} w-full`}>
+              View details
+              <ExternalLink size={14} className="shrink-0" />
+            </DialogTrigger>
           <DialogContent
             className="max-h-[min(90vh,640px)] overflow-y-auto border-white/10 bg-[#061018] text-slate-100 sm:max-w-lg"
             showCloseButton
@@ -473,8 +482,9 @@ function HistoryCard({
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
-    </div>
+        </div>
+      </footer>
+    </article>
   );
 }
 
@@ -517,18 +527,24 @@ function MiniStat({
   accent,
   danger,
   large,
+  align,
+  className,
 }: {
   label: string;
   value: string;
   accent?: boolean;
   danger?: boolean;
   large?: boolean;
+  align?: "start" | "end";
+  className?: string;
 }) {
   return (
-    <div className="min-w-0">
+    <div
+      className={`min-w-0 ${align === "end" ? "text-right" : "text-left"} ${className ?? ""}`}
+    >
       <p className="text-xs text-slate-500">{label}</p>
       <p
-        className={`mt-1 break-words font-black ${large ? "text-xl md:text-2xl" : "text-sm"} ${danger ? "text-red-300" : accent ? "text-emerald-300" : "text-white"}`}
+        className={`mt-1 whitespace-normal break-words font-black ${large ? "text-xl md:text-2xl" : "text-sm md:text-base"} ${danger ? "text-red-300" : accent ? "text-emerald-300" : "text-white"}`}
       >
         {value}
       </p>
