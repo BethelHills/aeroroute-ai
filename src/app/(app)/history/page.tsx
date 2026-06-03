@@ -381,15 +381,15 @@ function HistoryCard({
         </div>
       </div>
 
-      <div className="relative z-10 mt-5 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-stretch sm:justify-between">
-        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-          <span className="min-w-0 flex-1 truncate font-mono text-xs text-slate-500 sm:text-sm">
+      <div className="relative z-10 mt-5 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4">
+        <div className="flex min-w-0 flex-col gap-2">
+          <span className="min-w-0 truncate font-mono text-xs text-slate-500 sm:text-sm">
             {item.hash}
           </span>
           <button
             type="button"
             onClick={() => onCopyHash(item.hash, copyKey)}
-            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 sm:w-auto sm:shrink-0 ${interactiveButtonClass}`}
+            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 ${interactiveButtonClass}`}
             aria-label={
               isHashCopied ? `Copied hash ${item.hash}` : `Copy hash ${item.hash}`
             }
@@ -410,7 +410,7 @@ function HistoryCard({
 
         <Dialog>
           <DialogTrigger
-            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 sm:w-auto sm:shrink-0 ${interactiveButtonClass}`}
+            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 ${interactiveButtonClass}`}
           >
             View details
             <ExternalLink size={14} className="shrink-0" />
@@ -439,14 +439,14 @@ function HistoryCard({
               <DetailRow label="Savings" value={item.savings} />
             </div>
 
-            <div className="flex min-w-0 flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3 sm:flex-row sm:items-center">
-              <span className="min-w-0 flex-1 break-all font-mono text-xs text-slate-400">
+            <div className="flex min-w-0 flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3">
+              <span className="min-w-0 break-all font-mono text-xs text-slate-400">
                 {item.hash}
               </span>
               <button
                 type="button"
                 onClick={() => onCopyHash(item.hash, `${copyKey}-dialog`)}
-                className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 ${interactiveButtonClass}`}
+                className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 ${interactiveButtonClass}`}
               >
                 {isDialogHashCopied ? (
                   <>
@@ -462,10 +462,10 @@ function HistoryCard({
               </button>
             </div>
 
-            <DialogFooter className="flex-col gap-2 border-white/10 bg-transparent p-0 sm:flex-row">
+            <DialogFooter className="flex-col gap-2 border-white/10 bg-transparent p-0">
               <Link
                 href={optimizerHref}
-                className={`inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-2.5 text-sm font-black text-[#041014] sm:w-auto ${interactiveButtonClass}`}
+                className={`inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-2.5 text-sm font-black text-[#041014] ${interactiveButtonClass}`}
               >
                 Open in Route Optimizer
                 <Route size={16} />
@@ -473,6 +473,30 @@ function HistoryCard({
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      </div>
+    </div>
+  );
+}
+
+function HistoryFeatureCard({
+  icon: Icon,
+  title,
+  text,
+}: {
+  icon: typeof History;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-3 rounded-2xl border border-white/10 bg-black/20 p-5">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
+        <Icon size={22} />
+      </div>
+      <div className="min-w-0">
+        <h3 className="font-black text-white">{title}</h3>
+        <p className="mt-2 break-words text-sm leading-relaxed text-slate-400">
+          {text}
+        </p>
       </div>
     </div>
   );
@@ -927,27 +951,29 @@ export default function AeroRouteHistoryPreview() {
           <InsightPanel />
         </div>
 
-        <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-4 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5 md:grid-cols-2 xl:grid-cols-4">
-          {[
-            [History, "Full Timeline", "Every route action in one place."],
-            [Timer, "Execution Timing", "Track speed and confirmation."],
-            [Info, "Reasoning Notes", "Understand route decisions."],
-            [ShieldCheck, "Safety Audit", "Review failures before retrying."],
-          ].map(([Icon, title, text]) => {
-            const SafeIcon = Icon as typeof History;
-            return (
-              <div
-                key={title as string}
-                className="min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5"
-              >
-                <SafeIcon className="text-emerald-300" size={25} />
-                <h3 className="mt-3 font-black">{title as string}</h3>
-                <p className="mt-2 break-words text-sm text-slate-400">
-                  {text as string}
-                </p>
-              </div>
-            );
-          })}
+        <div className="mt-6 w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5">
+          <div className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+            <HistoryFeatureCard
+              icon={History}
+              title="Full Timeline"
+              text="Every route action in one place."
+            />
+            <HistoryFeatureCard
+              icon={Timer}
+              title="Execution Timing"
+              text="Track speed and confirmation."
+            />
+            <HistoryFeatureCard
+              icon={Info}
+              title="Reasoning Notes"
+              text="Understand route decisions."
+            />
+            <HistoryFeatureCard
+              icon={ShieldCheck}
+              title="Safety Audit"
+              text="Review failures before retrying."
+            />
+          </div>
         </div>
       </AppPageSection>
     </AppPageRoot>
