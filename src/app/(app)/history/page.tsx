@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import Link from "next/link";
 import {
   AppPageHeader,
   AppPageRoot,
@@ -8,10 +15,21 @@ import {
   PageTitleBlock,
 } from "@/components/layout/page-shell";
 import { WalletStatusButtons } from "@/components/layout/wallet-status-buttons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Check,
   CheckCircle2,
+  ChevronDown,
   Clock3,
   Copy,
   ExternalLink,
@@ -30,6 +48,9 @@ import {
   XCircle,
   Zap,
 } from "lucide-react";
+
+const interactiveButtonClass =
+  "pointer-events-auto relative z-10 min-h-11 cursor-pointer touch-manipulation transition hover:border-emerald-400/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50";
 
 const stats = [
   { label: "Routes Analyzed", value: "248", change: "+18.4%", icon: Route },
@@ -144,6 +165,80 @@ const STATUS_FILTERS: { id: StatusFilter; label: string }[] = [
   { id: "failed", label: "Failed" },
 ];
 
+type RouteTypeFilter = "direct" | "split" | "multihop";
+
+type ExtraHistoryFilters = {
+  routeTypes: RouteTypeFilter[];
+  minScore: number | null;
+};
+
+const ROUTE_TYPE_OPTIONS: { id: RouteTypeFilter; label: string }[] = [
+  { id: "direct", label: "Direct routes" },
+  { id: "split", label: "Split routes" },
+  { id: "multihop", label: "Multi-hop" },
+];
+
+const MIN_SCORE_OPTIONS: { value: number | null; label: string }[] = [
+  { value: null, label: "Any score" },
+  { value: 90, label: "Score 90+" },
+  { value: 95, label: "Score 95+" },
+];
+
+const EMPTY_EXTRA_FILTERS: ExtraHistoryFilters = {
+  routeTypes: [],
+  minScore: null,
+};
+
+function pairToOptimizerHref(pair: string): string {
+  const [from, to] = pair.split(" → ").map((part) => part.trim());
+  if (!from || !to) {
+    return "/route-optimizer";
+  }
+  const params = new URLSearchParams({ from, to });
+  return `/route-optimizer?${params.toString()}`;
+}
+
+function matchesRouteType(item: HistoryItem, routeTypes: RouteTypeFilter[]): boolean {
+  if (routeTypes.length === 0) return true;
+
+  const route = item.route.toLowerCase();
+  return routeTypes.some((type) => {
+    if (type === "direct") return route.includes("direct");
+    if (type === "split") return route.includes("split");
+    if (type === "multihop") {
+      return route.includes("multi-hop") || route.includes("multi hop");
+    }
+    return false;
+  });
+}
+
+function matchesExtraFilters(
+  item: HistoryItem,
+  extra: ExtraHistoryFilters,
+): boolean {
+  if (extra.minScore != null && item.score < extra.minScore) {
+    return false;
+  }
+  return matchesRouteType(item, extra.routeTypes);
+}
+
+function useCopyText() {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const copy = useCallback(async (text: string, key: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(null), 2000);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  return { copiedKey, copy };
+}
+
 function statusStyles(status: string) {
   switch (status) {
     case "confirmed":
@@ -211,14 +306,24 @@ function StatCard({ stat }: { stat: (typeof stats)[number] }) {
   );
 }
 
-function HistoryCard({ item }: { item: HistoryItem }) {
+function HistoryCard({
+  item,
+  copyKey,
+  copiedKey,
+  onCopyHash,
+}: {
+  item: HistoryItem;
+  copyKey: string;
+  copiedKey: string | null;
+  onCopyHash: (hash: string, key: string) => void;
+}) {
+  const isHashCopied = copiedKey === copyKey;
+  const isDialogHashCopied = copiedKey === `${copyKey}-dialog`;
   const tokens = item.pair.split(" → ");
+  const optimizerHref = pairToOptimizerHref(item.pair);
 
   return (
-    <motion.div
-      whileHover={{ y: -3 }}
-      className="min-w-0 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:border-emerald-400/30"
-    >
+    <div className="relative min-w-0 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:border-emerald-400/30">
       <div className="flex min-w-0 flex-col gap-5 xl:flex-row xl:items-start xl:justify-between xl:gap-8">
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 gap-4">
@@ -276,28 +381,109 @@ function HistoryCard({ item }: { item: HistoryItem }) {
         </div>
       </div>
 
-      <div className="mt-5 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-2 text-sm text-slate-500">
-          <span className="min-w-0 flex-1 truncate font-mono text-xs sm:text-sm">
+      <div className="relative z-10 mt-5 flex min-w-0 flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-stretch sm:justify-between">
+        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+          <span className="min-w-0 flex-1 truncate font-mono text-xs text-slate-500 sm:text-sm">
             {item.hash}
           </span>
           <button
             type="button"
-            className="shrink-0 rounded-lg border border-white/10 p-1.5 hover:text-white"
-            aria-label={`Copy hash ${item.hash}`}
+            onClick={() => onCopyHash(item.hash, copyKey)}
+            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 sm:w-auto sm:shrink-0 ${interactiveButtonClass}`}
+            aria-label={
+              isHashCopied ? `Copied hash ${item.hash}` : `Copy hash ${item.hash}`
+            }
           >
-            <Copy size={14} />
+            {isHashCopied ? (
+              <>
+                <Check size={16} className="text-emerald-300" />
+                <span className="text-emerald-300">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy size={16} />
+                <span>Copy hash</span>
+              </>
+            )}
           </button>
         </div>
-        <button
-          type="button"
-          className="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 hover:border-emerald-400/40 hover:text-white sm:w-auto"
-        >
-          View details
-          <ExternalLink size={14} className="shrink-0" />
-        </button>
+
+        <Dialog>
+          <DialogTrigger
+            className={`inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2.5 text-sm font-bold text-slate-300 sm:w-auto sm:shrink-0 ${interactiveButtonClass}`}
+          >
+            View details
+            <ExternalLink size={14} className="shrink-0" />
+          </DialogTrigger>
+          <DialogContent
+            className="max-h-[min(90vh,640px)] overflow-y-auto border-white/10 bg-[#061018] text-slate-100 sm:max-w-lg"
+            showCloseButton
+          >
+            <DialogHeader>
+              <DialogTitle className="text-left text-xl font-black text-white">
+                {item.pair}
+              </DialogTitle>
+              <DialogDescription className="text-left text-slate-400">
+                {item.route} · {item.time}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <DetailRow label="Status" value={item.status} />
+              <DetailRow label="Action" value={item.action} />
+              <DetailRow label="Amount" value={item.amount} />
+              <DetailRow label="Output" value={item.output} />
+              <DetailRow label="Impact" value={item.impact} />
+              <DetailRow label="Gas" value={item.gas} />
+              <DetailRow label="Score" value={`${item.score}`} />
+              <DetailRow label="Savings" value={item.savings} />
+            </div>
+
+            <div className="flex min-w-0 flex-col gap-2 rounded-xl border border-white/10 bg-black/20 p-3 sm:flex-row sm:items-center">
+              <span className="min-w-0 flex-1 break-all font-mono text-xs text-slate-400">
+                {item.hash}
+              </span>
+              <button
+                type="button"
+                onClick={() => onCopyHash(item.hash, `${copyKey}-dialog`)}
+                className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs font-bold text-slate-300 ${interactiveButtonClass}`}
+              >
+                {isDialogHashCopied ? (
+                  <>
+                    <Check size={14} className="text-emerald-300" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+
+            <DialogFooter className="flex-col gap-2 border-white/10 bg-transparent p-0 sm:flex-row">
+              <Link
+                href={optimizerHref}
+                className={`inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-4 py-2.5 text-sm font-black text-[#041014] sm:w-auto ${interactiveButtonClass}`}
+              >
+                Open in Route Optimizer
+                <Route size={16} />
+              </Link>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-xl border border-white/10 bg-black/20 p-3">
+      <p className="text-xs text-slate-500">{label}</p>
+      <p className="mt-1 break-words font-bold capitalize text-white">{value}</p>
+    </div>
   );
 }
 
@@ -333,6 +519,8 @@ type FilterBarProps = {
   setSearchInput: (value: string) => void;
   onSearch: () => void;
   onClear: () => void;
+  extraFilters: ExtraHistoryFilters;
+  onExtraFiltersChange: (value: ExtraHistoryFilters) => void;
 };
 
 function FilterBar({
@@ -342,21 +530,56 @@ function FilterBar({
   setSearchInput,
   onSearch,
   onClear,
+  extraFilters,
+  onExtraFiltersChange,
 }: FilterBarProps) {
   const hasSearchText = searchInput.trim().length > 0;
+  const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
+  const moreFiltersRef = useRef<HTMLDivElement>(null);
+
+  const hasExtraFilters =
+    extraFilters.routeTypes.length > 0 || extraFilters.minScore != null;
+
+  useEffect(() => {
+    if (!moreFiltersOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (
+        moreFiltersRef.current &&
+        !moreFiltersRef.current.contains(event.target as Node)
+      ) {
+        setMoreFiltersOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [moreFiltersOpen]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     onSearch();
   };
 
+  const toggleRouteType = (routeType: RouteTypeFilter) => {
+    const next = extraFilters.routeTypes.includes(routeType)
+      ? extraFilters.routeTypes.filter((value) => value !== routeType)
+      : [...extraFilters.routeTypes, routeType];
+
+    onExtraFiltersChange({ ...extraFilters, routeTypes: next });
+  };
+
+  const clearExtraFilters = () => {
+    onExtraFiltersChange(EMPTY_EXTRA_FILTERS);
+  };
+
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl sm:p-5">
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:gap-5"
-      >
-        <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:items-stretch lg:max-w-md lg:flex-1">
+      <div className="flex w-full min-w-0 flex-col gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-stretch lg:max-w-2xl"
+        >
           <label className="relative flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-2.5">
             <Search size={18} className="shrink-0 text-slate-500" />
             <input
@@ -371,7 +594,7 @@ function FilterBar({
           <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row">
             <button
               type="submit"
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-2.5 text-sm font-black text-[#041014] sm:w-auto"
+              className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 px-5 py-2.5 text-sm font-black text-[#041014] sm:w-auto ${interactiveButtonClass}`}
             >
               <Search size={16} />
               Search
@@ -380,40 +603,123 @@ function FilterBar({
               <button
                 type="button"
                 onClick={onClear}
-                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-5 py-2.5 text-sm font-bold text-slate-300 hover:text-white sm:w-auto"
+                className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-5 py-2.5 text-sm font-bold text-slate-300 sm:w-auto ${interactiveButtonClass}`}
               >
                 <X size={16} />
                 Clear
               </button>
             ) : null}
           </div>
-        </div>
+        </form>
 
-        <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-2 lg:justify-center">
-          {STATUS_FILTERS.map((item) => (
+        <div className="flex w-full min-w-0 flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-start gap-2 lg:justify-center">
+            {STATUS_FILTERS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setFilter(item.id)}
+                className={`min-h-11 shrink-0 rounded-xl border px-4 py-2 text-sm font-bold ${interactiveButtonClass} ${
+                  filter === item.id
+                    ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+                    : "border-white/10 bg-black/20 text-slate-400"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div
+            ref={moreFiltersRef}
+            className="relative z-20 w-full shrink-0 lg:ml-auto lg:w-auto"
+          >
             <button
-              key={item.id}
               type="button"
-              onClick={() => setFilter(item.id)}
-              className={`min-h-10 shrink-0 rounded-xl border px-4 py-2 text-sm font-bold transition ${
-                filter === item.id
+              onClick={() => setMoreFiltersOpen((open) => !open)}
+              aria-expanded={moreFiltersOpen}
+              aria-haspopup="true"
+              className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-bold sm:w-auto ${
+                moreFiltersOpen || hasExtraFilters
                   ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
-                  : "border-white/10 bg-black/20 text-slate-400 hover:text-white"
-              }`}
+                  : "border-white/10 bg-black/20 text-slate-300"
+              } ${interactiveButtonClass}`}
             >
-              {item.label}
+              <Filter size={16} />
+              More filters
+              <ChevronDown
+                size={16}
+                className={`transition ${moreFiltersOpen ? "rotate-180" : ""}`}
+              />
             </button>
-          ))}
-        </div>
 
-        <button
-          type="button"
-          className="inline-flex min-h-10 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-bold text-slate-300 hover:text-white lg:ml-auto lg:w-auto"
-        >
-          <Filter size={16} />
-          More filters
-        </button>
-      </form>
+            {moreFiltersOpen ? (
+              <div className="mt-2 w-full rounded-2xl border border-white/10 bg-[#061018] p-4 shadow-[0_12px_40px_rgba(0,0,0,0.45)] lg:absolute lg:right-0 lg:mt-2 lg:w-80">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                  Route type
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {ROUTE_TYPE_OPTIONS.map((option) => {
+                    const active = extraFilters.routeTypes.includes(option.id);
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => toggleRouteType(option.id)}
+                        className={`min-h-10 rounded-xl border px-3 py-2 text-xs font-bold ${interactiveButtonClass} ${
+                          active
+                            ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+                            : "border-white/10 bg-black/20 text-slate-400"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                  Minimum score
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {MIN_SCORE_OPTIONS.map((option) => {
+                    const active = extraFilters.minScore === option.value;
+                    return (
+                      <button
+                        key={option.label}
+                        type="button"
+                        onClick={() =>
+                          onExtraFiltersChange({
+                            ...extraFilters,
+                            minScore: option.value,
+                          })
+                        }
+                        className={`min-h-10 rounded-xl border px-3 py-2 text-xs font-bold ${interactiveButtonClass} ${
+                          active
+                            ? "border-emerald-400/40 bg-emerald-400/10 text-emerald-300"
+                            : "border-white/10 bg-black/20 text-slate-400"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {hasExtraFilters ? (
+                  <button
+                    type="button"
+                    onClick={clearExtraFilters}
+                    className={`mt-4 inline-flex min-h-10 w-full items-center justify-center rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs font-bold text-slate-300 ${interactiveButtonClass}`}
+                  >
+                    Reset extra filters
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -520,6 +826,9 @@ export default function AeroRouteHistoryPreview() {
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [searchInput, setSearchInput] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
+  const [extraFilters, setExtraFilters] =
+    useState<ExtraHistoryFilters>(EMPTY_EXTRA_FILTERS);
+  const { copiedKey, copy } = useCopyText();
 
   const filtered = useMemo(() => {
     let items = history;
@@ -532,8 +841,10 @@ export default function AeroRouteHistoryPreview() {
       items = items.filter((item) => matchesSearch(item, appliedSearch));
     }
 
+    items = items.filter((item) => matchesExtraFilters(item, extraFilters));
+
     return items;
-  }, [filter, appliedSearch]);
+  }, [filter, appliedSearch, extraFilters]);
 
   const handleSearch = () => {
     setAppliedSearch(searchInput);
@@ -546,8 +857,16 @@ export default function AeroRouteHistoryPreview() {
 
   const handleClearAll = () => {
     setFilter("all");
+    setExtraFilters(EMPTY_EXTRA_FILTERS);
     handleClear();
   };
+
+  const handleCopyHash = useCallback(
+    (hash: string, key: string) => {
+      void copy(hash, key);
+    },
+    [copy],
+  );
 
   return (
     <AppPageRoot>
@@ -585,12 +904,22 @@ export default function AeroRouteHistoryPreview() {
           setSearchInput={setSearchInput}
           onSearch={handleSearch}
           onClear={handleClear}
+          extraFilters={extraFilters}
+          onExtraFiltersChange={setExtraFilters}
         />
 
         <div className="mt-6 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
           <div className="min-w-0 space-y-4">
             {filtered.length > 0 ? (
-              filtered.map((item) => <HistoryCard key={item.id} item={item} />)
+              filtered.map((item) => (
+                <HistoryCard
+                  key={item.id}
+                  item={item}
+                  copyKey={item.id}
+                  copiedKey={copiedKey}
+                  onCopyHash={handleCopyHash}
+                />
+              ))
             ) : (
               <HistoryEmptyState onClear={handleClearAll} />
             )}
