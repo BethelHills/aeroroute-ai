@@ -7,15 +7,29 @@ import { cn } from "@aomi-labs/react";
 
 type ToasterProps = ComponentProps<typeof Sonner>;
 
-export function Toaster({ className, toastOptions, ...props }: ToasterProps) {
+/** Below sticky app header on mobile (h-14); clear of md+ layouts without mobile header. */
+const TOAST_OFFSET = { top: "1rem" } as const;
+const TOAST_MOBILE_OFFSET = { top: "4.75rem" } as const;
+
+export function Toaster({
+  className,
+  toastOptions,
+  style,
+  offset = TOAST_OFFSET,
+  mobileOffset = TOAST_MOBILE_OFFSET,
+  ...props
+}: ToasterProps) {
   return (
     <Sonner
-      className={cn("toaster group", className)}
+      className={cn("toaster group z-[100]", className)}
+      offset={offset}
+      mobileOffset={mobileOffset}
+      style={{ zIndex: 100, ...style }}
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
+            "group toast group-[.toaster]:bg-[#061018] group-[.toaster]:text-slate-100 group-[.toaster]:border-white/15 group-[.toaster]:shadow-[0_12px_40px_rgba(0,0,0,0.55)]",
+          description: "group-[.toast]:text-slate-400",
           actionButton:
             "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
           cancelButton:

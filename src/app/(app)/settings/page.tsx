@@ -9,7 +9,6 @@ import {
   PageTitleBlock,
 } from "@/components/layout/page-shell";
 import { SettingsWalletActions } from "@/components/settings/settings-wallet-actions";
-import { Toaster } from "@/components/ui/sonner";
 import {
   AlertTriangle,
   ArrowRight,
@@ -241,7 +240,6 @@ function SettingsWorkspace() {
 
   return (
     <>
-      <Toaster position="top-center" richColors closeButton />
       <AppPageHeader>
         <PageTitleBlock
           badge={

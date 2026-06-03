@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { Toaster } from "@/components/ui/sonner";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { MainContent } from "./main-content";
@@ -44,6 +45,8 @@ export function AppShell({ children }: AppShellProps) {
         <Header onMenuClick={() => setMobileNavOpen(true)} />
         <MainContent>{children}</MainContent>
       </div>
+
+      <Toaster position="top-center" richColors closeButton />
     </div>
   );
 }
